@@ -20,7 +20,7 @@ router.post(
         await User.create(
             {
              name:req.body.name,
-             location:req.body.location,
+             location:req.body.geolocation,
              email:req.body.email,
              password:req.body.password
             }
