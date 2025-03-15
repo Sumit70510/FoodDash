@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom'; // Import Link from react-router-dom
-
+// import Login from "./screens/Login";
 export default function SignUp() {
     
     const [credentials,setcredentials]=useState({name:"",emai:"",password:"",geolocation:""})
@@ -49,7 +49,7 @@ export default function SignUp() {
     <input type="text" className="form-control" id="exampleInputAddress1" name='geolocation' value={credentials.geolocation} onChange={onChange}/>
   </div>
   <button type="submit" className="m-3 btn btn-success">Submit</button>
-    <Link to='Login' className='m-3 btn btn-danger'>Already a User</Link>
+    <Link to='/login' className='m-3 btn btn-danger'>Already a User</Link>
     </form>
     </div>
     </> 

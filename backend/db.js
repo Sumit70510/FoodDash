@@ -32,8 +32,18 @@ const mongoDB = ()=> {
               console.log("Connected Succesfully");
               const fetched_data=mongoose.connection.db.collection('food_items');
               fetched_data.find({}).toArray().then(
-                (data)=>{
-                  console.log("Fetched Data : ",data);  
+                (data)=>
+                {
+                  const foodCategory=mongoose.connection.db.collection('foodCategory');
+                  foodCategory.find({}).toArray().then(
+                     (CatData)=>{
+                      global.food_items=data;
+                      global.foodCategory=CatData;
+                     }
+                  )
+                  .catch((error)=>{
+                    console.error("Error fetching Category Data : ",error);
+                  })
                 }
               ).catch(
                 (error)=>{

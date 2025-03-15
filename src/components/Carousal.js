@@ -8,7 +8,7 @@ export default function Carousal() {
      <div className='carousel-caption' style={{zIndex:'10'}}>
      <form className="d-flex">
       <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
-      <button className="btn btn-outline-success text-white bg-success" type="submit">Search</button>
+      <button className="btn btn-outline-primary text-white bg-primary" type="submit">Search</button>
     </form>
      </div>
     <div className="carousel-item active">

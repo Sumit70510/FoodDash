@@ -9,9 +9,11 @@
   "author": "Sumit",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^3.0.2",
     "express": "^4.21.2",
     "express-validator": "^7.2.1",
     "express-validators": "^1.0.4",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.10.1",
     "nodemon": "^3.1.9"
   }
