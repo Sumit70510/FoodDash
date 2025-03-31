@@ -62,25 +62,7 @@ export default function Home() {
             <span className="visually-hidden">Next</span>
           </button>
         </div>
-      <div className='container'>
-        {/* {
-         foodCat!=[]? (
-          foodCat.map((data) => (
-            <div key={data._id} className="row mb-3">
-              <div className="fs-3 m-3">{data.CategoryName}</div>
-              {foodItem!=[] ? (
-                foodItem.filter((item) =>((item.CategoryName === data.CategoryName)&&(item.name.toLowerCase().includes(search.toLocaleLowerCase()))))
-                  .map((filterItem) => (
-                    <div key={filterItem._id} className="col-12 col-md-6 col-lg-3">
-                      <Card name={filterItem.name} img={filterItem.img} options={filterItem.options[0]} />
-                    </div>
-                  ))
-              ) : (
-                <div>No Such Data Found</div>
-              )}
-            </div>
-          ))
-        ) : ""}  */}
+      <div className='container-fluid mx-4 px-1 overflow-hidden'>
         {
           foodCat.length !== 0 ? (
             foodCat.map((data) => {
