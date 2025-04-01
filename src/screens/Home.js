@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react'
 import NavBar from '../components/NavBar'
 import Footer from '../components/Footer'
 import Card from '../components/Card'
-import Carousal from '../components/Carousal'
-
 export default function Home() {
 
   const [search, setSearch] = useState('');
@@ -30,10 +28,11 @@ export default function Home() {
     }, []
   );
 
-  const imgStyle = { maxHeight: "400px", objectFit: "cover", width: "100%" };
+ const imgStyle = { maxHeight: "400px", objectFit: "cover",objectPosition: "center", width: "100%" };
+  
   return (
-    <>
-      <div><NavBar /></div>
+    <div>
+      <div><NavBar/></div>
         <div id="carouselExampleFade" className="carousel slide carousel-fade" data-bs-ride="carousel" >
           <div className="carousel-inner">
             <div className='carousel-caption' style={{ zIndex: '10' }}>
@@ -44,13 +43,16 @@ export default function Home() {
               </div>
             </div>
             <div className="carousel-item active">
-              <img src="/car1.jpg" className="d-block w-100" style={imgStyle} alt="..." />
+              <img src="/food1.jpg" className="card-img-top img-fluid w-100" style={imgStyle} alt="..." />
             </div>
             <div className="carousel-item">
-              <img src="/car2.jpg" className="d-block w-100" style={imgStyle} alt="..." />
+              <img src="/food2.jpg" className="card-img-top img-fluid w-100" style={imgStyle} alt="..." />
             </div>
             <div className="carousel-item">
-              <img src="/car3.jpg" className="d-block w-100" style={imgStyle} alt="..." />
+              <img src="/food3.jpg" className="card-img-top img-fluid w-100" style={imgStyle} alt="..." />
+            </div>
+            <div className="carousel-item">
+              <img src="/food4.jpg" className="card-img-top img-fluid w-100" style={imgStyle} alt="..." />
             </div>
           </div>
           <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
@@ -62,7 +64,8 @@ export default function Home() {
             <span className="visually-hidden">Next</span>
           </button>
         </div>
-      <div className='container-fluid mx-4 px-1 overflow-hidden'>
+        {/* -fluid mx-4 px-1 overflow-hidden */}
+      <div className='container'>
         {
           foodCat.length !== 0 ? (
             foodCat.map((data) => {
@@ -76,7 +79,7 @@ export default function Home() {
                   <div className="fs-3 m-3">{data.CategoryName}</div>
                   {filteredItems.map((filterItem) => (
                     <div key={filterItem._id} className="col-12 col-md-6 col-lg-3">
-                      <Card name={filterItem.name} img={filterItem.img} options={filterItem.options[0]} />
+                      <Card foodItem={filterItem} options={filterItem.options[0]} />
                     </div>
                   ))}
                 </div>
@@ -87,7 +90,7 @@ export default function Home() {
           )
         }
       </div>
-      <div><Footer /></div>
-    </>
+      <div style={{background:'rgb(34, 34, 34)'}}><Footer /></div>
+    </div>
   )
 }
