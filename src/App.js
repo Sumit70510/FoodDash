@@ -10,16 +10,18 @@ import '../node_modules/bootstrap/dist/js/bootstrap.bundle';
 import '../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js';
 import SignUp from "./screens/SignUp.js";
 import { CartProvider } from "./components/ContextReduce.js";
+import MyOrders from "./screens/MyOrders.js";
 
 function App() {
   return (
     <CartProvider>
      <Router>
-      <div style={{ background: 'linear-gradient(to right, #243B55, #141E30)' }}>
+      <div>
         <Routes>
           <Route exact path="/" element={<Home/>}></Route>
           <Route exact path="/login" element={<Login/>}></Route>
           <Route exact path="/CreateUser" element={<SignUp/>}></Route>
+          <Route exact path="/myOrder" element={<MyOrders/>}></Route>
         </Routes> 
       </div>
      </Router>

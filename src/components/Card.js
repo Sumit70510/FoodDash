@@ -23,18 +23,15 @@ export default function Card(props) {
        {
          if(item.id===props.foodItem._id&&item.size===size) 
           { 
-            // console.log("Found item:");
             food.push(item);
             break;
           }
        }
 
       if (food.length !== 0) {
-          // console.log("HERE Size is Same");
           await dispatch({ type: "UPDATE", id:props.foodItem._id, size: size, price: finalPrice, qty: qty });
           return;
       } 
-      // console.log("Adding new Element");
       await dispatch({ type: "ADD", id: props.foodItem._id, name: props.foodItem.name, qty: qty, size: size, price: finalPrice, img: props.foodItem.img });
   };
   

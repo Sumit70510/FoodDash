@@ -16,10 +16,16 @@ router.post(
         body('password','Incorrect Password').isLength({ min: 6 })
     ]
     ,async(req,res)=>{
+
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ error: errors.array() });
         }
+        let existingUser = await User.findOne({ email: req.body.email });
+        if(existingUser)
+         {
+            return res.status(400).json({ success: false, message: "User already exists" });
+         }
         try{
             const salt= await bcrypt.genSalt(10);
             const SecPassword= await bcrypt.hash(req.body.password,salt);
@@ -31,12 +37,11 @@ router.post(
              password:SecPassword
             }
         );
-         res.json({success:true}); 
+        res.json({ success: true, message: "User created successfully" });
        }
       catch(error)
        {
-       console.log('error countered',error);
-       res.json({success:false});
+       return res.status(500).json({ success: false, message: "Internal Server Error" });
        } 
     }
 )

@@ -90,7 +90,7 @@ export default function Home() {
           )
         }
       </div>
-      <div style={{background:'rgb(34, 34, 34)'}}><Footer /></div>
+      <div style={{background:'rgb(34, 34, 34)'}} ><Footer /></div>
     </div>
   )
 }

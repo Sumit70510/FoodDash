@@ -31,7 +31,7 @@ export default function NavBar(){
         </li>
         {localStorage.getItem("authToken") &&
           <li className="nav-item">
-            <Link className="nav-link active fs-5" to="/">MyOrders</Link>
+            <Link className="nav-link active fs-5" to="/myOrder">MyOrders</Link>
           </li>
         }
       </ul>
@@ -47,7 +47,7 @@ export default function NavBar(){
             <button className="nav-link btn bg-white mx-2 ms-0 text-primary d-flex align-items-center" onClick={() => setCartView(true)}>
               Cart <Badge pill bg="danger" className="ms-1">{data.length}</Badge>
             </button>
-            {cartView && <Modal onClose={() => setCartView(false)}><Cart /></Modal>}
+            {cartView && <Modal onClose={() => setCartView(false)}><Cart/></Modal>}
             <Link className="nav-link btn bg-white text-danger ms-0 mx-2" to="/" onClick={handleLogout}>LogOut</Link>
           </div>
         )}

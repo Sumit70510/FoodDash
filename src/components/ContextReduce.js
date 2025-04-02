@@ -22,7 +22,10 @@ const reducer =(state,action)=>
              };
             }
             });
-    return arr;       
+          return arr;
+         case "DROP" :
+            let empARR=[];
+            return empARR;
         default : console.log("Error In Reducer");
      }
   }

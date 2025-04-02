@@ -4,7 +4,6 @@ import { Link, useNavigate } from "react-router-dom";
 export default function Login() {
   let navigate = useNavigate();
   const [credentials, setCredentials] = useState({ email: "", password: "" });
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const response = await fetch("http://localhost:4000/api/loginuser", {
@@ -18,8 +17,9 @@ export default function Login() {
     if (!json.success) {
       alert("Enter Valid Credentials");
     } else {
+      localStorage.setItem("userEmail",credentials.email);
       localStorage.setItem("authToken", json.authToken);
-      console.log(localStorage.getItem("authToken"));
+      // console.log(localStorage.getItem("authToken"));
       navigate("/");
     }
   };
