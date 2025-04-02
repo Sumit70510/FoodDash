@@ -1,70 +1,84 @@
-# Getting Started with Create React App
+# FoodDash - Online Food Ordering Platform
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+FoodDash is a **MERN (MongoDB, Express.js, React.js, Node.js) Stack-based** food ordering platform that allows users to browse menus, add items to their cart, place orders, and track their order history. The system includes secure authentication, user profiles, search functionality, and seamless checkout.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 📌 Features
 
-### `npm start`
+### ✅ User Authentication & Profiles
+- **Sign Up/Login** (JWT-based authentication)
+- **User Profiles** (Manage personal details, addresses, order history)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 🍽️ Food Browsing & Search
+- **Search for food** based on name or category
+- **Dynamic filtering** by cuisine, price, and availability
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 🛒 Cart & Checkout
+- **Add to Cart** functionality
+- **Secure checkout process** with integrated payment gateway
+- **Order tracking**
 
-### `npm test`
+### 📜 Order History
+- View past orders with detailed breakdown
+- Reorder previously placed orders
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 🛠️ Tech Stack
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+**Frontend:** React.js, HTML, CSS, TailwindCSS  
+**Backend:** Node.js, Express.js, MongoDB  
+**Authentication:** JSON Web Tokens (JWT)  
+**Database:** MongoDB (Mongoose ORM)  
+**State Management:** React Context API  
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 🚀 Installation & Setup
 
-### `npm run eject`
+### Prerequisites
+Make sure you have the following installed:
+- **Node.js** (v18+ recommended)
+- **MongoDB** (Local or Cloud-based)
+- **Git**
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Step 1: Clone the Repository
+```sh
+$ git clone https://github.com/yourusername/FoodDash.git
+$ cd FoodDash
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Step 2: Install Dependencies
+Backend
+```sh
+$ cd backend
+$ npm install
+```
+Frontend
+```sh
+$ cd ../frontend
+$ npm install
+```
+###Step 3: Configure Environment Variables
+Create a .env file in the backend root and add:
+```sh
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_secret_key
+PORT=4000
+```
+###Step 4: Run the Application
+Start Backend Server
+```sh
+$ cd backend
+$ npm start
+```
+Start Frontend Server
+```sh
+$ cd frontend
+$ npm start
+```
+The application should now be running at http://localhost:3000.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+###📌 API Endpoints
+##🔑 Authentication
