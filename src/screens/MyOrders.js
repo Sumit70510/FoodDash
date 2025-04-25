@@ -1,38 +1,53 @@
 import React, { useState, useEffect } from "react";
 import Footer from "../components/Footer";
 import NavBar from "../components/NavBar";
+import { useDispatchCart, useCart } from "../components/ContextReduce";
 
 export default function MyOrders() {
+  let data = useCart();
+  let dispatch = useDispatchCart();
   const [orderData, setOrderData] = useState([]);
 
-  const FetchMyOrder = async () => {
-    console.log(localStorage.getItem("userEmail"));
+  useEffect(() => {
+    const fetchMyOrder = async () => {
+      try {
+        const response = await fetch("http://localhost:4000/api/myOrderData", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: localStorage.getItem("userEmail"),
+          }),
+        });
 
-    try {
-      const response = await fetch("http://localhost:4000/api/myOrderData", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: localStorage.getItem("userEmail"),
-        }),
-      });
-
-      const data = await response.json();
-      if (data.orderData) {
-        setOrderData(data.orderData.order_data || []);
-      } else {
-        setOrderData([]);
+        const result = await response.json();
+        if (result.orderData) {
+          setOrderData(result.orderData.order_data || []);
+        } else {
+          setOrderData([]);
+        }
+      } catch (error) {
+        console.error("Error fetching orders:", error);
       }
-    } catch (error) {
-      console.error("Error fetching orders:", error);
+    };
+
+    fetchMyOrder();
+  }, []);
+
+  const handleAddToCart = async (items) => {
+    for (const item of items) {
+      await dispatch({
+        type: "ADD",
+        id: item._id,
+        name: item.name,
+        qty: item.qty,
+        size: item.size,
+        price: item.price,
+        img: item.img,
+      });
     }
   };
-
-  useEffect(() => {
-    FetchMyOrder();
-  }, []);
 
   return (
     <>
@@ -45,9 +60,7 @@ export default function MyOrders() {
               .slice()
               .reverse()
               .map((order, index) => {
-
                 const orderDate = order[0]?.order_date;
-
                 const showDate =
                   index === 0 ||
                   orderData[index - 1][0]?.order_date !== orderDate;
@@ -55,9 +68,11 @@ export default function MyOrders() {
                 return (
                   <div key={index} className="mb-4 w-100">
                     {showDate && (
-                      <h4 className="text-center text-primary">{orderDate}</h4>
+                      <>
+                        <h4 className="text-center text-primary">{orderDate}</h4>
+                        <hr />
+                      </>
                     )}
-                    <hr/>
                     <div className="row">
                       {order.slice(1).map((item, i) => (
                         <div key={i} className="col-12 col-md-6 col-lg-3">
@@ -85,6 +100,12 @@ export default function MyOrders() {
                         </div>
                       ))}
                     </div>
+                    <button
+                      className="btn btn-primary mt-2"
+                      onClick={() => handleAddToCart(order.slice(1))}
+                    >
+                      Repeat Order
+                    </button>
                   </div>
                 );
               })
