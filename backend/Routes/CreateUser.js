@@ -1,8 +1,8 @@
-const express=require('express');
-const router=express.Router();
-const User=require('../models/User'); 
+import express from 'express';
+import { body, validationResult } from 'express-validator';
+import User from '../models/User.js'; 
 
-const { body, validationResult } = require('express-validator');
+const router=express.Router();
 
 const jwt=require('jsonwebtoken');
 const bcrypt=require('bcryptjs');

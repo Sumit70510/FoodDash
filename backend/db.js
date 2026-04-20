@@ -1,5 +1,6 @@
-const mongoose = require('mongoose');
-const mongoURI = 'mongodb+srv://sv3013645:esdU4lmsDXz4cfif@cluster0.phh7e.mongodb.net/FoodDashMERN?retryWrites=true&w=majority&appName=Cluster0';
+import mongoose from 'mongoose';
+
+const mongoURI = process.env.MONGO_URI;
 
 // const mongoDB=async()=>{
 //     await mongoose.connect(mongoURI,{useNewUrlParser: true,useUnifiedTopology: true}).then(
@@ -10,10 +11,7 @@ const mongoURI = 'mongodb+srv://sv3013645:esdU4lmsDXz4cfif@cluster0.phh7e.mongod
 // }
 
 const mongoDB = ()=> {
-    mongoose.connect(mongoURI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        })
+    mongoose.connect(mongoURI)
         .then(
         //     async () => {
         //     console.log("Connected to MongoDB Succesfully");

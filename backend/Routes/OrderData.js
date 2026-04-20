@@ -1,6 +1,7 @@
-const express=require('express');
+import express from 'express';
+import order from '../models/Orders.js';
+
 const router=express.Router();
-const order=require('../models/Orders');
 
 router.post(
     '/OrderData',async (req,res)=>{
