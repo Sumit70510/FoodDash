@@ -1,96 +1,87 @@
 import express from 'express';
 import { body, validationResult } from 'express-validator';
-import User from '../models/User.js'; 
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+import User from '../models/User.js';
 
-const router=express.Router();
-
-const jwt=require('jsonwebtoken');
-const bcrypt=require('bcryptjs');
-const jwtSecret="Thisisa32charactersjwtSecRETKey.";
-
-router.post(
-    '/createuser'
-    ,[
-        body('email','Incorrect Email').isEmail(),
-        body('name','Incorrect Name').isLength({ min: 4 }),
-        body('password','Incorrect Password').isLength({ min: 6 })
-    ]
-    ,async(req,res)=>{
-
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ error: errors.array() });
-        }
-        let existingUser = await User.findOne({ email: req.body.email });
-        if(existingUser)
-         {
-            return res.status(400).json({ success: false, message: "User already exists" });
-         }
-        try{
-            const salt= await bcrypt.genSalt(10);
-            const SecPassword= await bcrypt.hash(req.body.password,salt);
-            await User.create(
-                {
-             name:req.body.name,
-             location:req.body.geolocation,
-             email:req.body.email,
-             password:SecPassword
-            }
-        );
-        res.json({ success: true, message: "User created successfully" });
-       }
-      catch(error)
-       {
-       return res.status(500).json({ success: false, message: "Internal Server Error" });
-       } 
-    }
-)
-
+const router = express.Router();
+const jwtSecret = "Thisisa32charactersjwtSecRETKey.";
 
 router.post(
-    '/loginuser'
-    ,[
-        body('email','Incorrect Email').isEmail(),
-        body('password','Incorrect Password').isLength({ min: 6 })
-    ]
-    ,async(req,res)=>{
-        const errors = validationResult(req);
-        if(!errors.isEmpty())
-         {
-          return res.status(400).json({ error: errors.array() });
-         }
-
-       let email=req.body.email; 
-       
-       try
-       {
-        let userData = await User.findOne({email});
-
-        if(!userData)
-         {
-          return res.status(400).json({ error: "Wrong Credentials" });
-         }
-
-        const pwdCompare=bcrypt.compare(req.body.password,userData.password);
-         
-        if(!pwdCompare)
-         {
-          return res.status(400).json({ error: "Wrong Password" });  
-         }
-         
-        const data={
-            user:{id:userData.id}
-        }
-
-        const authToken=jwt.sign(data,jwtSecret);
-        return res.json({success:true,authToken:authToken}); 
-       }
-      catch(error)
-       {
-       console.log('error countered',error);
-       res.json({success:false});
-       } 
+  '/createuser',
+  [
+    body('email', 'Incorrect Email').isEmail(),
+    body('name', 'Incorrect Name').isLength({ min: 4 }),
+    body('password', 'Incorrect Password').isLength({ min: 6 })
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ error: errors.array() });
     }
-)
 
-module.exports=router;
+    try {
+      let existingUser = await User.findOne({ email: req.body.email });
+
+      if (existingUser) {
+        return res.status(400).json({ success: false, message: "User already exists" });
+      }
+
+      const salt = await bcrypt.genSalt(10);
+      const secPassword = await bcrypt.hash(req.body.password, salt);
+
+      await User.create({
+        name: req.body.name,
+        location: req.body.geolocation,
+        email: req.body.email,
+        password: secPassword
+      });
+
+      res.json({ success: true, message: "User created successfully" });
+    } catch (error) {
+      return res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+  }
+);
+
+router.post(
+  '/loginuser',
+  [
+    body('email', 'Incorrect Email').isEmail(),
+    body('password', 'Incorrect Password').isLength({ min: 6 })
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ error: errors.array() });
+    }
+
+    const email = req.body.email;
+
+    try {
+      const userData = await User.findOne({ email });
+
+      if (!userData) {
+        return res.status(400).json({ error: "Wrong Credentials" });
+      }
+
+      const pwdCompare = await bcrypt.compare(req.body.password, userData.password);
+
+      if (!pwdCompare) {
+        return res.status(400).json({ error: "Wrong Password" });
+      }
+
+      const data = {
+        user: { id: userData.id }
+      };
+
+      const authToken = jwt.sign(data, jwtSecret);
+      return res.json({ success: true, authToken });
+    } catch (error) {
+      console.log('error encountered', error);
+      return res.status(500).json({ success: false });
+    }
+  }
+);
+
+export default router;

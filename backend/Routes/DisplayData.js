@@ -1,19 +1,14 @@
 import express from 'express';
-const router=express.Router();
 
-router.post(
-    '/FoodData',(req,res)=>{
-      try
-       {
-        // console.log(global.foodCategory );
-        res.send([global.food_items,global.foodCategory]);  
-       }
-      catch(error)
-       {
-        console.error(error.message);
-        res.send("Server Error");
-       } 
-    }
-);
+const router = express.Router();
 
-module.exports=router;
+router.post('/FoodData', (req, res) => {
+  try {
+    res.send([global.food_items, global.foodCategory]);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+export default router;

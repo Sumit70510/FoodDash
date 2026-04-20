@@ -5,10 +5,11 @@ import createUser from './Routes/CreateUser.js';
 import displayData from './Routes/DisplayData.js';
 import orderData from './Routes/OrderData.js';
 
+dotenv.config();
+
 const app = express();
 const port = 4000;
 
-dotenv.config();
 mongoDB();
 
 app.use((req, res, next) => {
