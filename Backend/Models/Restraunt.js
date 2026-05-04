@@ -48,4 +48,4 @@ const restrauntSchema= new mongoose.Schema({
   {timestamps:true}
 );
 
-export const Restraunt = mongoose.model("Restraunt",restrauntSchema);
+export default Restraunt = mongoose.model("Restraunt",restrauntSchema);

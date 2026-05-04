@@ -2,7 +2,7 @@ import express from 'express';
 import { body, validationResult } from 'express-validator';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import User from '../models/User.js';
+import User from '../Models/User.js';
 
 const router = express.Router();
 const jwtSecret = "Thisisa32charactersjwtSecRETKey.";
