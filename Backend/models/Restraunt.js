@@ -8,19 +8,21 @@ const restrauntSchema= new mongoose.Schema({
                   required: true },
                   
     PAN : { type: String,
+            unique : true ,
             required: true },
             
     FSSAI : { type: String,
+            //   unique : true,
               required: true },
               
     GST : { // If Applicable
             type: String },
-           
-    Address : { type: String,
-                required: true },
                
-    Location : { type : String,
-                 required : true},
+    location : {
+        address : { type: String,
+                    required: true },    
+        lat: Number,
+        lng: Number  },
                  
     email : {type: String , required : true ,unique :true },
     
@@ -28,17 +30,17 @@ const restrauntSchema= new mongoose.Schema({
     
     restrauntContactNo : {type: String , required : true ,unique :true },
     
-    password : {type : String,required : true ,unique :true },
+    password : {type : String,required : true },
     
     restrauntPicture : {type : String,default : "/default.jpg" },
     
-    MenuID : [{ type : mongoose.Schema.Types.ObjectId,
+    menuID : [{ type : mongoose.Schema.Types.ObjectId,
                  ref : "Menu" }],
     
     bankAccountID : [{ type : mongoose.Schema.Types.ObjectId,
                        ref : "BankAccount" }],
     
-    OrderID : [{ type : mongoose.Schema.Types.ObjectId,
+    orderID : [{ type : mongoose.Schema.Types.ObjectId,
                  ref : "Order" }],
                  
     operational : {type : String,enum : ['Open','Closed']} ,
@@ -48,4 +50,4 @@ const restrauntSchema= new mongoose.Schema({
   {timestamps:true}
 );
 
-export const Restraunt = mongoose.model("Restraunt",restrauntSchema);
+export default Restraunt = mongoose.model("Restraunt",restrauntSchema);

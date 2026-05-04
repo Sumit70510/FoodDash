@@ -6,11 +6,16 @@ const orderSchema = new mongoose.Schema({
       ref :"User",
       required : true
   },
-  restrauntId : {
+  restaurantId : {
       type : mongoose.Schema.Types.ObjectId,
-      ref :"Restraunt",
+      ref :"Restaurant",
       required : true
   },
+  // deliveryId : {
+  //     type : mongoose.Schema.Types.ObjectId,
+  //     ref :"Delivery",
+  //     required : true
+  // },
   items: [
       {
         menuItemId: {
@@ -33,12 +38,13 @@ const orderSchema = new mongoose.Schema({
           type: Number,
           required: true,
           min: 1 },
-        price: {
+        unitPrice: {
           type: Number,
           required: true,
           min: 0 },
-        discountPrice: {
+        totalPrice: {
             type: Number,
+            required : true,
             min: 0 },
       }
     ],
@@ -96,21 +102,33 @@ const orderSchema = new mongoose.Schema({
         "Delivered",
         "Cancelled"
       ],
-      default: "Preparing"
-    },
-  pickUpLocation : {
-    type: String,
-    required: true,
-   },
-  dropLocation : {
-    type: String,
-    required: true,
-   },
-  isDelivered :{type : Boolean, default:false}, 
-  isCancelled :{type : Boolean, default:false}, 
-  arivalTime : {type : Date }
+      default: "Preparing"},
+      
+    pickUpLocation : {
+        address: {
+        type: String,
+        required: true },
+        
+        lat: Number,
+        lng: Number },
+
+    dropLocation: {
+        address: {
+        type: String,
+        required: true },
+        
+        lat: Number,
+        lng: Number },
+  
+  deliveredAt : { type : Date },
+  cancelledAt : { type : Date },
+  cancellationReason : { type : String, trim : true },
+  
   },
   {timestamps:true}
 );
+
+orderSchema.index({ userId: 1, createdAt: -1 });
+orderSchema.index({ restaurantId: 1, orderStatus: 1 });
 
 export default Order = mongoose.model("Order", orderSchema);
