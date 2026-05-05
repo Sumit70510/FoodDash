@@ -8,11 +8,6 @@ const deliverySchema = new mongoose.Schema({
         required : true ,
         unique : true },
         
-    // restrauntId : {
-    //     type : mongoose.Schema.Types.ObjectId,
-    //     ref :"Restraunt",
-    //     required : true },
-        
     deliveryPartnerId : {
         type : mongoose.Schema.Types.ObjectId,
         ref :"DeliveryPartner",

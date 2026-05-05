@@ -16,12 +16,7 @@ const menuItemSchema = new mongoose.Schema({
         type : mongoose.Schema.Types.ObjectId,
         ref :"Restraunt",
         required : true },
-        
-    menuId : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref :"Menu",
-        required : true },
-        
+            
     categoryId : {
         type : mongoose.Schema.Types.ObjectId,
         ref :"Category",

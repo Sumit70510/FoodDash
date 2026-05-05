@@ -11,11 +11,7 @@ const orderSchema = new mongoose.Schema({
       ref :"Restaurant",
       required : true
   },
-  // deliveryId : {
-  //     type : mongoose.Schema.Types.ObjectId,
-  //     ref :"Delivery",
-  //     required : true
-  // },
+
   items: [
       {
         menuItemId: {

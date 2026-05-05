@@ -15,12 +15,7 @@ const categorySchema = new mongoose.Schema({
             type : mongoose.Schema.Types.ObjectId,
             ref :"Menu",
             required : true },
-            
-    menuItemId : [{
-            type : mongoose.Schema.Types.ObjectId,
-            ref :"MenuItem",
-            required : true }],
-                     
+                              
     isAvailable : {
              type: Boolean,
              default: true }

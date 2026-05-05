@@ -34,15 +34,6 @@ const restrauntSchema= new mongoose.Schema({
     
     restrauntPicture : {type : String,default : "/default.jpg" },
     
-    menuID : [{ type : mongoose.Schema.Types.ObjectId,
-                 ref : "Menu" }],
-    
-    bankAccountID : [{ type : mongoose.Schema.Types.ObjectId,
-                       ref : "BankAccount" }],
-    
-    orderID : [{ type : mongoose.Schema.Types.ObjectId,
-                 ref : "Order" }],
-                 
     operational : {type : String,enum : ['Open','Closed']} ,
     
     isOpen :{type : Boolean, default:true},  

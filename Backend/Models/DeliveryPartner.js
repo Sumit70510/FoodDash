@@ -70,11 +70,6 @@ const deliveryPartnerSchema = new mongoose.Schema({
       updatedAt: Date
     },
 
-    bankAccountId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "BankAccount"
-    },
-
     totalDeliveriesCompleted: {
       type: Number,
       default: 0,

@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx react-scripts start"
+    "start": "npx react-scripts start",
+    "dev": "npx react-scripts start"
   },
   "author": "Sumit",
   "license": "ISC",

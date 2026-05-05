@@ -24,15 +24,6 @@ const userSchema= new mongoose.Schema({
     
     gender : {type : String,enum : ['male','female']} ,
     
-    orderId : [ {
-       type : mongoose.Schema.Types.ObjectId,
-       ref : "Order"   
-    }],
-    
-    bankAccountID :[{
-           type : mongoose.Schema.Types.ObjectId,
-           ref : "BankAccount"   
-        }],
   }  
  ,{timestamps:true}
 );

@@ -11,19 +11,13 @@ const bankAccountSchema = new mongoose.Schema(
     ownerId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      refPath: "ownerModel"
-    },
-
-    ownerModel: {
-      type: String,
-      enum: ["User", "Restaurant", "DeliveryPartner"],
-      required: true
+      refPath: "ownerType"
     },
 
     purpose: {
       type: String,
       enum: ["Payout", "Payment", "Refund"],
-      default: "payment"
+      default: "Payment"
     },
 
     accountHolderName: {
