@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 
 export default function SignUp() {
-    const [credentials, setcredentials] = useState({ name: "", email: "", password: "", geolocation: "" });
+    const [credentials, setcredentials] = useState({ name: "", email: "", password: "", location: "" });
     let navigate = useNavigate();
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const response = await fetch('http://localhost:4000/api/createuser', {
+        const response = await fetch('http://localhost:5000/api/v1/user/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ name: credentials.name, email: credentials.email, password: credentials.password, location: credentials.geolocation })
+            body: JSON.stringify({ username: credentials.name, email: credentials.email, password: credentials.password })
         });
         const json = await response.json();
         if (!json.success) {
@@ -99,7 +99,7 @@ export default function SignUp() {
                             className="form-control"
                             id="exampleInputAddress1"
                             name="geolocation"
-                            value={credentials.geolocation}
+                            value={credentials.location}
                             onChange={onChange}
                             style={{
                                 backgroundColor: "white",
