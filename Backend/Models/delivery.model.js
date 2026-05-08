@@ -65,4 +65,6 @@ const deliverySchema = new mongoose.Schema({
 deliverySchema.index({ deliveryPartnerId: 1, status: 1 });
 deliverySchema.index({ deliveryPartnerId: 1, payoutStatus: 1 });
 
-export default Delivery = mongoose.model("Delivery",deliverySchema);
+const Delivery = mongoose.model("Delivery",deliverySchema);
+
+export default Delivery;

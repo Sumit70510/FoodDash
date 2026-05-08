@@ -103,4 +103,4 @@ const deliveryPartnerSchema = new mongoose.Schema({
  },
 {timestamps:true});
 
-export default DeliveryPartner = mongoose.model("DeliveryPartner",deliveryPartnerSchema);
+export default mongoose.model("DeliveryPartner",deliveryPartnerSchema);

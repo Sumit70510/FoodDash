@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 
 export default function SignUp() {
-    const [credentials, setcredentials] = useState({ name: "", email: "", password: "", location: "" });
+    const [credentials, setcredentials] = useState({ name: "",username : "", email: "", password: "", location: "" });
     let navigate = useNavigate();
+    const [loading,setloading]=useState(false);  
     const handleSubmit = async (e) => {
         e.preventDefault();
         const response = await fetch('http://localhost:5000/api/v1/user/register', {
@@ -11,7 +12,7 @@ export default function SignUp() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ username: credentials.name, email: credentials.email, password: credentials.password })
+            body: JSON.stringify({ name:credentials.name,username: credentials.username, email: credentials.email, password: credentials.password })
         });
         const json = await response.json();
         if (!json.success) {
@@ -42,6 +43,22 @@ export default function SignUp() {
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
                         <label htmlFor="Name" className="form-label fw-bold" style={{ color: "#333" }}>Name</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            name="name"
+                            value={credentials.name}
+                            onChange={onChange}
+                            style={{
+                                backgroundColor: "white",
+                                color: "black",
+                                border: "1px solid #ccc",
+                                boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)",
+                            }}
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="Name" className="form-label fw-bold" style={{ color: "#333" }}>Username</label>
                         <input
                             type="text"
                             className="form-control"
@@ -98,7 +115,7 @@ export default function SignUp() {
                             type="text"
                             className="form-control"
                             id="exampleInputAddress1"
-                            name="geolocation"
+                            name="location"
                             value={credentials.location}
                             onChange={onChange}
                             style={{

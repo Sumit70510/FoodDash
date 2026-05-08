@@ -18,4 +18,4 @@ const menuSchema = new mongoose.Schema({
    ,{timestamps:true}
 );
 
-export default Menu = mongoose.model("Menu", menuSchema);
+export default mongoose.model("Menu", menuSchema);

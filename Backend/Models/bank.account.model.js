@@ -80,4 +80,4 @@ const bankAccountSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default BankAccount= mongoose.model("BankAccount", bankAccountSchema);
+export default mongoose.model("BankAccount", bankAccountSchema);
