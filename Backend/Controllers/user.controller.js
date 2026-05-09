@@ -58,11 +58,12 @@ export const register = async(req,res)=>{
      }
   }
   
-  
 export const login = async(req,res)=>{  
     try
      {
-       const {email , contactNo , password } = req.body;
+       const {email , contactNo , password , force } = req.body;
+       const sessionLimit = parseInt(process.env.SESSION_LIMIT)||2;
+       let message;
        
        if((!email&&!contactNo)||!password)
         {
@@ -91,34 +92,89 @@ export const login = async(req,res)=>{
             success:false
            });  
          }
+         
+      const existingSession = await Session.findOne({
+           ownerId: user._id,
+           "deviceInfo.userAgent": req.headers["user-agent"],
+           isActive: true
+        });  
+      let refresh=true;      
+      
+      const activeSessions = await Session.find({
+         ownerId: user._id,
+         ownerType: "User",
+         isActive: true }); 
+      if(activeSessions.length > sessionLimit && !force){
+        if(!existingSession)
+         {
+           return res.status(409).json({
+           message : "Logged On Other device, Logout To Continue Here? ",
+           success : false,
+           requireConfirmation: true
+          });
+         }
+        else
+         { 
+          return res.status(200).json({
+          message : "Already LogedIn",
+          success : true,
+          user
+           })
+         } 
+       }
         
+      if(existingSession) { 
+       message = "Login ReFreshed"; 
+       await Session.updateOne(
+         {_id: existingSession._id },
+         {isActive: false });
+       }    
+       
+     if (activeSessions.length >= sessionLimit&&force){
+      message = 'Forced LogedOut And Then LogedIn Detected';
+      const extraSessions = activeSessions
+       .sort((a, b) => a.createdAt - b.createdAt) // oldest first
+       .slice(0, activeSessions.length - sessionLimit);
+
+       const ids = extraSessions.map(s => s._id);
+         await Session.updateMany(
+          { _id: { $in: ids } },
+          { isActive: false }
+         );
+       }
+     
+      //  if(activeSessions.length >= sessionLimit &&force) {
+      //   await Session.updateMany(
+      //    { ownerId: user._id, ownerType: "User", isActive: true },
+      //    { isActive: false } );
+      //  }   
+         
       let token = jwt.sign({_id : user._id},process.env.SECRET_KEY,{expiresIn : '2d'}); 
        
        //  const userResponse = user.toObject();
        //  delete userResponse.password;
     
-      // hash token before storing
       const hashedToken = crypto
        .createHash("sha256")
        .update(token)
        .digest("hex");
 
-      // Storing Session  
       await Session.create({
         ownerType: "User",                 
         ownerId: user._id,
         token: hashedToken,
         deviceInfo: {
-          userAgent: req.headers["user-agent"] },
-        ip: req.ip,
+          userAgent: req.headers["user-agent"] ,
+          // deviceName: "Unknown"
+        },
+        ip: req.headers["x-forwarded-for"] || req.ip,
         expiresAt: new Date(Date.now() + tokenAge)
        });
 
-      // Assigning Token
       res.cookie(tokenName,token,{...cookieOptions,maxAge : tokenAge});
       
       return res.status(200).json({
-          message : "Logged In Successfully",
+          message : message || "Logged In Successfully",
           success : true,
           user
        })
@@ -191,19 +247,19 @@ export const logoutFromAll = async(req,res)=>{
          });
         }
        
-       let decode ;
+      //  let decode ;
        
-       try 
-        { decode = jwt.verify(token, process.env.SECRET_KEY); }
-       catch
-        {
-          return res.status(401)
-          .json({
-            message: "Invalid Session",
-            success: false
-          });
-        }
-       const userId = decode._id;
+      //  try 
+      //   { decode = jwt.verify(token, process.env.SECRET_KEY); }
+      //  catch
+      //   {
+      //     return res.status(401)
+      //     .json({
+      //       message: "Invalid Session",
+      //       success: false
+      //     });
+      //   }
+       const userId = req._id;
         
        const result = await Session.updateMany({ ownerId: userId ,
             ownerType: "User" , isActive :true },

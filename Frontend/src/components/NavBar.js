@@ -10,9 +10,24 @@ export default function NavBar(){
   const [cartView,setCartView]=useState(false);
   const navigate=useNavigate();
 
-  const handleLogout=()=>{
+  const handleLogout=async()=>{
+    const response = await fetch("http://localhost:5000/api/v1/user/logout", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+    });
+    const json = await response.json();
+    if (!json.success) {
+      alert(json.message);
+    } else {
+      console.log(json.message); 
+      localStorage.removeItem('authToken');
+    }
     localStorage.removeItem('authToken');
-    navigate("/Home");
+    navigate("/");
   }
 
   return(

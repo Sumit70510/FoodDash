@@ -6,17 +6,20 @@ export default function Login() {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:4000/api/loginuser", {
+    const response = await fetch("http://localhost:5000/api/v1/user/login", {
       method: "POST",
+     credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email: credentials.email, password: credentials.password }),
+      body: JSON.stringify({ email: credentials.email, password: credentials.password ,force :false}),
     });
     const json = await response.json();
     if (!json.success) {
-      alert("Enter Valid Credentials");
+      console.log(json.message);
+      alert(json.message);
     } else {
+      console.log(json.message);
       localStorage.setItem("userEmail",credentials.email);
       localStorage.setItem("authToken", json.authToken);
       // console.log(localStorage.getItem("authToken"));
