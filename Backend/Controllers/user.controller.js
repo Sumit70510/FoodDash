@@ -97,13 +97,13 @@ export const login = async(req,res)=>{
            ownerId: user._id,
            "deviceInfo.userAgent": req.headers["user-agent"],
            isActive: true
-        });  
-      let refresh=true;      
+        });     
       
       const activeSessions = await Session.find({
          ownerId: user._id,
          ownerType: "User",
          isActive: true }); 
+         
       if(activeSessions.length > sessionLimit && !force){
         if(!existingSession)
          {
@@ -130,11 +130,11 @@ export const login = async(req,res)=>{
          {isActive: false });
        }    
        
-     if (activeSessions.length >= sessionLimit&&force){
+     if (activeSessions.length > sessionLimit&&force){
       message = 'Forced LogedOut And Then LogedIn Detected';
       const extraSessions = activeSessions
        .sort((a, b) => a.createdAt - b.createdAt) // oldest first
-       .slice(0, activeSessions.length - sessionLimit);
+       .slice(0, activeSessions.length - sessionLimit + 1 );
 
        const ids = extraSessions.map(s => s._id);
          await Session.updateMany(
@@ -215,7 +215,7 @@ export const logout = async(req,res)=>{
        if(!session) 
         {
            return res.status(401).json({
-           message: "Invalid session",
+           message: "Expired session",
            success: false
             });
         }
@@ -247,30 +247,11 @@ export const logoutFromAll = async(req,res)=>{
          });
         }
        
-      //  let decode ;
-       
-      //  try 
-      //   { decode = jwt.verify(token, process.env.SECRET_KEY); }
-      //  catch
-      //   {
-      //     return res.status(401)
-      //     .json({
-      //       message: "Invalid Session",
-      //       success: false
-      //     });
-      //   }
        const userId = req._id;
         
        const result = await Session.updateMany({ ownerId: userId ,
             ownerType: "User" , isActive :true },
            { isActive: false });
-
-       if(result.matchedCount === 0) {
-         return res.status(404).json({
-          message: "No active sessions found",
-          success: false
-          });
-         }    
         
        return  res.json({
           message : "Logged Out From All Devices Successfully",

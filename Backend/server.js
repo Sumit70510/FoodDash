@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import express from "express";
 import dotenv from 'dotenv';
 import userRoutes from './Routes/user.routes.js';
-// import restrauntRoutes from './Routes/restraunt.routes.js';
+import restrauntRoutes from './Routes/restraunt.routes.js';
 import cookieParser from "cookie-parser";
 import connectDB from "./Utils/db.js";
 import cors from 'cors';
@@ -25,7 +25,7 @@ const corsOption={
 app.use(cors(corsOption));
 
 app.use('/api/v1/user',userRoutes);
-// app.use('/api/v1/restraunt',restrauntRoutes);
+app.use('/api/v1/restraunt',restrauntRoutes);
 
 app.get("/",(req,res)=>{
     res.send('Server Running'); 

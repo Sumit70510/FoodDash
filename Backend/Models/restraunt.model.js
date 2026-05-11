@@ -12,7 +12,7 @@ const restrauntSchema= new mongoose.Schema({
             required: true },
             
     FSSAI : { type: String,
-            //   unique : true,
+              unique : true,
               required: true },
               
     GST : { // If Applicable
