@@ -93,44 +93,34 @@ export const login = async(req,res)=>{
            });  
          }
          
-      const existingSession = await Session.findOne({
+      const existingSession = await Session.findOneAndUpdate({
            ownerId: restraunt._id,
            "deviceInfo.userAgent": req.headers["restraunt-agent"],
            isActive: true
-        });     
+        },{isActive:false});     
       
       const activeSessions = await Session.find({
          ownerId: restraunt._id,
          ownerType: "Restraunt",
          isActive: true }); 
          
-      if(activeSessions.length > sessionLimit && !force){
-        if(!existingSession)
-         {
+      if((activeSessions.length+1) > sessionLimit && !force){
            return res.status(409).json({
            message : "Logged On Other device, Logout To Continue Here? ",
            success : false,
            requireConfirmation: true
           });
-         }
-        else
-         { 
-          return res.status(200).json({
-          message : "Already LogedIn",
-          success : true,
-          restraunt
-           })
-         } 
+        
        }
         
-      if(existingSession) { 
-       message = "Login ReFreshed"; 
-       await Session.updateOne(
-         {_id: existingSession._id },
-         {isActive: false });
-       }    
+      // if(existingSession) { 
+      //  message = "Login ReFreshed"; 
+      //  await Session.updateOne(
+      //    {_id: existingSession._id },
+      //    {isActive: false });
+      //  }    
        
-     if (activeSessions.length > sessionLimit&&force){
+     if ((activeSessions.length+1) > sessionLimit&&force){
       message = 'Forced LogedOut And Then LogedIn Detected';
       const extraSessions = activeSessions
        .sort((a, b) => a.createdAt - b.createdAt) // oldest first
@@ -149,7 +139,7 @@ export const login = async(req,res)=>{
       //    { isActive: false } );
       //  }   
          
-      let token = jwt.sign({_id : restraunt._id},process.env.SECRET_KEY,{expiresIn : '2d'}); 
+      let token = jwt.sign({_id : restraunt._id},process.env.SECRET_KEY,{expiresIn : `${process.env.VALID_TILL}d`}); 
        
        //  const userResponse = restraunt.toObject();
        //  delete userResponse.password;

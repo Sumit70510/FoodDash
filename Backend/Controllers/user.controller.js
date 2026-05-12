@@ -93,44 +93,33 @@ export const login = async(req,res)=>{
            });  
          }
          
-      const existingSession = await Session.findOne({
+      const existingSession = await Session.findOneAndUpdate({
            ownerId: user._id,
            "deviceInfo.userAgent": req.headers["user-agent"],
            isActive: true
-        });     
+        },{isActive:false});     
       
       const activeSessions = await Session.find({
          ownerId: user._id,
          ownerType: "User",
          isActive: true }); 
          
-      if(activeSessions.length > sessionLimit && !force){
-        if(!existingSession)
-         {
+      if((activeSessions.length+1) > sessionLimit && !force){
            return res.status(409).json({
            message : "Logged On Other device, Logout To Continue Here? ",
            success : false,
            requireConfirmation: true
-          });
-         }
-        else
-         { 
-          return res.status(200).json({
-          message : "Already LogedIn",
-          success : true,
-          user
-           })
-         } 
+          }); 
        }
         
-      if(existingSession) { 
-       message = "Login ReFreshed"; 
-       await Session.updateOne(
-         {_id: existingSession._id },
-         {isActive: false });
-       }    
+      // if(existingSession) { 
+      //  message = "Login ReFreshed"; 
+      //  await Session.updateOne(
+      //    {_id: existingSession._id },
+      //    {isActive: false });
+      //  }    
        
-     if (activeSessions.length > sessionLimit&&force){
+     if ((activeSessions.length+1) > sessionLimit&&force){
       message = 'Forced LogedOut And Then LogedIn Detected';
       const extraSessions = activeSessions
        .sort((a, b) => a.createdAt - b.createdAt) // oldest first
@@ -149,7 +138,8 @@ export const login = async(req,res)=>{
       //    { isActive: false } );
       //  }   
          
-      let token = jwt.sign({_id : user._id},process.env.SECRET_KEY,{expiresIn : '2d'}); 
+      let token = jwt.sign({_id : user._id},process.env.SECRET_KEY,
+                           {expiresIn : `${process.env.VALID_TILL}d`}); 
        
        //  const userResponse = user.toObject();
        //  delete userResponse.password;

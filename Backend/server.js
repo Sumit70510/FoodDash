@@ -26,6 +26,7 @@ app.use(cors(corsOption));
 
 app.use('/api/v1/user',userRoutes);
 app.use('/api/v1/restraunt',restrauntRoutes);
+app.use('/api/v1/deliveryPartner',restrauntRoutes);
 
 app.get("/",(req,res)=>{
     res.send('Server Running'); 

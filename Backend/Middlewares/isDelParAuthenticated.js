@@ -8,7 +8,7 @@ const cookieOptions = {
       secure: process.env.NODE_ENV !== 'DEVELOPMENT'
     };
 
-const isResAuthenticated = async(req,res,next)=>
+const isDelParAuthenticated = async(req,res,next)=>
   {
     try
      {
@@ -18,7 +18,7 @@ const isResAuthenticated = async(req,res,next)=>
          { 
            res.clearCookie(tokenName,cookieOptions);
            return res.status(401).json({
-             message : "Restraunt Not Authenticated",
+             message : "Delivery Partner Not Authenticated",
              success : false
            })
          }
@@ -37,7 +37,7 @@ const isResAuthenticated = async(req,res,next)=>
           });  
         } 
         
-       const restrauntId = decode._id;
+       const deliveryPartnerId = decode._id;
        
        const hashedToken = crypto.createHash("sha256")
                                  .update(token)
@@ -59,7 +59,7 @@ const isResAuthenticated = async(req,res,next)=>
          );
  
          
-        req._id = restrauntId; 
+        req._id = deliveryPartnerId; 
         next();
      }
     catch(error)
@@ -72,4 +72,4 @@ const isResAuthenticated = async(req,res,next)=>
      } 
   }
   
-export default isResAuthenticated;  
+export default isDelParAuthenticated;  
