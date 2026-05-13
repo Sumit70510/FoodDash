@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import express from "express";
 import dotenv from 'dotenv';
+import menuRoutes from "./Routes/menu.routes.js";
 import userRoutes from './Routes/user.routes.js';
 import restrauntRoutes from './Routes/restraunt.routes.js';
 import cookieParser from "cookie-parser";
@@ -27,6 +28,7 @@ app.use(cors(corsOption));
 app.use('/api/v1/user',userRoutes);
 app.use('/api/v1/restraunt',restrauntRoutes);
 app.use('/api/v1/deliveryPartner',restrauntRoutes);
+app.use("/api/v1/menu", menuRoutes);
 
 app.get("/",(req,res)=>{
     res.send('Server Running'); 
