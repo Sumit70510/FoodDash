@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 import connectDB from "./Utils/db.js";
 import cors from 'cors';
 import path from 'path';
+import menuItemRoutes from "./routes/menuItem.route.js";
 // import bank from './Models/bank.account.model.js'
 dotenv.config();
 const app = express();
@@ -29,6 +30,7 @@ app.use('/api/v1/user',userRoutes);
 app.use('/api/v1/restraunt',restrauntRoutes);
 app.use('/api/v1/deliveryPartner',restrauntRoutes);
 app.use("/api/v1/menu", menuRoutes);
+app.use("/api/v1/menu-item", menuItemRoutes);
 
 app.get("/",(req,res)=>{
     res.send('Server Running'); 
