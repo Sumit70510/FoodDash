@@ -1,4 +1,4 @@
-import Restraunt from '../Models/restraunt.model.js';
+import Restaurant from '../Models/restaurant.model.js';
 import Session from '../Models/session.model.js';
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -16,48 +16,105 @@ const cookieOptions = {
     };
 
     
-export const register = async(req,res)=>{
-    try{
-        const data = req.body;
+export const register = async (req, res) => {
+  try {
+    const {
+      name,
+      ownerName,
+      PAN,
+      FSSAI,
+      GST,
+      address,
+      lat,
+      lng,
+      email,
+      ownerContactNo,
+      restaurantContactNo,
+      password,
+    } = req.body;
 
-        if(!data.email||!data.password)
-         {
-           return res.status(401).json({
-            message:"Something is Missing, Please Check !",
-            success:false
-           });
-         }
-        const restraunt= await Restraunt.findOne({email: data?.email });
-        if(restraunt)
-         {
-           return res.status(409).json({
-            message:"Restraunt Already Exists",
-            success:false
-            }); 
-         }    
-       const rounds =  parseInt(process.env.SALT_ROUND)||10; 
-       const salt = await bcrypt.genSalt(rounds);
-       const hashedPassword = await bcrypt.hash(data.password, salt);
-       
-       const newRestraunt = await Restraunt.create({
-            name : data?.name,
-            contactNo : data.email,
-            location : {address : data?.location},
-            email : data.email,
-            password:hashedPassword
-         })       
-        return res.status(201).json({
-            message : "Account Created Successfully",
-            success : true
-        });
-     }
-    catch(error)
-     {
-       console.log(error); 
-       return res.status(500).json({ message: "Internal Server Error", success : false }); 
-     }
+if (
+  !name?.trim() ||
+  !ownerName?.trim() ||
+  !PAN?.trim() ||
+  !FSSAI?.trim() ||
+  !address?.trim() ||
+  !email?.trim() ||
+  !ownerContactNo?.trim() ||
+  !restaurantContactNo?.trim() ||
+  !password?.trim()
+) {
+     return res.status(400).json({
+        message: "All required Fields Are Mandatory",
+        success: false,
+      });
+    } 
+
+    const existingRestaurant = await Restaurant.findOne({
+      email,
+    });
+
+    if (existingRestaurant) {
+      return res.status(409).json({
+        message: "Restaurant already exists",
+        success: false,
+      });
+    }
+
+    const existingFSSAI = await Restaurant.findOne({
+      FSSAI,
+    });
+
+    if (existingFSSAI) {
+      return res.status(409).json({
+        message: "FSSAI already registered",
+        success: false,
+      });
+    }
+
+    const rounds = parseInt(process.env.SALT_ROUND) || 10;
+
+    const salt = await bcrypt.genSalt(rounds);
+
+    const hashedPassword = await bcrypt.hash(
+      password,
+      salt
+    );
+
+    await Restaurant.create({
+      name,
+      ownerName,
+      PAN,
+      FSSAI,
+      GST,
+
+      location: {
+        address,
+        lat,
+        lng,
+      },
+
+      email,
+      ownerContactNo,
+      restaurantContactNo,
+
+      password: hashedPassword,
+    });
+
+    return res.status(201).json({
+      message: "Account created successfully",
+      success: true,
+    });
+  } catch (error) {
+    console.log("Register Error:", error);
+
+    return res.status(500).json({
+      message: "Internal Server Error",
+      success: false,
+    });
   }
-  
+};  
+
 export const login = async(req,res)=>{  
     try
      {
@@ -73,10 +130,10 @@ export const login = async(req,res)=>{
           });
         }
       
-       const query = email ? { email } : { contactNo }; 
+       const query = email ? { email } :  { ownerContactNo: contactNo }; 
        
-       const restraunt = await Restraunt.findOne(query).select("+password");   
-       if(!restraunt)
+       const restaurant = await Restaurant.findOne(query).select("+password");   
+       if(!restaurant)
         {
           return res.status(400).json({
            message:"Incorrect Credentials",
@@ -84,7 +141,7 @@ export const login = async(req,res)=>{
           });  
         }
         
-        const isPasswordMatch = await bcrypt.compare(password, restraunt.password); 
+        const isPasswordMatch = await bcrypt.compare(password, restaurant.password); 
         if(!isPasswordMatch)
          {
            return res.status(400).json({
@@ -94,14 +151,14 @@ export const login = async(req,res)=>{
          }
          
       const existingSession = await Session.findOneAndUpdate({
-           ownerId: restraunt._id,
-           "deviceInfo.userAgent": req.headers["restraunt-agent"],
+           ownerId: restaurant._id,
+           "deviceInfo.userAgent": req.headers["user-agent"],
            isActive: true
         },{isActive:false});     
       
       const activeSessions = await Session.find({
-         ownerId: restraunt._id,
-         ownerType: "Restraunt",
+         ownerId: restaurant._id,
+         ownerType: "Restaurant",
          isActive: true }); 
          
       if((activeSessions.length+1) > sessionLimit && !force){
@@ -135,13 +192,13 @@ export const login = async(req,res)=>{
      
       //  if(activeSessions.length >= sessionLimit &&force) {
       //   await Session.updateMany(
-      //    { ownerId: restraunt._id, ownerType: "Restraunt", isActive: true },
+      //    { ownerId: restaurant._id, ownerType: "Restaurant", isActive: true },
       //    { isActive: false } );
       //  }   
          
-      let token = jwt.sign({_id : restraunt._id},process.env.SECRET_KEY,{expiresIn : `${process.env.VALID_TILL}d`}); 
+      let token = jwt.sign({_id : restaurant._id},process.env.SECRET_KEY,{expiresIn : `${process.env.VALID_TILL}d`}); 
        
-       //  const userResponse = restraunt.toObject();
+       //  const userResponse = restaurant.toObject();
        //  delete userResponse.password;
     
       const hashedToken = crypto
@@ -150,8 +207,8 @@ export const login = async(req,res)=>{
        .digest("hex");
 
       await Session.create({
-        ownerType: "Restraunt",                 
-        ownerId: restraunt._id,
+        ownerType: "Restaurant",                 
+        ownerId: restaurant._id,
         token: hashedToken,
         deviceInfo: {
           userAgent: req.headers["user-agent"] ,
@@ -166,7 +223,7 @@ export const login = async(req,res)=>{
       return res.status(200).json({
           message : message || "Logged In Successfully",
           success : true,
-          restraunt
+          restaurant
        })
      }
     catch(error)
@@ -237,10 +294,10 @@ export const logoutFromAll = async(req,res)=>{
          });
         }
        
-       const restrauntId = req._id;
+       const restaurantId = req._id;
         
-       const result = await Session.updateMany({ ownerId: restrauntId ,
-            ownerType: "Restraunt" , isActive :true },
+       const result = await Session.updateMany({ ownerId: restaurantId ,
+            ownerType: "Restaurant" , isActive :true },
            { isActive: false });
         
        return  res.json({

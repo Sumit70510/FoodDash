@@ -44,4 +44,8 @@ sessionSchema.index({ ownerId: 1, isActive: 1 });
 sessionSchema.index({ token: 1 });
 sessionSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
-export default mongoose.model('Session', sessionSchema);
+const Session =
+  mongoose.models.Session ||
+  mongoose.model("Session", sessionSchema);
+
+export default Session;

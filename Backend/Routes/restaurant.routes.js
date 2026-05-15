@@ -1,5 +1,5 @@
 import express from "express";
-import { login, logout, logoutFromAll, register } from "../Controllers/restraunt.controller.js";
+import { login, logout, logoutFromAll, register } from "../Controllers/restaurant.controller.js";
 import isResAuthenticated from "../Middlewares/isResAuthenticated.js";
 const router=express.Router();
 

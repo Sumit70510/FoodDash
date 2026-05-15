@@ -39,7 +39,7 @@ export const register = async(req,res)=>{
        const salt = await bcrypt.genSalt(rounds);
        const hashedPassword = await bcrypt.hash(data.password, salt);
        
-       const newRestraunt = await DeliveryPartner.create({
+       await  DeliveryPartner.create({
             name : data?.name,
             contactNo : data.email,
             location : {address : data?.location},
@@ -230,9 +230,9 @@ export const logoutFromAll = async(req,res)=>{
          });
         }
        
-       const restrauntId = req._id;
+       const restaurantId = req._id;
         
-       const result = await Session.updateMany({ ownerId: restrauntId ,
+       const result = await Session.updateMany({ ownerId: restaurantId ,
             ownerType: "DeliveryPartner" , isActive :true },
            { isActive: false });
         

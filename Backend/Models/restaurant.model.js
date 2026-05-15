@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const restrauntSchema= new mongoose.Schema({
+const restaurantSchema= new mongoose.Schema({
     name : { type: String,
              required: true },
             
@@ -8,7 +8,6 @@ const restrauntSchema= new mongoose.Schema({
                   required: true },
                   
     PAN : { type: String,
-            unique : true ,
             required: true },
             
     FSSAI : { type: String,
@@ -20,25 +19,34 @@ const restrauntSchema= new mongoose.Schema({
                
     location : {
         address : { type: String,
-                    required: true },    
+                    required: true},    
         lat: Number,
         lng: Number  },
                  
-    email : {type: String , required : true ,unique :true },
+    email : {type: String , required : true , unique :true },
     
-    ownerContactNo : {type: String , required : true ,unique :true },
+    ownerContactNo : {type: String , required : true  },
     
-    restrauntContactNo : {type: String , required : true ,unique :true },
+    restaurantContactNo : {type: String , required : true },
     
-    password : {type : String,required : true },
+    password : {type : String,required : true ,select : false},
     
-    restrauntPicture : {type : String,default : "/default.jpg" },
-    
-    operational : {type : String,enum : ['Open','Closed']} ,
+    restaurantPicture : {type : String,default : "/default.jpg" },
     
     isOpen :{type : Boolean, default:true},  
   },
   {timestamps:true}
 );
 
-export default mongoose.model("Restraunt",restrauntSchema);
+restaurantSchema.set("toJSON", {
+  transform: function (doc, ret) {
+    delete ret.password;
+    return ret;
+  }
+});
+
+const Restaurant =
+  mongoose.models.Restaurant ||
+  mongoose.model("Restaurant", restaurantSchema);
+
+export default Restaurant;

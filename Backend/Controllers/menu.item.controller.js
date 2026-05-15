@@ -1,11 +1,11 @@
-import MenuItem from "../models/menuItem.model.js";
+import MenuItem from "../models/menu.item.model.js";
 
 export const createMenuItem = async (req, res) => {
   try {
     const {
       name,
       description,
-      restrauntId,
+      restaurantId,
       categoryId,
       foodType,
       variants,
@@ -14,7 +14,7 @@ export const createMenuItem = async (req, res) => {
     if (
       !name ||
       !description ||
-      !restrauntId ||
+      !restaurantId ||
       !categoryId ||
       !foodType ||
       !variants
@@ -35,7 +35,7 @@ export const createMenuItem = async (req, res) => {
     const menuItem = await MenuItem.create({
       name,
       description,
-      restrauntId,
+      restaurantId,
       categoryId,
       foodType,
       variants: parsedVariants,
@@ -59,9 +59,9 @@ export const createMenuItem = async (req, res) => {
 
 export const getMenuItemsByRestraunt = async (req, res) => {
   try {
-    const { restrauntId } = req.params;
+    const { restaurantId } = req.params;
 
-    const menuItems = await MenuItem.find({ restrauntId })
+    const menuItems = await MenuItem.find({ restaurantId })
       .populate("categoryId")
       .sort({ createdAt: -1 });
 
@@ -85,7 +85,7 @@ export const getSingleMenuItem = async (req, res) => {
 
     const menuItem = await MenuItem.findById(menuItemId)
       .populate("categoryId")
-      .populate("restrauntId");
+      .populate("restaurantId");
 
     if (!menuItem) {
       return res.status(404).json({

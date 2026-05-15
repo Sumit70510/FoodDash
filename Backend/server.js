@@ -3,12 +3,13 @@ import express from "express";
 import dotenv from 'dotenv';
 import menuRoutes from "./Routes/menu.routes.js";
 import userRoutes from './Routes/user.routes.js';
-import restrauntRoutes from './Routes/restraunt.routes.js';
+import restaurantRoutes from './Routes/restaurant.routes.js';
+import deliveryPartnerRoutes from "./Routes/deliveryPartner.routes.js";
 import cookieParser from "cookie-parser";
 import connectDB from "./Utils/db.js";
 import cors from 'cors';
 import path from 'path';
-import menuItemRoutes from "./routes/menuItem.route.js";
+import menuItemRoutes from "./routes/menu.item.routes.js";
 // import bank from './Models/bank.account.model.js'
 dotenv.config();
 const app = express();
@@ -27,8 +28,8 @@ const corsOption={
 app.use(cors(corsOption));
 
 app.use('/api/v1/user',userRoutes);
-app.use('/api/v1/restraunt',restrauntRoutes);
-app.use('/api/v1/deliveryPartner',restrauntRoutes);
+app.use('/api/v1/restaurant',restaurantRoutes);
+app.use('/api/v1/deliveryPartner',deliveryPartnerRoutes);
 app.use("/api/v1/menu", menuRoutes);
 app.use("/api/v1/menu-item", menuItemRoutes);
 

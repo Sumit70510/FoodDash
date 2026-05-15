@@ -18,7 +18,7 @@ const isResAuthenticated = async(req,res,next)=>
          { 
            res.clearCookie(tokenName,cookieOptions);
            return res.status(401).json({
-             message : "Restraunt Not Authenticated",
+             message : "Restaurant Not Authenticated",
              success : false
            })
          }
@@ -37,7 +37,7 @@ const isResAuthenticated = async(req,res,next)=>
           });  
         } 
         
-       const restrauntId = decode._id;
+       const restaurantId = decode._id;
        
        const hashedToken = crypto.createHash("sha256")
                                  .update(token)
@@ -59,7 +59,7 @@ const isResAuthenticated = async(req,res,next)=>
          );
  
          
-        req._id = restrauntId; 
+        req._id = restaurantId; 
         next();
      }
     catch(error)
