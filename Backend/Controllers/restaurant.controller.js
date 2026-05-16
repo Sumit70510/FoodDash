@@ -195,8 +195,9 @@ export const login = async(req,res)=>{
       //    { ownerId: restaurant._id, ownerType: "Restaurant", isActive: true },
       //    { isActive: false } );
       //  }   
-         
-      let token = jwt.sign({_id : restaurant._id},process.env.SECRET_KEY,{expiresIn : `${process.env.VALID_TILL}d`}); 
+      const exprIn = `${process.env.VALID_TILL||2}d`; 
+      let token = jwt.sign({_id : restaurant._id},process.env.SECRET_KEY,
+        {expiresIn : exprIn}); 
        
        //  const userResponse = restaurant.toObject();
        //  delete userResponse.password;

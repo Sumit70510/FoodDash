@@ -139,7 +139,7 @@ export const login = async(req,res)=>{
       //  }   
          
       let token = jwt.sign({_id : user._id},process.env.SECRET_KEY,
-                           {expiresIn : `${process.env.VALID_TILL}d`}); 
+                           {expiresIn : `${process.env.VALID_TILL||2}d`}); 
        
        //  const userResponse = user.toObject();
        //  delete userResponse.password;
