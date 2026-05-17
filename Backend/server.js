@@ -11,6 +11,8 @@ import cors from 'cors';
 import path from 'path';
 import menuItemRoutes from "./routes/menu.item.routes.js";
 import orderRoutes from "./routes/order.routes.js";
+import cartRoutes from "./routes/cart.routes.js";
+
 
 // import bank from './Models/bank.account.model.js'
 dotenv.config();
@@ -20,7 +22,7 @@ const PORT = process.env.PORT||4000;
 app.use(express.json()); 
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
- 
+
 const corsOption={
     origin : process.env.URL,
     credentials : true,  
@@ -35,6 +37,7 @@ app.use('/api/v1/deliveryPartner',deliveryPartnerRoutes);
 app.use("/api/v1/menu", menuRoutes);
 app.use("/api/v1/menu-item", menuItemRoutes);
 app.use("/api/v1/order", orderRoutes);
+app.use("/api/v1/cart", cartRoutes);
 
 app.get("/",(req,res)=>{
     res.send('Server Running'); 
