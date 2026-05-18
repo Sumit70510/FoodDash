@@ -14,7 +14,6 @@ import orderRoutes from "./routes/order.routes.js";
 import cartRoutes from "./routes/cart.routes.js";
 
 
-// import bank from './Models/bank.account.model.js'
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT||4000;
