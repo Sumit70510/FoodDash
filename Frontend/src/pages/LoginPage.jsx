@@ -1,7 +1,89 @@
-import React from 'react'
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
+  let navigate = useNavigate();
+  const [credentials, setCredentials] = useState({ email: "", password: "" });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const response = await fetch("http://localhost:5000/api/v1/user/login", {
+      method: "POST",
+     credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: credentials.email, password: credentials.password ,force :false}),
+    });
+    const json = await response.json();
+    if (!json.success) {
+      console.log(json.message);
+      alert(json.message);
+    } else {
+      console.log(json.message);
+      localStorage.setItem("userEmail",credentials.email);
+      localStorage.setItem("authToken", json.authToken);
+      // console.log(localStorage.getItem("authToken"));
+      navigate("/");
+    }
+  };
+
+  const onChange = (event) => {
+    setCredentials({ ...credentials, [event.target.name]: event.target.value });
+  };
+
   return (
-    <div>LoginPage</div>
-  )
+    <>
+      <div
+        className="flex justify-center items-center vh-100"
+        style={{
+          background: "linear-gradient(to right, #141E30, #243B55)",
+          minHeight: "100vh",
+        }}
+      >
+        <div className="card p-4 shadow-lg" style={{ width: "380px",background:"white", borderRadius: "10px", backgroundColor: "#f8f9fa" }}>
+          <h3 className="text-center mb-3" style={{ color: "#6A1880" }}>Login</h3>
+          <form className="flex flex-col justify-center items-center" onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <label htmlFor="email" className="form-label fw-bold" style={{ color: "#333" }}>Email address</label>
+              <input
+                type="email"
+                className="form-control"
+                id="email"
+                name="email"
+                value={credentials.email}
+                onChange={onChange}
+                required
+                style={{
+                  backgroundColor: "white",
+                  color: "black",
+                  border: "1px solid #ccc",
+                  boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)",
+                }}
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="password" className="form-label fw-bold" style={{ color: "#333" }}>Password</label>
+              <input
+                type="password"
+                className="form-control"
+                id="password"
+                name="password"
+                value={credentials.password}
+                onChange={onChange}
+                required
+                style={{
+                  backgroundColor: "white",
+                  color: "black",
+                  border: "1px solid #ccc",
+                  boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)",
+                }}
+              />
+            </div>
+            <button type="submit" className="btn btn-primary w-100 mb-2">Login</button>
+            <Link to="/signup" className="btn">I'm a New User</Link>
+          </form>
+        </div>
+      </div>
+    </>
+  );
 }
