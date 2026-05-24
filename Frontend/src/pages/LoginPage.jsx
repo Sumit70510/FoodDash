@@ -33,57 +33,24 @@ export default function LoginPage() {
 
   return (
     <>
-      <div
-        className="flex justify-center items-center vh-100"
-        style={{
-          background: "linear-gradient(to right, #141E30, #243B55)",
-          minHeight: "100vh",
-        }}
-      >
-        <div className="card p-4 shadow-lg" style={{ width: "380px",background:"white", borderRadius: "10px", backgroundColor: "#f8f9fa" }}>
-          <h3 className="text-center mb-3" style={{ color: "#6A1880" }}>Login</h3>
-          <form className="flex flex-col justify-center items-center" onSubmit={handleSubmit}>
-            <div className="mb-3">
-              <label htmlFor="email" className="form-label fw-bold" style={{ color: "#333" }}>Email address</label>
-              <input
-                type="email"
-                className="form-control"
-                id="email"
-                name="email"
-                value={credentials.email}
-                onChange={onChange}
-                required
-                style={{
-                  backgroundColor: "white",
-                  color: "black",
-                  border: "1px solid #ccc",
-                  boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)",
-                }}
-              />
+      <div className={`flex items-center min-h-screen justify-center
+               ${'bg-linear-to-r from-[#141E30] to-[#243B55]'}`}>
+                
+         <form className={`flex flex-col gap-5 p-4 
+               ${'bg-white text-black border rounded-lg'}`} onSubmit={handleSubmit}>
+            <label>LogIn</label>
+            <div className="">
+              <label>Email address</label>
+              <input className="block"/>
             </div>
-            <div className="mb-3">
-              <label htmlFor="password" className="form-label fw-bold" style={{ color: "#333" }}>Password</label>
-              <input
-                type="password"
-                className="form-control"
-                id="password"
-                name="password"
-                value={credentials.password}
-                onChange={onChange}
-                required
-                style={{
-                  backgroundColor: "white",
-                  color: "black",
-                  border: "1px solid #ccc",
-                  boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)",
-                }}
-              />
+            <div className="">
+              <label>Password</label>
+              <input className="block"/>
             </div>
-            <button type="submit" className="btn btn-primary w-100 mb-2">Login</button>
-            <Link to="/signup" className="btn">I'm a New User</Link>
+            {/* <button type="submit" className="">Login</button> */}
+            <Link to="/signup" className="">I'm a New User</Link>
           </form>
         </div>
-      </div>
     </>
   );
 }

@@ -1,15 +1,19 @@
 @import "tailwindcss";
-* {
+
+body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-body {
-  min-height: 100vh;
-  font-family: Arial, sans-serif;
+*{
+  box-sizing: border-box;
 }
 
+
+html,
+body,
 #root {
+  width: 100%;
   min-height: 100vh;
 }
