@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 export default function LoginPage() {
   let navigate = useNavigate();
   const [credentials, setCredentials] = useState({ email: "", password: "" });
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     const response = await fetch("http://localhost:5000/api/v1/user/login", {
@@ -34,11 +35,10 @@ export default function LoginPage() {
   return (
     <>
       <div className={`flex items-center min-h-screen justify-center
-               ${'bg-linear-to-r from-[#141E30] to-[#243B55]'}`}>
-                
+                       ${`bg-linear-to-r from-[#141E30] to-[#243B55]`}`}>
          <form className={`flex flex-col gap-5 p-4 
-               ${'bg-white text-black border rounded-lg'}`} onSubmit={handleSubmit}>
-            <label>LogIn</label>
+                           ${`bg-white text-black border rounded-lg`}`} onSubmit={handleSubmit}>
+            <label className="flex item">LogIn</label>
             <div className="">
               <label>Email address</label>
               <input className="block"/>
@@ -49,8 +49,8 @@ export default function LoginPage() {
             </div>
             {/* <button type="submit" className="">Login</button> */}
             <Link to="/signup" className="">I'm a New User</Link>
-          </form>
-        </div>
+         </form>
+      </div>
     </>
   );
 }
