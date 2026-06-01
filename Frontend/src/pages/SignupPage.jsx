@@ -1,135 +1,191 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from "react-router-dom";
+import React from "react";
+import { Link } from "react-router-dom";
 
 export default function SignupPage() {
-    const [credentials, setcredentials] = useState({ name: "",username : "", email: "", password: "", location: "" });
-    let navigate = useNavigate();
-    const [loading,setloading]=useState(false);  
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const response = await fetch('http://localhost:5000/api/v1/user/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ name:credentials.name,username: credentials.username, email: credentials.email, password: credentials.password })
-        });
-        const json = await response.json();
-        if (!json.success) {
-            alert(json.message);
-         }
-       else
-        {
-            localStorage.setItem("userEmail",credentials.email);
-            localStorage.setItem("authToken", json.authToken);
-            navigate("/");
-        } 
-    };
+  const signupHandler = (e) => {
+    e.preventDefault();
+  };
 
-    const onChange = (event) => {
-        setcredentials({ ...credentials, [event.target.name]: event.target.value });
-    }
+  return (
+    <div
+      className="min-h-screen flex items-center justify-center px-5 py-8"
+      style={{
+        background: `
+          radial-gradient(circle at top left,
+          rgba(249,115,22,0.15), transparent 25%),
 
-    return (
-        <div
-            className="flex justify-center items-center vh-100"
-            style={{
-                background: "linear-gradient(to right, #141E30, #243B55)",
-                minHeight: "100vh",
-            }}
-        >
-            <div className="card p-4 shadow-lg" style={{ width: "380px", borderRadius: "10px", backgroundColor: "#f8f9fa" }}>
-                <h3 className="text-center mb-3" style={{ color: "#6A1880" }}>Sign Up</h3>
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-3">
-                        <label htmlFor="Name" className="form-label fw-bold" style={{ color: "#333" }}>Name</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            name="name"
-                            value={credentials.name}
-                            onChange={onChange}
-                            style={{
-                                backgroundColor: "white",
-                                color: "black",
-                                border: "1px solid #ccc",
-                                boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)",
-                            }}
-                        />
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="Name" className="form-label fw-bold" style={{ color: "#333" }}>Username</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            name="name"
-                            value={credentials.name}
-                            onChange={onChange}
-                            style={{
-                                backgroundColor: "white",
-                                color: "black",
-                                border: "1px solid #ccc",
-                                boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)",
-                            }}
-                        />
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="exampleInputEmail1" className="form-label fw-bold" style={{ color: "#333" }}>Email address</label>
-                        <input
-                            type="email"
-                            className="form-control"
-                            id="exampleInputEmail1"
-                            aria-describedby="emailHelp"
-                            name="email"
-                            value={credentials.email}
-                            onChange={onChange}
-                            style={{
-                                backgroundColor: "white",
-                                color: "black",
-                                border: "1px solid #ccc",
-                                boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)",
-                            }}
-                        />
-                        <div id="emailHelp" className="form-text" style={{ color: "#333" }}>We'll never share your email with anyone else.</div>
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="exampleInputPassword1" className="form-label fw-bold" style={{ color: "#333" }}>Password</label>
-                        <input
-                            type="password"
-                            className="form-control"
-                            id="exampleInputPassword1"
-                            name="password"
-                            value={credentials.password}
-                            onChange={onChange}
-                            style={{
-                                backgroundColor: "white",
-                                color: "black",
-                                border: "1px solid #ccc",
-                                boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)",
-                            }}
-                        />
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="exampleInputAddress1" className="form-label fw-bold" style={{ color: "#333" }}>Address</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="exampleInputAddress1"
-                            name="location"
-                            value={credentials.location}
-                            onChange={onChange}
-                            style={{
-                                backgroundColor: "white",
-                                color: "black",
-                                border: "1px solid #ccc",
-                                boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)",
-                            }}
-                        />
-                    </div>
-                    <button type="submit" className="m-3 btn btn-primary">Submit</button>
-                    <Link to="/login" className="m-3 btn btn-danger">Already a User</Link>
-                </form>
+          radial-gradient(circle at bottom right,
+          rgba(251,146,60,0.12), transparent 25%),
+
+          linear-gradient(135deg, #1F2937, #111827)
+        `,
+      }}
+    >
+      <form
+        onSubmit={signupHandler}
+        className="
+          w-full
+          max-w-105
+          bg-white
+          rounded-[28px]
+          shadow-[0_25px_70px_rgba(0,0,0,0.25)]
+          p-8 px-6
+          flex flex-col gap-4
+        "
+      >
+        <div className="flex flex-col items-center">
+          <div className="flex items-center justify-center gap-3">
+            <div
+              className="
+                flex items-center justify-center
+                w-12 h-12
+                rounded-full
+                bg-orange-500
+                text-white
+                text-2xl
+                font-bold
+                shadow-md
+              "
+            >
+              ƒ
             </div>
+
+            <h1 className="text-3xl font-bold text-gray-800">
+              FoodDash
+            </h1>
+          </div>
+
+          <p className="text-sm text-gray-500 mt-2 text-center">
+            Create your account to get started
+          </p>
         </div>
-    )
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Full Name
+          </label>
+
+          <input
+            type="text"
+            placeholder="Enter your full name"
+            className="
+              w-full
+              px-4 py-3
+              border border-gray-300
+              rounded-xl
+              outline-none
+              transition-all
+              hover:border-orange-300
+              focus:border-orange-500
+              focus:ring-4
+              focus:ring-orange-100
+            "
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Email Address
+          </label>
+
+          <input
+            type="email"
+            placeholder="Enter your email"
+            className="
+              w-full
+              px-4 py-3
+              border border-gray-300
+              rounded-xl
+              outline-none
+              transition-all
+              hover:border-orange-300
+              focus:border-orange-500
+              focus:ring-4
+              focus:ring-orange-100
+            "
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Password
+          </label>
+
+          <input
+            type="password"
+            placeholder="Create a password"
+            className="
+              w-full
+              px-4 py-3
+              border border-gray-300
+              rounded-xl
+              outline-none
+              transition-all
+              hover:border-orange-300
+              focus:border-orange-500
+              focus:ring-4
+              focus:ring-orange-100
+            "
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Confirm Password
+          </label>
+
+          <input
+            type="password"
+            placeholder="Confirm your password"
+            className="
+              w-full
+              px-4 py-3
+              border border-gray-300
+              rounded-xl
+              outline-none
+              transition-all
+              hover:border-orange-300
+              focus:border-orange-500
+              focus:ring-4
+              focus:ring-orange-100
+            "
+          />
+        </div>
+
+        <button
+          type="submit"
+          className="
+            w-full
+            py-3
+            rounded-xl
+            bg-orange-500
+            text-white
+            font-semibold
+            transition-all
+            duration-200
+            hover:bg-orange-600
+            hover:-translate-y-0.5
+            hover:shadow-lg
+          "
+        >
+          Create Account
+        </button>
+
+        <p className="text-center text-sm text-gray-600">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="
+              font-semibold
+              text-orange-500
+              hover:text-orange-600
+              hover:underline
+            "
+          >
+            Login
+          </Link>
+        </p>
+      </form>
+    </div>
+  );
 }

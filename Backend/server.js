@@ -40,9 +40,27 @@ app.use("/api/v1/order", orderRoutes);
 app.use("/api/v1/cart", cartRoutes);
 app.use("/api/v1/delivery", deliveryRoutes);
 
-app.get("/",(req,res)=>{
-    res.send('Server Running'); 
-});
+// app.get("/",(req,res)=>{
+//     res.send('Server Running'); 
+// });
+
+if(process.env.NODE_ENV==='PRODUCTION')
+  { 
+   app.use(express.static(path.join(__dirname, './Frontend/dist')));
+   app.use((req, res) => {
+    res.sendFile(path.resolve(__dirname, './Frontend/dist', 'index.html'));
+   });
+ }
+else
+ {
+   app.get("/",(req,res)=>{
+    return res.status(200).json({
+        message :'I\'m Coming From Backend',
+        success : true
+     })
+    });
+ }  
+
 
 app.listen(PORT,()=>{
     connectDB();
