@@ -9,10 +9,10 @@ import cookieParser from "cookie-parser";
 import connectDB from "./Utils/db.js";
 import cors from 'cors';
 import path from 'path';
-import menuItemRoutes from "./routes/menu.item.routes.js";
-import orderRoutes from "./routes/order.routes.js";
-import cartRoutes from "./routes/cart.routes.js";
-import deliveryRoutes from "./routes/delivery.routes.js";
+import menuItemRoutes from "./Routes/menu.item.routes.js";
+import orderRoutes from "./Routes/order.routes.js";
+import cartRoutes from "./Routes/cart.routes.js";
+import deliveryRoutes from "./Routes/delivery.routes.js";
 
 
 dotenv.config();

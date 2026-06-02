@@ -8,9 +8,9 @@ import {
   updateDeliveryStatus,
   updatePayoutStatus,
   deleteDelivery,
-} from "../controllers/delivery.controller.js";
+} from "../Controllers/delivery.controller.js";
 
-import { protectRoute } from "../middlewares/protectRoute.js";
+import { protectRoute } from "../Middlewares/protectRoute.js";
 
 const router = express.Router();
 

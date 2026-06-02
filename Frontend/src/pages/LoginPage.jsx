@@ -56,7 +56,7 @@ export default function LoginPage() {
        navigate('/');
       //  dispatch(setAuthUser(res.data.user));
        toast.success(data.message);
-       setInput({ email: "", password: "" ,force :false});
+       setCredentials({ email: "", password: "" ,force :false});
        setForceLogin(false);
        }
         console.log(data);

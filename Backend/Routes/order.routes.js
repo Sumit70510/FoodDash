@@ -7,9 +7,9 @@ import {
   updateOrderStatus,
   cancelOrder,
   getRestaurantOrders,
-} from "../controllers/order.controller.js";
+} from "../Controllers/order.controller.js";
 
-import { protectRoute } from "../middlewares/protectRoute.js";
+import { protectRoute } from "../Middlewares/protectRoute.js";
 
 const router = express.Router();
 

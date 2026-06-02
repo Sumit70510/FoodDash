@@ -1,10 +1,78 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 export default function SignupPage() {
-  const signupHandler = (e) => {
+  
+  const [credentials,setCredentials] = useState({name:"",email:"",password:"",confirmPassword:""});
+  const [passwordsMatch,setPasswordsMatch] = useState(false);
+  
+  useEffect(() => {
+  setPasswordsMatch(
+    credentials.password === credentials.confirmPassword
+  );
+}, [credentials.password, credentials.confirmPassword]);
+
+  // const [loading,setLoading] = useState(false);
+  // const [forceLogin,setForceLogin] = useState(false);
+  
+  let navigate = useNavigate();
+
+  const changeEventHandler = (e) => {
+    
+    const { name, value, type, checked } = e.target;    
+    setCredentials({...credentials, [name]: type === "checkbox" ? checked : value,});
+    
+   };
+  
+  
+
+  const signupHandler = async (e) => {
+    
     e.preventDefault();
+    if (!credentials.email || !credentials.password) {
+     toast.error("Please fill all required fields");
+     return;
+     }
+    if(!passwordsMatch) {
+     toast.error("Password Don't Matched");
+     return;
+     }
+     
+    try
+     {
+       const res = await fetch(
+              "http://localhost:5000/api/v1/user/signup",
+            {
+              method: "POST",
+              credentials: "include",
+              headers: {
+              "Content-Type": "application/json",
+               },
+              body: JSON.stringify({
+              name : credentials.name,  
+              email: credentials.email,
+              password: credentials.password,
+               }),
+            } );
+            
+       const data = await res.json();
+ 
+      if(data.success) {
+       navigate('/login');
+      //  dispatch(setAuthUser(res.data.user));
+       toast.success(data.message);
+       setCredentials({ name:"",email: "", password: "" ,confirmPassword:""});
+       }
+        console.log(data);
+        
+        } 
+        catch (e) {
+         console.log(e?.data?.message||"SomeThing Went Wrong");
+        }
+    
   };
+
 
   return (
     <div
@@ -68,6 +136,9 @@ export default function SignupPage() {
           <input
             type="text"
             placeholder="Enter your full name"
+            name="name"
+            value={credentials.name}
+            onChange={changeEventHandler}
             className="
               w-full
               px-4 py-3
@@ -91,6 +162,9 @@ export default function SignupPage() {
           <input
             type="email"
             placeholder="Enter your email"
+            name="email"
+            value={credentials.email}
+            onChange={changeEventHandler}
             className="
               w-full
               px-4 py-3
@@ -114,10 +188,14 @@ export default function SignupPage() {
           <input
             type="password"
             placeholder="Create a password"
-            className="
+            name="password"
+            value={credentials.password}
+            onChange={changeEventHandler}
+            className={`
               w-full
               px-4 py-3
-              border border-gray-300
+              border 
+              ${passwordsMatch ? 'border-gray-300' : 'border-red-500'}
               rounded-xl
               outline-none
               transition-all
@@ -125,7 +203,7 @@ export default function SignupPage() {
               focus:border-orange-500
               focus:ring-4
               focus:ring-orange-100
-            "
+            `}
           />
         </div>
 
@@ -137,10 +215,14 @@ export default function SignupPage() {
           <input
             type="password"
             placeholder="Confirm your password"
-            className="
+            name="confirmPassword"
+            value={credentials.confirmPassword}
+            onChange={changeEventHandler}
+            className={`
               w-full
               px-4 py-3
-              border border-gray-300
+              border
+              ${passwordsMatch ? 'border-gray-300' : 'border-red-500'}
               rounded-xl
               outline-none
               transition-all
@@ -148,7 +230,7 @@ export default function SignupPage() {
               focus:border-orange-500
               focus:ring-4
               focus:ring-orange-100
-            "
+            `}
           />
         </div>
 

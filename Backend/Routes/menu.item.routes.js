@@ -6,11 +6,11 @@ import {
   getMenuItemsByRestraunt,
   getSingleMenuItem,
   updateMenuItem,
-} from "../controllers/menu.item.controller.js";
+} from "../Controllers/menu.item.controller.js";
 
-import { protectRoute } from "../middlewares/protectRoute.js";
+import { protectRoute } from "../Middlewares/protectRoute.js";
 
-import upload from "../middlewares/multer.js";
+import upload from "../Middlewares/multer.js";
 
 const router = express.Router();
 

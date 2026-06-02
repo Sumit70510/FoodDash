@@ -1,4 +1,4 @@
-import Delivery from "../models/delivery.model.js";
+import Delivery from "../Models/delivery.model.js";
 
 export const createDelivery = async (
   req,

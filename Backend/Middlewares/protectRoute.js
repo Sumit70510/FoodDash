@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 
-import Session from "../models/session.model.js";
-import Restaurant from "../models/restaurant.model.js";
+import Session from "../Models/session.model.js";
+import Restaurant from "../Models/restaurant.model.js";
 
 export const protectRoute = async (req, res, next) => {
   try {
