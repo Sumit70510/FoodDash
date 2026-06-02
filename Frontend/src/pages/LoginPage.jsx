@@ -1,16 +1,72 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 export default function LoginPage() {
-  const loginHandler = (e) => {
+  
+  const [credentials,setCredentials] = useState({email:"",password:"",rememberMe:false,force:false});
+  
+  const [loading,setLoading] = useState(false);
+  const [forceLogin,setForceLogin] = useState(false);
+  
+  let navigate = useNavigate();
+
+  const changeEventHandler = (e) => {
+    
+    const { name, value, type, checked } = e.target;    
+    setCredentials({...credentials, [name]: type === "checkbox" ? checked : value,});
+    
+   };
+  
+
+  const loginHandler = async (e) => {
+    
     e.preventDefault();
-    try{
-       
-      
+    if (!credentials.email || !credentials.password) {
+     toast.error("Please fill all required fields");
+     return;
      }
-    catch(error)
+     
+    try
      {
-      
+       setLoading(true);
+       const res = await fetch(
+              "http://localhost:5000/api/v1/user/login",
+            {
+              method: "POST",
+              credentials: "include",
+              headers: {
+              "Content-Type": "application/json",
+               },
+              body: JSON.stringify({
+              email: credentials.email,
+              password: credentials.password,
+              force: forceLogin,
+               }),
+            } );
+            
+       const data = await res.json();
+       if(data.requireConfirmation)
+         {
+           toast.error(data.message);
+           setForceLogin(true);
+           return;
+         }  
+      if(data.success) {
+       navigate('/');
+      //  dispatch(setAuthUser(res.data.user));
+       toast.success(data.message);
+       setInput({ email: "", password: "" ,force :false});
+       setForceLogin(false);
+       }
+        console.log(data);
+        
+        } 
+        catch (e) {
+         console.log(e?.data?.message||"SomeThing Went Wrong");
+        }
+    finally {
+       setLoading(false);
      }
     
   };
@@ -69,6 +125,8 @@ export default function LoginPage() {
           </p>
         </div>
 
+        {/* Email Input */}
+        
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Email Address
@@ -76,6 +134,9 @@ export default function LoginPage() {
 
           <input
             type="email"
+            name="email"
+            value={credentials.email}
+            onChange={changeEventHandler}
             placeholder="Enter your email"
             className="
               w-full
@@ -88,9 +149,11 @@ export default function LoginPage() {
               focus:border-orange-500
               focus:ring-4
               focus:ring-orange-100
-            "
+             "
           />
         </div>
+
+        {/* Password */}
 
         <div>
           <div className="flex items-center justify-between mb-2">
@@ -98,7 +161,7 @@ export default function LoginPage() {
               Password
             </label>
 
-            <button
+            {/* <button
               type="button"
               className="
                 text-sm
@@ -108,12 +171,15 @@ export default function LoginPage() {
               "
             >
               Forgot Password?
-            </button>
+            </button> */}
           </div>
 
           <input
             type="password"
             placeholder="Enter your password"
+            name="password"
+            value={credentials.password}
+            onChange={changeEventHandler}
             className="
               w-full
               px-4 py-3
@@ -133,6 +199,9 @@ export default function LoginPage() {
           <input
             type="checkbox"
             id="remember"
+            name="rememberMe"
+            value={credentials.rememberMe}
+            onChange={changeEventHandler}
             className="accent-orange-500"
           />
 
@@ -141,24 +210,39 @@ export default function LoginPage() {
           </label>
         </div>
 
+
         <button
-          type="submit"
-          className="
+           type="submit"
+           disabled={loading}
+           className={`
             w-full
             py-3
             rounded-xl
-            bg-orange-500
-            text-white
+          text-white
             font-semibold
             transition-all
             duration-200
-            hover:bg-orange-600
-            hover:-translate-y-0.5
-            hover:shadow-lg
-          "
-        >
-          Login
-        </button>
+            flex items-center
+            justify-center
+            gap-3
+           ${loading ? "bg-orange-400 cursor-not-allowed"
+             : forceLogin ? "bg-gray-800 hover:bg-black hover:-translate-y-0.5 hover:shadow-lg"
+             : "bg-orange-500 hover:bg-orange-600 hover:-translate-y-0.5 hover:shadow-lg"
+            } `} >
+            
+              {loading && (
+                <span className="
+                    inline-block
+                    w-4 h-4
+                    border-2
+                  border-white/30
+                  border-t-white
+                    rounded-full
+                    animate-spin "/>)
+              }
+             {loading ? "Please Wait..." : forceLogin ? "Continue" : "Login"}
+        </button>  
+
 
         <p className="text-center text-sm text-gray-600">
           Don't have an account?{" "}
