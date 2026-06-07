@@ -1,74 +1,52 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import api from "../api/axios.js";
 
 export default function LoginPage() {
-  
-  const [credentials,setCredentials] = useState({email:"",password:"",rememberMe:false,force:false});
-  
-  const [loading,setLoading] = useState(false);
+  const [credentials, setCredentials] = useState({ email: "", password: "" });
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const [forceLogin,setForceLogin] = useState(false);
-  
-  let navigate = useNavigate();
-
-  const changeEventHandler = (e) => {
+   const changeEventHandler = (e) => {
     
     const { name, value, type, checked } = e.target;    
     setCredentials({...credentials, [name]: type === "checkbox" ? checked : value,});
     
    };
-  
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setCredentials({ ...credentials, [name]: value });
+  };
 
   const loginHandler = async (e) => {
-    
     e.preventDefault();
+
     if (!credentials.email || !credentials.password) {
-     toast.error("Please fill all required fields");
-     return;
-     }
-     
-    try
-     {
-       setLoading(true);
-       const res = await fetch(
-              "http://localhost:5000/api/v1/user/login",
-            {
-              method: "POST",
-              credentials: "include",
-              headers: {
-              "Content-Type": "application/json",
-               },
-              body: JSON.stringify({
-              email: credentials.email,
-              password: credentials.password,
-              force: forceLogin,
-               }),
-            } );
-            
-       const data = await res.json();
-       if(data.requireConfirmation)
-         {
-           toast.error(data.message);
-           setForceLogin(true);
-           return;
-         }  
-      if(data.success) {
-       navigate('/');
-      //  dispatch(setAuthUser(res.data.user));
-       toast.success(data.message);
-       setCredentials({ email: "", password: "" ,force :false});
-       setForceLogin(false);
-       }
-        console.log(data);
-        
-        } 
-        catch (e) {
-         console.log(e?.data?.message||"SomeThing Went Wrong");
-        }
-    finally {
-       setLoading(false);
-     }
-    
+      toast.error("Please fill all required fields");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await api.post("/user/login", credentials);
+
+      if (response.data.success) {
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+        localStorage.setItem("role", "customer");
+        toast.success("Login successful");
+        navigate("/");
+      } else {
+        toast.error(response.data.message || "Login failed");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

@@ -1,76 +1,64 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import api from "../api/axios.js";
 
 export default function SignupPage() {
-  
-  const [credentials,setCredentials] = useState({name:"",email:"",password:"",confirmPassword:""});
-  const [passwordsMatch,setPasswordsMatch] = useState(false);
-  
-  useEffect(() => {
-  setPasswordsMatch(
-    credentials.password === credentials.confirmPassword
-  );
-}, [credentials.password, credentials.confirmPassword]);
+  const [credentials, setCredentials] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [passwordsMatch, setPasswordsMatch] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  // const [loading,setLoading] = useState(false);
-  // const [forceLogin,setForceLogin] = useState(false);
-  
-  let navigate = useNavigate();
+  useEffect(() => {
+    setPasswordsMatch(
+      credentials.password === credentials.confirmPassword &&
+        credentials.password.length > 0
+    );
+  }, [credentials.password, credentials.confirmPassword]);
 
   const changeEventHandler = (e) => {
-    
-    const { name, value, type, checked } = e.target;    
-    setCredentials({...credentials, [name]: type === "checkbox" ? checked : value,});
-    
-   };
-  
-  
+    const { name, value } = e.target;
+    setCredentials({ ...credentials, [name]: value });
+  };
 
   const signupHandler = async (e) => {
-    
     e.preventDefault();
-    if (!credentials.email || !credentials.password) {
-     toast.error("Please fill all required fields");
-     return;
-     }
-    if(!passwordsMatch) {
-     toast.error("Password Don't Matched");
-     return;
-     }
-     
-    try
-     {
-       const res = await fetch(
-              "http://localhost:5000/api/v1/user/signup",
-            {
-              method: "POST",
-              credentials: "include",
-              headers: {
-              "Content-Type": "application/json",
-               },
-              body: JSON.stringify({
-              name : credentials.name,  
-              email: credentials.email,
-              password: credentials.password,
-               }),
-            } );
-            
-       const data = await res.json();
- 
-      if(data.success) {
-       navigate('/login');
-      //  dispatch(setAuthUser(res.data.user));
-       toast.success(data.message);
-       setCredentials({ name:"",email: "", password: "" ,confirmPassword:""});
-       }
-        console.log(data);
-        
-        } 
-        catch (e) {
-         console.log(e?.data?.message||"SomeThing Went Wrong");
-        }
-    
+
+    if (!credentials.email || !credentials.password || !credentials.name) {
+      toast.error("Please fill all required fields");
+      return;
+    }
+
+    if (!passwordsMatch) {
+      toast.error("Passwords don't match");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await api.post("/user/register", {
+        name: credentials.name,
+        email: credentials.email,
+        password: credentials.password,
+      });
+
+      if (response.data.success) {
+        toast.success("Account created successfully");
+        navigate("/login");
+      } else {
+        toast.error(response.data.message || "Signup failed");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data?.message || "Signup failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
 
