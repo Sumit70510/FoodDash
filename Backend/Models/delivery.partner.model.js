@@ -3,15 +3,15 @@ import mongoose from "mongoose";
 const deliveryPartnerSchema = new mongoose.Schema({
     name: {
             type: String,
-            required: true
+            required : true
            },
            
     permanentAddress: {
                 type: String, 
-                required: true
+                required : false
              },
              
-    username : { type : String , required : true ,unique :true } ,
+    username : { type : String , required : false ,unique :true } ,
     
     email : { type: String , required : true ,unique :true } ,
     
@@ -21,27 +21,31 @@ const deliveryPartnerSchema = new mongoose.Schema({
     
     gender : { type : String,enum : ['Male','Female'] } ,
     
-    age : { type : Number, min : 18 , required : true } ,
+    age : { type : Number, min : 18 , required : false } ,
     
     password : { type : String,required : true } ,
     
+    licenseNo : {type : String , unique : true , required : true},
+    
     PAN : { type: String,
             unique : true,
-            required: true },
+            required : false },
     
     AADHAR : { type: String,
                unique : true,
-               required: true }, 
+               required : true }, 
                       
     vehicleType : {
           type: String,
           enum: ["Bike", "Scooter", "Cycle", "Car"],
-          required: true },
+          required : true },
 
-    vehicleNumber : {
+    vehicleNo : {
           type: String,
           trim: true,
-           uppercase: true },
+          uppercase: true,
+          required : true
+         },
 
     availabilityStatus : {
         type: String,
@@ -57,7 +61,7 @@ const deliveryPartnerSchema = new mongoose.Schema({
 
     isActive: {
       type: Boolean,
-      default: true
+      default : true
     },
 
     currentLocation: {

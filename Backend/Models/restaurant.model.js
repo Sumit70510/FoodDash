@@ -8,7 +8,7 @@ const restaurantSchema= new mongoose.Schema({
                   required: true },
                   
     PAN : { type: String,
-            required: true },
+            require : true },
             
     FSSAI : { type: String,
               unique : true,
@@ -25,7 +25,7 @@ const restaurantSchema= new mongoose.Schema({
                  
     email : {type: String , required : true , unique :true },
     
-    ownerContactNo : {type: String , required : true  },
+    ownerContactNo : {type: String , required : false  },
     
     restaurantContactNo : {type: String , required : true },
     

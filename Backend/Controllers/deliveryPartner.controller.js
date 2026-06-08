@@ -14,20 +14,26 @@ const cookieOptions = {
       sameSite: "strict",
       secure: process.env.NODE_ENV !== 'DEVELOPMENT'
     };
-
     
 export const register = async(req,res)=>{
     try{
         const data = req.body;
 
-        if(!data.email||!data.password)
+        if(!data.email||!data.password || !data.AADHAR || !data.contactNo || !data.vehicleNo 
+           || !data.licenseNo || !data.vehicleType || !data.name)
          {
            return res.status(401).json({
             message:"Something is Missing, Please Check !",
             success:false
            });
          }
-        const deliveryPartner = await DeliveryPartner.findOne({email: data?.email });
+        const deliveryPartner = await DeliveryPartner.findOne({$or: 
+                                [
+                                  { email: data.email },
+                                  { AADHAR: data.AADHAR },
+                                  { contactNo : data.contactNo }
+                                ]
+                               });
         if(deliveryPartner)
          {
            return res.status(409).json({
@@ -159,7 +165,7 @@ export const login = async(req,res)=>{
       return res.status(200).json({
           message : message || "Logged In Successfully",
           success : true,
-          deliveryPartner
+          user : deliveryPartner
        })
      }
     catch(error)

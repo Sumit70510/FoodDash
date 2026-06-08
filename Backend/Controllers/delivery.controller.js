@@ -1,10 +1,8 @@
 import Delivery from "../Models/delivery.model.js";
 
-export const createDelivery = async (
-  req,
-  res
-) => {
-  try {
+export const createDelivery = async (req,res) => 
+  {
+   try {
     const {
       orderId,
       deliveryFee,

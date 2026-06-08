@@ -17,7 +17,7 @@ import deliveryRoutes from "./Routes/delivery.routes.js";
 
 dotenv.config();
 const app = express();
-const PORT = process.env.PORT||4000;
+const PORT = process.env.PORT||4000; 
 
 app.use(express.json()); 
 app.use(express.urlencoded({extended:true}));

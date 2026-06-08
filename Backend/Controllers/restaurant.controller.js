@@ -41,7 +41,7 @@ if (
   !address?.trim() ||
   !email?.trim() ||
   !ownerContactNo?.trim() ||
-  !restaurantContactNo?.trim() ||
+  // !restaurantContactNo?.trim() ||
   !password?.trim()
 ) {
      return res.status(400).json({
@@ -224,7 +224,7 @@ export const login = async(req,res)=>{
       return res.status(200).json({
           message : message || "Logged In Successfully",
           success : true,
-          restaurant
+          user : restaurant
        })
      }
     catch(error)
