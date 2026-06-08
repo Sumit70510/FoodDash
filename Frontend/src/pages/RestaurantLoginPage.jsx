@@ -1,52 +1,73 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import api from "../api/axios.js";
+import api from "../utils/axios.js";
+import { useDispatch } from "react-redux";
 
-export default function RestaurantLoginPage() {
-  const [credentials, setCredentials] = useState({
-    email: "",
-    password: "",
-  });
-  const [loading, setLoading] = useState(false);
+export default function RestrauntLoginPage() {
+  
+  const [credentials,setCredentials] = useState({email:"",password:"",rememberMe:false,force:false});
+  
+  const [loading,setLoading] = useState(false);
+  const [forceLogin,setForceLogin] = useState(false);
+  
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setCredentials({ ...credentials, [name]: value });
-  };
-
-  const handleSubmit = async (e) => {
+  const changeEventHandler = (e) => {
+    
+    const { name, value, type, checked } = e.target;    
+    setCredentials({...credentials, [name]: type === "checkbox" ? checked : value,});
+    
+   };
+   
+  const loginHandler = async (e) => {
+    
     e.preventDefault();
-
-    if (!credentials.email || !credentials.password) {
-      toast.error("Please fill all required fields");
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const response = await api.post("/restaurant/login", credentials);
-
-      if (response.data.success) {
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("user", JSON.stringify(response.data.user));
-        localStorage.setItem("role", "restaurant");
-        toast.success("Login successful");
-        navigate("/restaurant/dashboard");
-      } else {
-        toast.error(response.data.message || "Login failed");
+    if(!credentials.email || !credentials.password) 
+      {
+       toast.error("Please fill all required fields");
+       return;
       }
-    } catch (error) {
-      console.error(error);
-      toast.error(error.response?.data?.message || "Login failed");
-    } finally {
-      setLoading(false);
-    }
+    try
+     {
+      setLoading(true);
+      const response = await api.post("/restaurant/login",
+                  {
+                   email: credentials.email,
+                   password: credentials.password,
+                   force: forceLogin,
+                  });    
+       if(response.data.requireConfirmation)
+        {
+         toast.error(response.message);
+         setForceLogin(true);
+         return;
+        }  
+       if(response.data.success) 
+        {
+         navigate('/');
+         dispatch(setAuthUser({user : response.data.user,
+                                        type : 'restaurant'
+                              }));
+         toast.success(response.data.message);
+         setCredentials({ email: "", password: "" ,force :false,rememberMe:false});
+         setForceLogin(false);
+        }else{
+          toast.error(response.message || "Login failed");
+         }           
+       } 
+      catch (error) {
+        console.error(error);
+        toast.error(error.response?.data?.message || "Login failed");
+       }finally {
+        setLoading(false);
+     }
+    
   };
 
   return (
-    <div
+        <div
       className="min-h-screen flex items-center justify-center px-5 py-8"
       style={{
         background: `
@@ -59,7 +80,7 @@ export default function RestaurantLoginPage() {
       }}
     >
       <form
-        onSubmit={handleSubmit}
+        onSubmit={loginHandler}
         className="
           w-full
           max-w-md
@@ -85,7 +106,7 @@ export default function RestaurantLoginPage() {
             type="email"
             name="email"
             value={credentials.email}
-            onChange={handleChange}
+            onChange={changeEventHandler}
             placeholder="your@restaurant.com"
             className="
               w-full
@@ -108,7 +129,7 @@ export default function RestaurantLoginPage() {
             type="password"
             name="password"
             value={credentials.password}
-            onChange={handleChange}
+            onChange={changeEventHandler}
             placeholder="••••••••"
             className="
               w-full
@@ -122,42 +143,60 @@ export default function RestaurantLoginPage() {
             "
           />
         </div>
-
         <button
-          type="submit"
-          disabled={loading}
-          className="
+           type="submit"
+           disabled={loading}
+           className={`
             w-full
             py-3
-            bg-orange-500
-            text-white
-            rounded-lg
+            rounded-xl
+          text-white
             font-semibold
-            hover:bg-orange-600
-            transition
-            disabled:opacity-50
-          "
-        >
-          {loading ? "Logging in..." : "Login"}
-        </button>
+            transition-all
+            duration-200
+            flex items-center
+            justify-center
+            gap-3
+           ${loading ? "bg-orange-400 cursor-not-allowed"
+             : forceLogin ? "bg-gray-800 hover:bg-black hover:-translate-y-0.5 hover:shadow-lg"
+             : "bg-orange-500 hover:bg-orange-600 hover:-translate-y-0.5 hover:shadow-lg"
+            } `} >
+            
+              {loading && (
+                <span className="
+                    inline-block
+                    w-4 h-4
+                    border-2
+                  border-white/30
+                  border-t-white
+                    rounded-full
+                    animate-spin "/>)
+              }
+             {loading ? "Please Wait..." : forceLogin ? "Continue" : "Login"}
+        </button>  
 
         <div className="text-center">
-          <p className="text-gray-600">
-            Don't have an account?{" "}
-            <Link
-              to="/restaurant/signup"
-              className="text-orange-500 font-semibold hover:text-orange-600"
+          <p className="text-sm text-gray-600">
+           Don't have an account?{" "}
+           <Link
+            to="/restaurant/signup"
+            className="
+            font-semibold
+            text-orange-500
+              hover:text-orange-600
+              hover:underline
+              "
             >
-              Sign Up
-            </Link>
-          </p>
+            Sign Up
+           </Link>
+         </p>
         </div>
-
-        <div className="text-center border-t pt-6">
+        
+        {/* <div className="text-center border-t pt-6">
           <Link to="/login" className="text-gray-500 hover:text-gray-700">
             ← Back to Customer Login
           </Link>
-        </div>
+        </div> */}
       </form>
     </div>
   );

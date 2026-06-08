@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import api from "../api/axios.js";
+import api from "../utils/axios.js";
 
 export default function SignupPage() {
   const [credentials, setCredentials] = useState({

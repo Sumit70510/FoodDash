@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import api from "../api/axios.js";
+import api from "../utils/axios.js";
 
 export default function RestaurantSignupPage() {
   const [formData, setFormData] = useState({
@@ -9,7 +9,7 @@ export default function RestaurantSignupPage() {
     ownerName: "",
     email: "",
     password: "",
-    confirmPassword: "",
+    restaurantContactNo: "",
     address: "",
     lat: "",
     lng: "",
@@ -21,7 +21,7 @@ export default function RestaurantSignupPage() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
+  const changeEventHandler = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
@@ -29,15 +29,17 @@ export default function RestaurantSignupPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.name || !formData.ownerName || !formData.email || !formData.password) {
+    if (!formData.name || !formData.ownerName || !formData.email || !formData.password
+        || !formData.restaurantContactNo || !formData.address || !formData.PAN || !formData.FSSAI) 
+    {
       toast.error("Please fill all required fields");
       return;
     }
 
-    if (formData.password !== formData.confirmPassword) {
-      toast.error("Passwords don't match");
-      return;
-    }
+    // if (formData.password !== formData.confirmPassword) {
+    //   toast.error("Passwords don't match");
+    //   return;
+    // }
 
     try {
       setLoading(true);
@@ -47,6 +49,7 @@ export default function RestaurantSignupPage() {
         email: formData.email,
         password: formData.password,
         address: formData.address,
+        restaurantContactNo : formData.restaurantContactNo,
         lat: parseFloat(formData.lat) || 0,
         lng: parseFloat(formData.lng) || 0,
         PAN: formData.PAN,
@@ -57,7 +60,21 @@ export default function RestaurantSignupPage() {
       if (response.data.success) {
         toast.success("Restaurant registered successfully");
         navigate("/restaurant/login");
-      } else {
+        setFormData({
+          name: "",
+          ownerName: "",
+          email: "",
+          password: "",
+          restaurantContactNo: "",
+          address: "",
+          lat: "",
+          lng: "",
+          PAN: "",
+          FSSAI: "",
+          GST: "",
+         });
+       }
+      else{
         toast.error(response.data.message || "Registration failed");
       }
     } catch (error) {
@@ -109,7 +126,7 @@ export default function RestaurantSignupPage() {
               type="text"
               name="name"
               value={formData.name}
-              onChange={handleChange}
+              onChange={changeEventHandler}
               placeholder="Your Restaurant"
               className="
                 w-full
@@ -130,7 +147,7 @@ export default function RestaurantSignupPage() {
               type="text"
               name="ownerName"
               value={formData.ownerName}
-              onChange={handleChange}
+              onChange={changeEventHandler}
               placeholder="Your Name"
               className="
                 w-full
@@ -151,7 +168,7 @@ export default function RestaurantSignupPage() {
               type="email"
               name="email"
               value={formData.email}
-              onChange={handleChange}
+              onChange={changeEventHandler}
               placeholder="restaurant@example.com"
               className="
                 w-full
@@ -172,7 +189,7 @@ export default function RestaurantSignupPage() {
               type="password"
               name="password"
               value={formData.password}
-              onChange={handleChange}
+              onChange={changeEventHandler}
               placeholder="••••••••"
               className="
                 w-full
@@ -187,14 +204,18 @@ export default function RestaurantSignupPage() {
 
           <div>
             <label className="block text-gray-700 font-semibold mb-2">
-              Confirm Password *
+              Phone Number *
             </label>
+          
             <input
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              placeholder="••••••••"
+              type="tel"
+              name="restaurantContactNo"
+              value={formData.restaurantContactNo}
+              onChange={changeEventHandler}
+              placeholder="10-digit mobile number"
+              maxLength={10}
+              pattern="[0-9]{10}"
+              required
               className="
                 w-full
                 px-4 py-2
@@ -208,13 +229,13 @@ export default function RestaurantSignupPage() {
 
           <div>
             <label className="block text-gray-700 font-semibold mb-2">
-              Address
+              Address *
             </label>
             <input
               type="text"
               name="address"
               value={formData.address}
-              onChange={handleChange}
+              onChange={changeEventHandler}
               placeholder="Restaurant Address"
               className="
                 w-full
@@ -229,13 +250,13 @@ export default function RestaurantSignupPage() {
 
           <div>
             <label className="block text-gray-700 font-semibold mb-2">
-              FSSAI License
+              FSSAI License *
             </label>
             <input
               type="text"
               name="FSSAI"
               value={formData.FSSAI}
-              onChange={handleChange}
+              onChange={changeEventHandler}
               placeholder="FSSAI License Number"
               className="
                 w-full
@@ -248,7 +269,7 @@ export default function RestaurantSignupPage() {
             />
           </div>
 
-          <div>
+          {/* <div>
             <label className="block text-gray-700 font-semibold mb-2">
               GST Number
             </label>
@@ -256,7 +277,7 @@ export default function RestaurantSignupPage() {
               type="text"
               name="GST"
               value={formData.GST}
-              onChange={handleChange}
+              onChange={changeEventHandler}
               placeholder="GST Number"
               className="
                 w-full
@@ -267,17 +288,17 @@ export default function RestaurantSignupPage() {
                 focus:border-orange-500
               "
             />
-          </div>
+          </div> */}
 
           <div>
             <label className="block text-gray-700 font-semibold mb-2">
-              PAN Number
+              PAN Number *
             </label>
             <input
               type="text"
               name="PAN"
               value={formData.PAN}
-              onChange={handleChange}
+              onChange={changeEventHandler}
               placeholder="PAN Number"
               className="
                 w-full

@@ -1,24 +1,24 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import api from "../api/axios.js";
+import api from "../utils/axios.js";
 
 export default function DeliverySignupPage() {
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    phone: "",
-    licenseNumber: "",
-    vehicleType: "bike",
-    vehicleNumber: "",
+    name : "",
+    email : "",
+    password : "",
+    contactNo : "",
+    licenseNo : "",
+    vehicleType : "bike",
+    vehicleNo : "",
+    aadharNo : "",
   });
 
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
+  const changeEventHandler = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
@@ -26,31 +26,43 @@ export default function DeliverySignupPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.name || !formData.email || !formData.password) {
+    if(!formData.aadharNo|| !formData.email || !formData.password|| !formData.licenseNo
+    || !formData.contactNo|| !formData.vehicleNo || !formData.vehicleType || !formData.name ) {
       toast.error("Please fill all required fields");
       return;
     }
 
-    if (formData.password !== formData.confirmPassword) {
-      toast.error("Passwords don't match");
-      return;
-    }
+    // if (formData.password !== formData.confirmPassword) {
+    //   toast.error("Passwords don't match");
+    //   return;
+    // }
 
     try {
       setLoading(true);
       const response = await api.post("/deliveryPartner/register", {
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-        phone: formData.phone,
-        licenseNumber: formData.licenseNumber,
+        name : formData.name,
+        email : formData.email,
+        password : formData.password,
+        contactNo : formData.contactNo,
+        licenseNo : formData.licenseNo,
         vehicleType: formData.vehicleType,
-        vehicleNumber: formData.vehicleNumber,
+        vehicleNo: formData.vehicleNo,
+        AADHAR: formData.aadharNo,
       });
 
       if (response.data.success) {
         toast.success("Registered successfully");
         navigate("/delivery/login");
+        setFormData({
+          name : "",
+          email : "",
+          password : "",
+          contactNo : "",
+          licenseNo : "",
+          vehicleType : "bike",
+          vehicleNo : "",
+          aadharNo : "",
+         });
       } else {
         toast.error(response.data.message || "Registration failed");
       }
@@ -103,7 +115,7 @@ export default function DeliverySignupPage() {
               type="text"
               name="name"
               value={formData.name}
-              onChange={handleChange}
+              onChange={changeEventHandler}
               placeholder="Your Name"
               className="
                 w-full
@@ -124,7 +136,7 @@ export default function DeliverySignupPage() {
               type="email"
               name="email"
               value={formData.email}
-              onChange={handleChange}
+              onChange={changeEventHandler}
               placeholder="your@email.com"
               className="
                 w-full
@@ -145,7 +157,7 @@ export default function DeliverySignupPage() {
               type="password"
               name="password"
               value={formData.password}
-              onChange={handleChange}
+              onChange={changeEventHandler}
               placeholder="••••••••"
               className="
                 w-full
@@ -160,34 +172,13 @@ export default function DeliverySignupPage() {
 
           <div>
             <label className="block text-gray-700 font-semibold mb-2">
-              Confirm Password *
-            </label>
-            <input
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              placeholder="••••••••"
-              className="
-                w-full
-                px-4 py-2
-                border border-gray-300
-                rounded-lg
-                focus:outline-none
-                focus:border-orange-500
-              "
-            />
-          </div>
-
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2">
-              Phone Number
+              Phone Number *
             </label>
             <input
               type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
+              name="contactNo"
+              value={formData.contactNo}
+              onChange={changeEventHandler}
               placeholder="10-digit mobile number"
               className="
                 w-full
@@ -199,16 +190,39 @@ export default function DeliverySignupPage() {
               "
             />
           </div>
+          
+          <div>
+            <label className="block text-gray-700 font-semibold mb-2">
+              Aadhaar Number *
+            </label>
+          
+            <input
+              type="text"
+              name="aadharNo"
+              value={formData.aadharNo}
+              onChange={changeEventHandler}
+              placeholder="12-digit aadhar number"
+              maxLength={12}
+              className="
+                w-full
+                px-4 py-2
+                border border-gray-300
+                rounded-lg
+                focus:outline-none
+                focus:border-orange-500
+              "
+            />
+          </div>
 
           <div>
             <label className="block text-gray-700 font-semibold mb-2">
-              License Number
+              License Number *
             </label>
             <input
               type="text"
-              name="licenseNumber"
-              value={formData.licenseNumber}
-              onChange={handleChange}
+              name="licenseNo"
+              value={formData.licenseNo}
+              onChange={changeEventHandler}
               placeholder="Driver License"
               className="
                 w-full
@@ -223,12 +237,12 @@ export default function DeliverySignupPage() {
 
           <div>
             <label className="block text-gray-700 font-semibold mb-2">
-              Vehicle Type
+              Vehicle Type *
             </label>
             <select
               name="vehicleType"
               value={formData.vehicleType}
-              onChange={handleChange}
+              onChange={changeEventHandler}
               className="
                 w-full
                 px-4 py-2
@@ -246,13 +260,13 @@ export default function DeliverySignupPage() {
 
           <div>
             <label className="block text-gray-700 font-semibold mb-2">
-              Vehicle Number
+              Vehicle Number *
             </label>
             <input
               type="text"
-              name="vehicleNumber"
-              value={formData.vehicleNumber}
-              onChange={handleChange}
+              name="vehicleNo"
+              value={formData.vehicleNo}
+              onChange={changeEventHandler}
               placeholder="Vehicle Registration"
               className="
                 w-full
