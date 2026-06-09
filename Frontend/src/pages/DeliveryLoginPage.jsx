@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import api from "../utils/axios.js";
 import { useDispatch } from "react-redux";
+import { setAuthUser } from "../redux/auth.Slice.js";
 
 export default function DeliveryLoginPage() {
   const [credentials,setCredentials] = useState({email:"",password:"",rememberMe:false,force:false});
