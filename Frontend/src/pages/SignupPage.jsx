@@ -51,6 +51,7 @@ export default function SignupPage() {
         toast.success("Account created successfully");
         navigate("/login");
       } else {
+        
         toast.error(response.data.message || "Signup failed");
       }
     } catch (error) {
