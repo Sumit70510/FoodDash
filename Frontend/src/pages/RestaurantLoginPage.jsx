@@ -47,7 +47,7 @@ export default function RestrauntLoginPage() {
         }  
        if(response.data.success) 
         {
-         navigate('/');
+         navigate('/restaurant/dashboard');
          dispatch(setAuthUser({user : response.data.user,
                                         type : 'restaurant'
                               }));

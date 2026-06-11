@@ -9,6 +9,8 @@ import NotFoundPage from './pages/NotFoundPage.jsx';
 // Restaurant Pages
 import RestaurantLoginPage from './pages/RestaurantLoginPage.jsx';
 import RestaurantSignupPage from './pages/RestaurantSignupPage.jsx';
+import RestaurantProfilePage from './pages/RestaurantProfilePage.jsx';
+import RestaurantCategoriesPage from './pages/RestaurantCategoriesPage.jsx';
 // import RestaurantOwnerDashboard from './pages/RestaurantOwnerDashboard.jsx';
 // import RestaurantMenuPage from './pages/RestaurantMenuPage.jsx';
 // import RestaurantOrdersPage from './pages/RestaurantOrdersPage.jsx';
@@ -17,6 +19,9 @@ import RestaurantSignupPage from './pages/RestaurantSignupPage.jsx';
 // Delivery Pages
 import DeliveryLoginPage from './pages/DeliveryLoginPage.jsx';
 import DeliverySignupPage from './pages/DeliverySignupPage.jsx';
+import RestaurantDashboard from './pages/RestaurantDashboard.jsx';
+import RestaurantMenuPage from './pages/RestrauntMenuPage.jsx';
+import RestaurantOrdersPage from './pages/RestrauntOrderPage.jsx';
 // import DeliveryDashboard from './pages/DeliveryDashboard.jsx';
 // import DeliveryOrdersPage from './pages/DeliveryOrdersPage.jsx';
 // import DeliveryHistoryPage from './pages/DeliveryHistoryPage.jsx';
@@ -61,11 +66,13 @@ function App() {
           */}
 
           {/* Restaurant Dashboard */}
-          {/* <Route path="/restaurant/dashboard" element={<RestaurantOwnerDashboard />} />
+          
+          <Route path="/restaurant/dashboard" element={<RestaurantDashboard />} />
           <Route path="/restaurant/menu" element={<RestaurantMenuPage />} />
           <Route path="/restaurant/orders" element={<RestaurantOrdersPage />} />
-          <Route path="/restaurant/analytics" element={<RestaurantAnalyticsPage />} /> */}
-
+          <Route path="/restaurant/profile" element={<RestaurantProfilePage/>} /> 
+          <Route path="/restaurant/categories" element={<RestaurantCategoriesPage/>} /> 
+          
           {/* Delivery Dashboard */}
           {/* <Route path="/delivery/dashboard" element={<DeliveryDashboard />} />
           <Route path="/delivery/orders" element={<DeliveryOrdersPage />} />
