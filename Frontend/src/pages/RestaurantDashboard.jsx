@@ -4,240 +4,194 @@ import {
   FaList,
   FaShoppingBag,
   FaTruck,
-  FaStore,
 } from "react-icons/fa";
-import { Link } from "react-router-dom";
 
 export default function RestaurantDashboard() {
   const restaurant =
     JSON.parse(localStorage.getItem("restaurant")) || {};
 
   return (
-    <div className="min-h-screen bg-[#111827] text-white">
-      {/* Navbar */}
-      <div className="h-16 border-b border-gray-800 flex items-center justify-between px-6 bg-[#1F2937]">
-        <h1 className="text-2xl font-bold text-orange-500">
-          FoodDash Partner
+    <div className="px-4 md:px-6 lg:px-8 py-6 space-y-8">
+
+      {/* Welcome */}
+      <div className="bg-[#1F2937] border border-gray-800 rounded-3xl p-6">
+        <h1 className="text-3xl md:text-4xl font-bold text-white">
+          Welcome Back,
+          <span className="text-orange-500 ml-2">
+            {restaurant?.name}
+          </span>
         </h1>
 
-        <div className="flex items-center gap-3">
-          <div
-            className={`w-3 h-3 rounded-full ${
-              restaurant?.isOpen
-                ? "bg-green-500"
-                : "bg-red-500"
-            }`}
-          />
-
-          <span>
-            {restaurant?.isOpen
-              ? "Restaurant Open"
-              : "Restaurant Closed"}
-          </span>
-        </div>
+        <p className="text-gray-400 mt-3">
+          Manage your restaurant, menu, orders and deliveries
+          from one place.
+        </p>
       </div>
 
-      <div className="flex">
-        {/* Sidebar */}
-        <aside className="w-64 min-h-[calc(100vh-64px)] bg-[#1F2937] border-r border-gray-800">
-          <nav className="p-5 space-y-3">
-            <Link
-              to="/restaurant/dashboard"
-              className="flex items-center gap-3 p-3 rounded-xl bg-orange-500"
-            >
-              <FaStore />
-              Dashboard
-            </Link>
+      {/* Stats */}
+      <div className="grid grid-cols-2 xl:grid-cols-4 gap-5">
 
-            <Link
-              to="/restaurant/menu"
-              className="flex items-center gap-3 p-3 rounded-xl hover:bg-[#374151]"
-            >
-              <FaUtensils />
-              Menu Items
-            </Link>
+        <div className="bg-[#1F2937] rounded-2xl p-5 border border-gray-800">
+          <div className="flex items-center justify-between">
+            <FaUtensils className="text-orange-500 text-3xl" />
+            <span className="text-4xl font-bold text-white">
+              0
+            </span>
+          </div>
 
-            <Link
-              to="/restaurant/categories"
-              className="flex items-center gap-3 p-3 rounded-xl hover:bg-[#374151]"
-            >
-              <FaList />
-              Categories
-            </Link>
+          <p className="text-gray-400 mt-3">
+            Menu Items
+          </p>
+        </div>
 
-            <Link
-              to="/restaurant/orders"
-              className="flex items-center gap-3 p-3 rounded-xl hover:bg-[#374151]"
-            >
-              <FaShoppingBag />
-              Orders
-            </Link>
+        <div className="bg-[#1F2937] rounded-2xl p-5 border border-gray-800">
+          <div className="flex items-center justify-between">
+            <FaList className="text-green-500 text-3xl" />
+            <span className="text-4xl font-bold text-white">
+              0
+            </span>
+          </div>
 
-            <Link
-              to="/restaurant/deliveries"
-              className="flex items-center gap-3 p-3 rounded-xl hover:bg-[#374151]"
-            >
-              <FaTruck />
-              Deliveries
-            </Link>
+          <p className="text-gray-400 mt-3">
+            Categories
+          </p>
+        </div>
 
-            <Link
-              to="/restaurant/profile"
-              className="flex items-center gap-3 p-3 rounded-xl hover:bg-[#374151]"
-            >
-              <FaStore />
-              Restaurant Profile
-            </Link>
-          </nav>
-        </aside>
+        <div className="bg-[#1F2937] rounded-2xl p-5 border border-gray-800">
+          <div className="flex items-center justify-between">
+            <FaShoppingBag className="text-yellow-500 text-3xl" />
+            <span className="text-4xl font-bold text-white">
+              0
+            </span>
+          </div>
 
-        {/* Main Content */}
-        <main className="flex-1 p-8">
-          {/* Welcome Card */}
-          <div className="bg-[#1F2937] rounded-3xl p-6 mb-8 border border-gray-800">
-            <h2 className="text-3xl font-bold">
-              Welcome,
-              <span className="text-orange-500 ml-2">
-                {restaurant?.name || "Restaurant"}
-              </span>
-            </h2>
+          <p className="text-gray-400 mt-3">
+            Pending Orders
+          </p>
+        </div>
 
-            <p className="text-gray-400 mt-2">
-              Manage your menu, orders, deliveries and
-              restaurant settings from one place.
+        <div className="bg-[#1F2937] rounded-2xl p-5 border border-gray-800">
+          <div className="flex items-center justify-between">
+            <FaTruck className="text-blue-500 text-3xl" />
+            <span className="text-4xl font-bold text-white">
+              0
+            </span>
+          </div>
+
+          <p className="text-gray-400 mt-3">
+            Deliveries
+          </p>
+        </div>
+
+      </div>
+
+      {/* Restaurant Information */}
+      <div className="bg-[#1F2937] border border-gray-800 rounded-3xl p-6">
+
+        <h2 className="text-2xl font-bold text-white mb-6">
+          Restaurant Information
+        </h2>
+
+        <div className="grid md:grid-cols-2 gap-5">
+
+          <div>
+            <p className="text-gray-400">Restaurant Name</p>
+            <p className="text-white font-semibold">
+              {restaurant?.name || "-"}
             </p>
           </div>
 
-          {/* Stats */}
-          <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
-            <div className="bg-[#1F2937] p-6 rounded-2xl border border-gray-800">
-              <h3 className="text-gray-400">
-                Total Menu Items
-              </h3>
-              <p className="text-4xl font-bold mt-2 text-orange-500">
-                0
-              </p>
-            </div>
+          <div>
+            <p className="text-gray-400">Owner Name</p>
+            <p className="text-white font-semibold">
+              {restaurant?.ownerName || "-"}
+            </p>
+          </div>
 
-            <div className="bg-[#1F2937] p-6 rounded-2xl border border-gray-800">
-              <h3 className="text-gray-400">
-                Categories
-              </h3>
-              <p className="text-4xl font-bold mt-2 text-green-500">
-                0
-              </p>
-            </div>
+          <div>
+            <p className="text-gray-400">Email</p>
+            <p className="text-white font-semibold">
+              {restaurant?.email || "-"}
+            </p>
+          </div>
 
-            <div className="bg-[#1F2937] p-6 rounded-2xl border border-gray-800">
-              <h3 className="text-gray-400">
-                Pending Orders
-              </h3>
-              <p className="text-4xl font-bold mt-2 text-yellow-500">
-                0
-              </p>
-            </div>
+          <div>
+            <p className="text-gray-400">
+              Restaurant Contact
+            </p>
+            <p className="text-white font-semibold">
+              {restaurant?.restaurantContactNo || "-"}
+            </p>
+          </div>
 
-            <div className="bg-[#1F2937] p-6 rounded-2xl border border-gray-800">
-              <h3 className="text-gray-400">
-                Deliveries
-              </h3>
-              <p className="text-4xl font-bold mt-2 text-blue-500">
-                0
-              </p>
+          <div>
+            <p className="text-gray-400">Address</p>
+            <p className="text-white font-semibold">
+              {restaurant?.location?.address || "-"}
+            </p>
+          </div>
+
+          <div>
+            <p className="text-gray-400">FSSAI</p>
+            <p className="text-white font-semibold">
+              {restaurant?.FSSAI || "-"}
+            </p>
+          </div>
+
+          <div>
+            <p className="text-gray-400">GST</p>
+            <p className="text-white font-semibold">
+              {restaurant?.GST || "-"}
+            </p>
+          </div>
+
+          <div>
+            <p className="text-gray-400">Status</p>
+
+            <div className="flex items-center gap-2 mt-1">
+              <div
+                className={`w-3 h-3 rounded-full ${
+                  restaurant?.isOpen
+                    ? "bg-green-500"
+                    : "bg-red-500"
+                }`}
+              />
+
+              <span className="text-white font-semibold">
+                {restaurant?.isOpen
+                  ? "Open"
+                  : "Closed"}
+              </span>
             </div>
           </div>
 
-          {/* Quick Actions */}
-          <div className="bg-[#1F2937] rounded-3xl p-6 border border-gray-800">
-            <h2 className="text-2xl font-bold mb-5">
-              Quick Actions
-            </h2>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <Link
-                to="/restaurant/menu"
-                className="bg-orange-500 hover:bg-orange-600 transition p-4 rounded-xl text-center font-semibold"
-              >
-                Add Menu Item
-              </Link>
-
-              <Link
-                to="/restaurant/categories"
-                className="bg-green-600 hover:bg-green-700 transition p-4 rounded-xl text-center font-semibold"
-              >
-                Add Category
-              </Link>
-
-              <Link
-                to="/restaurant/orders"
-                className="bg-blue-600 hover:bg-blue-700 transition p-4 rounded-xl text-center font-semibold"
-              >
-                View Orders
-              </Link>
-
-              <Link
-                to="/restaurant/profile"
-                className="bg-purple-600 hover:bg-purple-700 transition p-4 rounded-xl text-center font-semibold"
-              >
-                Edit Profile
-              </Link>
-            </div>
-          </div>
-
-          {/* Restaurant Info */}
-          <div className="mt-8 bg-[#1F2937] rounded-3xl p-6 border border-gray-800">
-            <h2 className="text-2xl font-bold mb-4">
-              Restaurant Information
-            </h2>
-
-            <div className="grid md:grid-cols-2 gap-4 text-gray-300">
-              <p>
-                <span className="font-semibold text-white">
-                  Owner:
-                </span>{" "}
-                {restaurant?.ownerName || "-"}
-              </p>
-
-              <p>
-                <span className="font-semibold text-white">
-                  Email:
-                </span>{" "}
-                {restaurant?.email || "-"}
-              </p>
-
-              <p>
-                <span className="font-semibold text-white">
-                  Contact:
-                </span>{" "}
-                {restaurant?.restaurantContactNo ||
-                  "-"}
-              </p>
-
-              <p>
-                <span className="font-semibold text-white">
-                  Address:
-                </span>{" "}
-                {restaurant?.location?.address ||
-                  "-"}
-              </p>
-
-              <p>
-                <span className="font-semibold text-white">
-                  FSSAI:
-                </span>{" "}
-                {restaurant?.FSSAI || "-"}
-              </p>
-
-              <p>
-                <span className="font-semibold text-white">
-                  GST:
-                </span>{" "}
-                {restaurant?.GST || "-"}
-              </p>
-            </div>
-          </div>
-        </main>
+        </div>
       </div>
+
+      {/* Recent Activity */}
+      <div className="bg-[#1F2937] border border-gray-800 rounded-3xl p-6">
+
+        <h2 className="text-2xl font-bold text-white mb-4">
+          Recent Activity
+        </h2>
+
+        <div className="space-y-3">
+
+          <div className="bg-[#111827] rounded-xl p-4">
+            <p className="text-gray-300">
+              No recent orders available
+            </p>
+          </div>
+
+          <div className="bg-[#111827] rounded-xl p-4">
+            <p className="text-gray-300">
+              No delivery updates available
+            </p>
+          </div>
+
+        </div>
+      </div>
+
     </div>
   );
 }

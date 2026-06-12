@@ -39,18 +39,13 @@ export default function RestrauntLoginPage() {
                    password: credentials.password,
                    force: forceLogin,
                   });    
-       if(response.data.requireConfirmation)
-        {
-         toast.error(response.message);
-         setForceLogin(true);
-         return;
-        }  
        if(response.data.success) 
         {
+          dispatch(setAuthUser({user : response.data.user,
+            type : 'restaurant'
+           }));
+         console.log(response.data.user);  
          navigate('/restaurant/dashboard');
-         dispatch(setAuthUser({user : response.data.user,
-                                        type : 'restaurant'
-                              }));
          toast.success(response.data.message);
          setCredentials({ email: "", password: "" ,force :false,rememberMe:false});
          setForceLogin(false);
@@ -59,9 +54,16 @@ export default function RestrauntLoginPage() {
          }           
        } 
       catch (error) {
+         if(error?.response?.data?.requireConfirmation)
+          {
+          toast.error(error.response?.data?.message);
+          setForceLogin(true);
+          return;
+          }
         console.error(error);
         toast.error(error.response?.data?.message || "Login failed");
-       }finally {
+       }
+       finally {
         setLoading(false);
      }
     

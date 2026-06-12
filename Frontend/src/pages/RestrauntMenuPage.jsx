@@ -1,9 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function RestaurantMenuPage() {
-  const restaurant =
-    JSON.parse(localStorage.getItem("restaurant")) || {};
-
+  
+  const { user, type } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const restaurant = user;
+  
   const [menuItems, setMenuItems] = useState([]);
   const [search, setSearch] = useState("");
   const [foodType, setFoodType] = useState("All");
@@ -83,7 +86,7 @@ export default function RestaurantMenuPage() {
   }, [menuItems, search, foodType]);
 
   return (
-    <div className="min-h-screen bg-[#111827] p-8">
+    <div className="min-h-screen bg-[#111827] px-4 md:px-5 lg:px-6 py-6">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold text-white">
           Menu Management

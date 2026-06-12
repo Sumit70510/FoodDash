@@ -38,12 +38,12 @@ export default function DeliveryLoginPage() {
                    password: credentials.password,
                    force: forceLogin,
                   });    
-       if(response.data.requireConfirmation)
-        {
-         toast.error(response.message);
-         setForceLogin(true);
-         return;
-        }  
+      //  if(response.data.requireConfirmation)
+      //   {
+      //    toast.error(response.message);
+      //    setForceLogin(true);
+      //    return;
+      //   }  
        if(response.data.success) 
         {
          navigate('/');
@@ -57,10 +57,17 @@ export default function DeliveryLoginPage() {
           toast.error(response.message || "Login failed");
          }           
        } 
-      catch (error) {
+      catch (error) 
+       {
+         if(error?.response?.data?.requireConfirmation)
+          {
+           toast.error(error.response?.data?.message);
+           setForceLogin(true);
+           return;
+          }
         console.error(error);
-        toast.error(error.response?.data?.message || "Login failed");
-       }finally {
+        toast.error(error.response?.data?.message || "Login failed"); 
+      }finally {
         setLoading(false);
      }
     

@@ -21,7 +21,10 @@ import DeliveryLoginPage from './pages/DeliveryLoginPage.jsx';
 import DeliverySignupPage from './pages/DeliverySignupPage.jsx';
 import RestaurantDashboard from './pages/RestaurantDashboard.jsx';
 import RestaurantMenuPage from './pages/RestrauntMenuPage.jsx';
-import RestaurantOrdersPage from './pages/RestrauntOrderPage.jsx';
+import RestaurantOrdersPage from './pages/RestaurantOrdersPage.jsx';
+import RestaurantDeliveriesPage from './pages/RestaurantDeliveriesPage.jsx';
+import RestaurantDetailsPage from './pages/RestaurantDetailsPage.jsx';
+import RestaurantLayout from './pages/RestaurantLayout.jsx';
 // import DeliveryDashboard from './pages/DeliveryDashboard.jsx';
 // import DeliveryOrdersPage from './pages/DeliveryOrdersPage.jsx';
 // import DeliveryHistoryPage from './pages/DeliveryHistoryPage.jsx';
@@ -66,12 +69,42 @@ function App() {
           */}
 
           {/* Restaurant Dashboard */}
-          
-          <Route path="/restaurant/dashboard" element={<RestaurantDashboard />} />
+          <Route
+           path="/restaurant/:id"
+           element={<RestaurantDetailsPage />}
+           />
+          {/* <Route path="/restaurant/dashboard" element={<RestaurantDashboard />} />
           <Route path="/restaurant/menu" element={<RestaurantMenuPage />} />
           <Route path="/restaurant/orders" element={<RestaurantOrdersPage />} />
           <Route path="/restaurant/profile" element={<RestaurantProfilePage/>} /> 
           <Route path="/restaurant/categories" element={<RestaurantCategoriesPage/>} /> 
+          <Route path="/restaurant/deliveries" element={<RestaurantDeliveriesPage/>} />  */}
+          
+          <Route path="/restaurant" element={<RestaurantLayout />} >
+                <Route
+                  path="dashboard"
+                  element={<RestaurantDashboard />} />
+              
+                <Route
+                  path="menu"
+                  element={<RestaurantMenuPage />} />
+              
+                <Route
+                  path="categories"
+                  element={<RestaurantCategoriesPage />}/>
+              
+                <Route
+                  path="orders"
+                  element={<RestaurantOrdersPage/>}/>
+              
+                <Route
+                  path="deliveries"
+                  element={<RestaurantDeliveriesPage />}/>
+              
+                <Route
+                  path="profile"
+                  element={<RestaurantProfilePage />}/>
+              </Route>
           
           {/* Delivery Dashboard */}
           {/* <Route path="/delivery/dashboard" element={<DeliveryDashboard />} />

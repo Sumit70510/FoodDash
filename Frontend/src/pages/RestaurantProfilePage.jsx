@@ -1,20 +1,23 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function RestrauntProfilePage() {
-  const restaurant =
-    JSON.parse(localStorage.getItem("restaurant")) || {};
-
+  
+  const { user, type } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const restaurant = user;
+  console.log(restaurant);
   const [formData, setFormData] = useState({
-    name: restaurant.name || "",
-    email: restaurant.email || "",
-    ownerContactNo: restaurant.ownerContactNo || "",
+    name: restaurant?.name || "",
+    email: restaurant?.email || "",
+    ownerContactNo: restaurant?.ownerContactNo || "",
     restrauntContactNo:
-      restaurant.restrauntContactNo || "",
-    address: restaurant.location?.address || "",
-    operational: restaurant.operational || "Open",
-    isOpen: restaurant.isOpen ?? true,
+      restaurant?.restrauntContactNo || "",
+    address: restaurant?.location?.address || "",
+    operational: restaurant?.operational || "Open",
+    isOpen: restaurant?.isOpen ?? true,
   });
-
+  
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -31,32 +34,32 @@ export default function RestrauntProfilePage() {
     e.preventDefault();
 
     try {
-      setLoading(true);
+      // setLoading(true);
 
-      const response = await fetch(
-        `http://localhost:5000/api/v1/restaurant/${restaurant._id}`,
-        {
-          method: "PUT",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
-      );
+      // const response = await fetch(
+      //   `http://localhost:5000/api/v1/restaurant/${restaurant._id}`,
+      //   {
+      //     method: "PUT",
+      //     credentials: "include",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify(formData),
+      //   }
+      // );
 
-      const data = await response.json();
+      // const data = await response.json();
 
-      if (data.success) {
-        localStorage.setItem(
-          "restaurant",
-          JSON.stringify(data.restaurant)
-        );
+      // if (data.success) {
+      //   localStorage.setItem(
+      //     "restaurant",
+      //     JSON.stringify(data.restaurant)
+      //   );
 
-        alert("Profile Updated Successfully");
-      } else {
-        alert(data.message);
-      }
+      //   alert("Profile Updated Successfully");
+      // } else {
+      //   alert(data.message);
+      // }
     } catch (error) {
       console.log(error);
       alert("Something went wrong");
@@ -66,7 +69,7 @@ export default function RestrauntProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#111827] p-8">
+    <div className="min-h-screen bg-[#111827] px-4 md:px-5 lg:px-6 py-4">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-4xl font-bold text-white mb-8">
           Restaurant Profile
