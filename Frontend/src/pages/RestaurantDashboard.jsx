@@ -5,10 +5,14 @@ import {
   FaShoppingBag,
   FaTruck,
 } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function RestaurantDashboard() {
-  const restaurant =
-    JSON.parse(localStorage.getItem("restaurant")) || {};
+  
+  const { user, type } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const restaurant = user||{};
+  // console.log(restaurant);
 
   return (
     <div className="px-4 md:px-6 lg:px-8 py-6 space-y-8">

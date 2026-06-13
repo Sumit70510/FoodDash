@@ -8,6 +8,7 @@ import Navbar from "../components/Navbar.jsx";
 export default function RestaurantLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  
   return (
     <div className="h-screen overflow-hidden bg-[#111827] text-white">
 

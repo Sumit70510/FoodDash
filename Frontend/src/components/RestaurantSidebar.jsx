@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { FaTimes } from "react-icons/fa";
 
 export default function RestaurantSidebar({
   isOpen,
@@ -34,11 +35,11 @@ export default function RestaurantSidebar({
 
   return (
     <>
+      {/* Mobile Overlay */}
       {isOpen && (
         <div
           className="
-            fixed
-            inset-0
+            fixed inset-0
             bg-black/50
             z-40
             md:hidden
@@ -47,18 +48,21 @@ export default function RestaurantSidebar({
         />
       )}
 
+      {/* Sidebar */}
       <aside
         className={`
-          hidden md:flex
           fixed
           top-16
           left-0
+          z-50
+
           w-64
           h-[calc(100vh-64px)]
+
           bg-[#1F2937]
-          border-r
-          border-gray-800
-          flex-col
+          border-r border-gray-800
+
+          flex flex-col
 
           transform
           transition-transform
@@ -73,8 +77,22 @@ export default function RestaurantSidebar({
           md:translate-x-0
         `}
       >
-        <div className="p-4 space-y-2">
+        {/* Mobile Header */}
+        <div className="md:hidden flex items-center justify-between p-4 border-b border-gray-800">
+          <h2 className="font-semibold text-lg">
+            FoodDash
+          </h2>
 
+          <button
+            onClick={closeSidebar}
+            className="text-gray-300 hover:text-white"
+          >
+            <FaTimes size={18} />
+          </button>
+        </div>
+
+        {/* Menu */}
+        <div className="p-4 space-y-2 flex-1 overflow-y-auto">
           {menu.map((item) => (
             <NavLink
               key={item.path}
@@ -82,24 +100,29 @@ export default function RestaurantSidebar({
               onClick={closeSidebar}
               className={({ isActive }) =>
                 `
-                block
-                px-4
-                py-4
-                rounded-xl
-                transition
+                  block
+                  px-4
+                  py-3
+                  rounded-xl
+                  transition-all
+                  duration-200
 
-                ${
-                  isActive
-                    ? "bg-orange-500 text-white font-semibold"
-                    : "hover:bg-[#374151]"
-                }
-              `
+                  ${
+                    isActive
+                      ? "bg-orange-500 text-white font-semibold shadow-md"
+                      : "text-gray-300 hover:bg-[#374151] hover:text-white"
+                  }
+                `
               }
             >
               {item.title}
             </NavLink>
           ))}
+        </div>
 
+        {/* Footer */}
+        <div className="p-4 border-t border-gray-800 text-xs text-gray-400">
+          FoodDash Restaurant Panel
         </div>
       </aside>
     </>

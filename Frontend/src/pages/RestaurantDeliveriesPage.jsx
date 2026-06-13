@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function RestaurantDeliveriesPage() {
-  const restaurant =
-    JSON.parse(localStorage.getItem("restaurant")) || {};
-
+  
+  const { user, type } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const restaurant = user||{};
+  // console.log(restaurant);
+    
   const [deliveries, setDeliveries] =
     useState([]);
 
@@ -73,7 +77,7 @@ export default function RestaurantDeliveriesPage() {
           {deliveries.map(
             (delivery) => (
               <div
-                key={delivery._id}
+                key={delivery?._id}
                 className="
                   bg-[#1F2937]
                   border
@@ -86,7 +90,7 @@ export default function RestaurantDeliveriesPage() {
                   <div>
                     <h3 className="text-white font-bold">
                       Delivery #
-                      {delivery._id.slice(
+                      {delivery?._id.slice(
                         -6
                       )}
                     </h3>
@@ -95,7 +99,7 @@ export default function RestaurantDeliveriesPage() {
                       Partner:
                       {" "}
                       {delivery
-                        .deliveryPartnerId
+                        ?.deliveryPartnerId
                         ?.name ||
                         "Not Assigned"}
                     </p>
@@ -109,11 +113,11 @@ export default function RestaurantDeliveriesPage() {
                         text-white
                         text-sm
                         ${getStatusColor(
-                          delivery.status
+                          delivery?.status
                         )}
                       `}
                     >
-                      {delivery.status}
+                      {delivery?.status}
                     </span>
                   </div>
                 </div>
@@ -127,7 +131,7 @@ export default function RestaurantDeliveriesPage() {
                     <p className="text-white font-semibold">
                       ₹
                       {
-                        delivery.deliveryFee
+                        delivery?.deliveryFee
                       }
                     </p>
                   </div>
@@ -140,7 +144,7 @@ export default function RestaurantDeliveriesPage() {
                     <p className="text-green-500 font-semibold">
                       ₹
                       {
-                        delivery.incentiveAmount
+                        delivery?.incentiveAmount
                       }
                     </p>
                   </div>
@@ -152,20 +156,20 @@ export default function RestaurantDeliveriesPage() {
 
                     <p className="text-orange-500 font-semibold">
                       {
-                        delivery.payoutStatus
+                        delivery?.payoutStatus
                       }
                     </p>
                   </div>
                 </div>
 
-                {delivery.notes && (
+                {delivery?.notes && (
                   <div className="mt-4">
                     <p className="text-gray-400 text-sm">
                       Notes
                     </p>
 
                     <p className="text-white">
-                      {delivery.notes}
+                      {delivery?.notes}
                     </p>
                   </div>
                 )}

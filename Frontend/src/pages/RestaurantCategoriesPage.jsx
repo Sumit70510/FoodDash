@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function RestaurantCategoriesPage() {
-  const restaurant =
-    JSON.parse(localStorage.getItem("restaurant")) || {};
+  
+  const { user, type } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const restaurant = user||{};
+  // console.log(restaurant);
 
   const [categories, setCategories] = useState([]);
   const [name, setName] = useState("");

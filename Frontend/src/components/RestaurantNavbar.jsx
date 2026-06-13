@@ -13,15 +13,10 @@ import api from "../utils/axios.js";
 export default function RestaurantNavbar({
   openSidebar,
 }) {
-  const navigate = useNavigate();
-
-  const restaurant =
-    JSON.parse(
-      localStorage.getItem("restaurant")
-    ) || {}; 
-   
+  const navigate = useNavigate();  
   const { user, type } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const restaurant = user||{};
   
   const logoutHandler = async () => {
    try{

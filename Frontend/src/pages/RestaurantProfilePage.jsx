@@ -5,8 +5,8 @@ export default function RestrauntProfilePage() {
   
   const { user, type } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  const restaurant = user;
-  console.log(restaurant);
+  const restaurant = user||{};
+  // console.log(restaurant);
   const [formData, setFormData] = useState({
     name: restaurant?.name || "",
     email: restaurant?.email || "",
