@@ -16,7 +16,9 @@ const userSchema= new mongoose.Schema({
     
     password : {type : String , required : true , select : false } ,
     
-    profilePicture : { type : String , default : "/default.jpg" } ,
+    profilePicture: {
+      url: {type: String,},
+      public_id: {type: String,} }, 
     
     gender : {type : String,enum : ['male','female']} ,
     

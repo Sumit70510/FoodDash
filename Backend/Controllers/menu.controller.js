@@ -1,163 +1,148 @@
 import Menu from "../Models/menu.model.js";
 
-export const createMenuItem = async (req, res) => {
+/**
+ * Create Menu
+ */
+export const createMenu = async (req, res) => {
   try {
-    const {
-      name,
-      description,
-      category,
-      restaurant,
-      sizes,
-      isVeg,
-    } = req.body;
+    const { name, restaurantId } = req.body;
 
-    if (
-      !name ||
-      !category ||
-      !restaurant ||
-      !sizes ||
-      sizes.length === 0
-    ) {
-      return res.status(400).json({
-        success: false,
-        message: "Required fields missing",
-      });
-    }
-
-    const menuItem = await Menu.create({
+    const menu = await Menu.create({
       name,
-      description,
-      category,
-      restaurant,
-      sizes,
-      isVeg,
-      image: req.file?.path || "",
+      restaurantId: restaurantId,
     });
-
+    
     return res.status(201).json({
       success: true,
-      message: "Menu item created",
-      menuItem,
+      message: "Menu created successfully",
+      menu,
     });
   } catch (error) {
-    console.log("Create Menu Error:", error);
-
     return res.status(500).json({
       success: false,
-      message: "Internal Server Error",
+      message: error.message,
     });
   }
 };
 
-export const getRestaurantMenu = async (req, res) => {
+/**
+ * Get All Menus of Restaurant
+ */
+export const getMenusByRestaurant = async (req, res) => {
   try {
     const { restaurantId } = req.params;
 
-    const menu = await Menu.find({
-      restaurant: restaurantId,
-    })
-      .populate("category")
-      .sort({ createdAt: -1 });
+    const menus = await Menu.find({
+      restaurantId: restaurantId,
+    }).sort({ createdAt: -1 });
+    
+     if(!menus) {
+      return res.status(404).json({
+        success: false,
+        message: "Menus not found!",
+      });
+    }
+    
+    return res.status(200).json({
+      success: true,
+      menus,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+/**
+ * Get A Targated Menus of Restaurant
+ */
+export const getTargatedMenuByRestaurant = async (req, res) => {
+  try {
+    const { id } = req.params;
 
+    const menu = await Menu.find({
+      _id: id,
+    });
+
+    if(!menu) {
+      return res.status(404).json({
+        success: false,
+        message: "Menu not found",
+      });
+    }
+    
     return res.status(200).json({
       success: true,
       menu,
     });
   } catch (error) {
-    console.log("Get Menu Error:", error);
-
     return res.status(500).json({
       success: false,
-      message: "Internal Server Error",
+      message: error.message,
     });
   }
 };
 
-export const getSingleMenuItem = async (req, res) => {
+/**
+ * Update Menu
+ */
+export const updateMenu = async (req, res) => {
   try {
-    const { menuId } = req.params;
+    const { id } = req.params;
 
-    const menuItem = await Menu.findById(menuId).populate("category");
-
-    if (!menuItem) {
-      return res.status(404).json({
-        success: false,
-        message: "Menu item not found",
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      menuItem,
-    });
-  } catch (error) {
-    console.log("Get Single Menu Error:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Internal Server Error",
-    });
-  }
-};
-
-export const updateMenuItem = async (req, res) => {
-  try {
-    const { menuId } = req.params;
-
-    const updatedMenu = await Menu.findByIdAndUpdate(
-      menuId,
+    const menu = await Menu.findByIdAndUpdate(
+      id,
+      req.body,
       {
-        ...req.body,
-        ...(req.file && { image: req.file.path }),
-      },
-      { new: true }
+        new: true,
+      }
     );
 
-    if (!updatedMenu) {
+    if (!menu) {
       return res.status(404).json({
         success: false,
-        message: "Menu item not found",
+        message: "Menu not found",
       });
     }
 
     return res.status(200).json({
       success: true,
       message: "Menu updated successfully",
-      updatedMenu,
+      menu,
     });
   } catch (error) {
-    console.log("Update Menu Error:", error);
-
     return res.status(500).json({
       success: false,
-      message: "Internal Server Error",
+      message: error.message,
     });
   }
 };
 
-export const deleteMenuItem = async (req, res) => {
+/**
+ * Delete Menu
+ */
+export const deleteMenu = async (req, res) => {
   try {
-    const { menuId } = req.params;
+    const { id } = req.params;
 
-    const deletedMenu = await Menu.findByIdAndDelete(menuId);
+    const menu = await Menu.findByIdAndDelete(id);
 
-    if (!deletedMenu) {
+    if (!menu) {
       return res.status(404).json({
         success: false,
-        message: "Menu item not found",
+        message: "Menu not found",
       });
     }
 
     return res.status(200).json({
       success: true,
-      message: "Menu item deleted successfully",
+      message: "Menu deleted successfully",
     });
   } catch (error) {
-    console.log("Delete Menu Error:", error);
-
     return res.status(500).json({
       success: false,
-      message: "Internal Server Error",
+      message: error.message,
     });
   }
 };

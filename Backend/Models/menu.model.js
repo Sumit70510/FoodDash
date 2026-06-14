@@ -6,9 +6,9 @@ const menuSchema = new mongoose.Schema({
              required :true,
              trim : true },
     
-    restrauntId : {
+    restaurantId : {
              type : mongoose.Schema.Types.ObjectId,
-             ref :"Restraunt",
+             ref :"Restaurant",
              required : true },
                             
     isAvailable : {

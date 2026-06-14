@@ -17,8 +17,8 @@ const deliveryPartnerSchema = new mongoose.Schema({
     
     contactNo : { type: String , required : true ,unique :true } ,
     
-    profilePicture : { type : String,default : "/default.jpg" } ,
-    
+    profilePicture: { url: {type: String },public_id: { type: String } }, 
+       
     gender : { type : String,enum : ['Male','Female'] } ,
     
     age : { type : Number, min : 18 , required : false } ,

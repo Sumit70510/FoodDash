@@ -31,8 +31,11 @@ const restaurantSchema= new mongoose.Schema({
     
     password : {type : String,required : true ,select : false},
     
-    restaurantPicture : {type : String,default : "/default.jpg" },
-    
+    restaurantPicture : {
+                          url: { type: String },
+                          public_id: {type: String},
+                        },
+                        
     isOpen :{type : Boolean, default:true},  
   },
   {timestamps:true}

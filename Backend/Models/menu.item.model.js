@@ -10,11 +10,22 @@ const menuItemSchema = new mongoose.Schema({
              required :true ,
              trim : true },
              
-    image : [{type : String , required : true}],
+    image: 
+     [
+       {
+        url: {
+          type: String,
+          required: true,
+        },
+        public_id: {
+          type: String,
+          required: true,
+        },}  
+     ],
     
-    restrauntId : {
+    restaurantId : {
         type : mongoose.Schema.Types.ObjectId,
-        ref :"Restraunt",
+        ref :"Restaurant",
         required : true },
             
     categoryId : {
