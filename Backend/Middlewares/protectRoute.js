@@ -4,13 +4,20 @@ import crypto from "crypto";
 import Session from "../Models/session.model.js";
 import Restaurant from "../Models/restaurant.model.js";
 
+
+const cookieOptions = {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: process.env.NODE_ENV !== 'DEVELOPMENT'
+    };
+
 export const protectRoute = async (req, res, next) => {
   try {
-    const token =
-      req.cookies?.jwt ||
-      req.headers.authorization?.split(" ")[1];
-
+   const tokenName = process.env.TOKEN||"jwt";
+       const token = req.cookies[tokenName];
+       
     if (!token) {
+       console.log(401);
       return res.status(401).json({
         success: false,
         message: "Unauthorized Access",
@@ -34,6 +41,7 @@ export const protectRoute = async (req, res, next) => {
     });
 
     if (!session) { 
+       console.log(402)
       return res.status(401).json({
         success: false,
         message: "Session Expired",
@@ -45,6 +53,7 @@ export const protectRoute = async (req, res, next) => {
     );
 
     if (!restaurant) {
+      console.log(404)
       return res.status(404).json({
         success: false,
         message: "Restaurant Not Found",
@@ -52,7 +61,7 @@ export const protectRoute = async (req, res, next) => {
     }
 
     req.restaurant = restaurant;
-
+    console.log(200);
     next();
   } catch (error) {
     console.log("Protect Route Error:", error);

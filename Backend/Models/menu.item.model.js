@@ -20,7 +20,13 @@ const menuItemSchema = new mongoose.Schema({
         public_id: {
           type: String,
           required: true,
-        },}  
+        },
+        resource_type: {
+          type: String,
+          required: true,
+          default :"image"
+        },
+       }  
      ],
     
     restaurantId : {

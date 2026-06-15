@@ -22,7 +22,7 @@ router.post(
 );
 
 router.get(
-  "/restraunt/:restrauntId",
+  "/restaurant/:restrauntId",
   getMenuItemsByRestraunt
 );
 

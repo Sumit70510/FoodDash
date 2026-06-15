@@ -1,11 +1,14 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import api from "../utils/axios.js";
+import { useNavigate } from "react-router-dom";
 
 export default function RestaurantMenuPage() {
   
   const { user, type } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const restaurant = user;
+  const navigate = useNavigate();
   
   const [menuItems, setMenuItems] = useState([]);
   const [search, setSearch] = useState("");
@@ -19,17 +22,9 @@ export default function RestaurantMenuPage() {
   const fetchMenuItems = async () => {
     try {
       setLoading(true);
-
-      const response = await fetch(
-        `http://localhost:5000/api/v1/menu/restraunt/${restaurant._id}`,
-        {
-          credentials: "include",
-        }
-      );
-
-      const data = await response.json();
-
-      if (data.success) {
+       const response = await api.get(`menu/restaurant/${restaurant._id}`);    
+      
+      if (response.data.success) {
         setMenuItems(data.menuItems || []);
       }
     } catch (error) {
@@ -47,17 +42,9 @@ export default function RestaurantMenuPage() {
     if (!confirmDelete) return;
 
     try {
-      const response = await fetch(
-        `http://localhost:5000/api/v1/menu/${menuItemId}`,
-        {
-          method: "DELETE",
-          credentials: "include",
-        }
-      );
-
-      const data = await response.json();
-
-      if (data.success) {
+      const response = await api.delete(`menu/${menuItemId}`);    
+      
+      if(response.data.success) {
         setMenuItems((prev) =>
           prev.filter(
             (item) => item._id !== menuItemId
@@ -93,6 +80,9 @@ export default function RestaurantMenuPage() {
         </h1>
 
         <button
+          onClick={() =>
+            navigate("/restaurant/menu/create")
+          }
           className="
             bg-orange-500
             hover:bg-orange-600

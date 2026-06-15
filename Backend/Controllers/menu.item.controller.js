@@ -1,9 +1,10 @@
 import MenuItem from "../Models/menu.item.model.js";
-import { uploadOnCloudinary } from "../Utils/cloudinary.js";
+import { deleteFromCloudinary, uploadOnCloudinary } from "../Utils/cloudinary.js";
 
 
 export const createMenuItem = async (req, res) => {
   try {
+    console.log("here"); 
     const {
       name,
       description,
@@ -16,9 +17,9 @@ export const createMenuItem = async (req, res) => {
     if (
       !name ||
       !description ||
-      !restaurantId ||
-      !categoryId ||
-      !foodType ||
+      // !restaurantId ||
+      // !categoryId ||
+      // !foodType ||
       !variants
     ) {
       return res.status(400).json({
@@ -33,18 +34,18 @@ export const createMenuItem = async (req, res) => {
         : variants;
 
     const images = [];
-
-    if (req.files?.length > 0) {
-      for (const file of req.files) {
-        const uploadedFile =
-          await uploadOnCloudinary(file.path);
     
-        if (uploadedFile) {
-          images.push({
-            url: uploadedFile.url,
-            public_id: uploadedFile.public_id,
-          });
-        }
+    for (const file of req.files) {
+      const uploadedFile =
+        await uploadOnCloudinary(file.path);
+    
+      if (uploadedFile) {
+        images.push({
+          url: uploadedFile.url,
+          public_id: uploadedFile.public_id,
+          resource_type:
+            uploadedFile.resource_type,
+        });
       }
     }
 
@@ -59,7 +60,7 @@ export const createMenuItem = async (req, res) => {
       image: images,
     });
 
-    return res.status(201).json({
+    return res.status(200).json({
       success: true,
       message: "Menu item created successfully",
       menuItem,
@@ -153,32 +154,27 @@ export const updateMenuItem = async (req, res) => {
     if (req.files?.length > 0) {
       // Delete old cloudinary files
       if(existingMenuItem.image && existingMenuItem.image.length > 0 ){
-        for(const image of existingMenuItem.image) 
-         {
-           try {
-             await cloudinary.uploader.destroy(
-               image.public_id
-             );
-           } catch (err) {
-             console.log(
-               "Cloudinary delete error:",
-               err.message
-             );
-           }
-         }
-      }
+       await Promise.all(
+        existingMenuItem.image.map((image) =>
+          deleteFromCloudinary(
+            image.public_id,
+            image.resource_type
+          )
+         )) ;
+       }
     } 
 
     const images = [];
-
+  
     for (const file of req.files) {
-      const uploadedFile =
-        await uploadOnCloudinary(file.path);
+      const uploadedFile = await uploadOnCloudinary(file.path);
     
       if (uploadedFile) {
         images.push({
           url: uploadedFile.url,
           public_id: uploadedFile.public_id,
+          resource_type:
+            uploadedFile.resource_type,
         });
       }
     }
@@ -225,19 +221,17 @@ export const deleteMenuItem = async (req, res) => {
       });
     }
 
-    for (const image of menuItem.image) {
-      try {
-        await cloudinary.uploader.destroy(
-          image.public_id
-        );
-      } catch (err) {
-        console.log(
-          "Cloudinary delete error:",
-          err.message
-        );
-      }
+    if (menuItem.image?.length) {
+      await Promise.all(
+        menuItem.image.map((image) =>
+          deleteFromCloudinary(
+            image.public_id,
+            image.resource_type
+          )
+        )
+      );
     }
-
+    
     await MenuItem.findByIdAndDelete(
       menuItemId
     );
