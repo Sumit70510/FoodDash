@@ -3,7 +3,8 @@ import express from "express";
 import {
   createMenuItem,
   deleteMenuItem,
-  getMenuItemsByRestraunt,
+  getAllMenuItems,
+  getMenuItemsByRestaurant,
   getSingleMenuItem,
   updateMenuItem,
 } from "../Controllers/menu.item.controller.js";
@@ -22,8 +23,13 @@ router.post(
 );
 
 router.get(
-  "/restaurant/:restrauntId",
-  getMenuItemsByRestraunt
+  "/restaurant/:restaurantId",
+  getMenuItemsByRestaurant
+);
+
+router.get(
+  "/restaurants",
+  getAllMenuItems
 );
 
 router.get(

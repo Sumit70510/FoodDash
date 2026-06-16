@@ -8,4 +8,4 @@ router.get("/menu/:id", getTargatedMenuByRestaurant);
 router.put("/updateMenu/:id", updateMenu);
 router.delete("/deleteMenu/:id", deleteMenu);
 
-export default router;
+export default router; 

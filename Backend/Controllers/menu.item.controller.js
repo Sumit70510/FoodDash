@@ -4,7 +4,7 @@ import { deleteFromCloudinary, uploadOnCloudinary } from "../Utils/cloudinary.js
 
 export const createMenuItem = async (req, res) => {
   try {
-    console.log("here"); 
+    console.log("here in creating menu Item"); 
     const {
       name,
       description,
@@ -17,9 +17,9 @@ export const createMenuItem = async (req, res) => {
     if (
       !name ||
       !description ||
-      // !restaurantId ||
-      // !categoryId ||
-      // !foodType ||
+      !restaurantId ||
+      !categoryId ||
+      !foodType ||
       !variants
     ) {
       return res.status(400).json({
@@ -33,6 +33,7 @@ export const createMenuItem = async (req, res) => {
         ? JSON.parse(variants)
         : variants;
 
+    console.log(parsedVariants);    
     const images = [];
     
     for (const file of req.files) {
@@ -49,8 +50,7 @@ export const createMenuItem = async (req, res) => {
       }
     }
 
-
-    const menuItem = await MenuItem.create({
+   const menuItem = await MenuItem.create({
       name,
       description,
       restaurantId,
@@ -75,7 +75,7 @@ export const createMenuItem = async (req, res) => {
   }
 };
 
-export const getMenuItemsByRestraunt = async (req, res) => {
+export const getMenuItemsByRestaurant = async (req, res) => {
   try {
     const { restaurantId } = req.params;
 
@@ -83,6 +83,28 @@ export const getMenuItemsByRestraunt = async (req, res) => {
       .populate("categoryId")
       .sort({ createdAt: -1 });
 
+    return res.status(200).json({
+      success: true,
+      menuItems,
+    });
+  } catch (error) {
+    console.log("Get Menu Items Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export const getAllMenuItems = async (req, res) => {
+  try {
+    // const { restaurantId } = req.params;
+
+    const menuItems = await MenuItem.find({})
+      .populate("categoryId")
+      .sort({ createdAt: -1 });
+    console.log(menuItems);
     return res.status(200).json({
       success: true,
       menuItems,

@@ -1,31 +1,52 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import api from "../utils/axios.js";
+import React, {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
+import api from "../utils/axios.js";
+
 export default function RestaurantMenuPage() {
-  
-  const { user, type } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
+  const { user } = useSelector(
+    (state) => state.auth
+  );
+
   const restaurant = user;
   const navigate = useNavigate();
-  
+
   const [menuItems, setMenuItems] = useState([]);
   const [search, setSearch] = useState("");
-  const [foodType, setFoodType] = useState("All");
-  const [loading, setLoading] = useState(true);
+  const [foodType, setFoodType] =
+    useState("All");
+  const [loading, setLoading] =
+    useState(true);
 
   useEffect(() => {
-    fetchMenuItems();
-  }, []);
+    if (restaurant?._id) {
+      fetchMenuItems();
+    }
+  }, [restaurant]);
 
   const fetchMenuItems = async () => {
     try {
       setLoading(true);
-       const response = await api.get(`menu/restaurant/${restaurant._id}`);    
-      
+
+      const response = await api.get(
+        `menu-item/restaurant/${restaurant._id}`
+      );
+
+      console.log(
+        "Menu Response:",
+        response.data
+      );
+
       if (response.data.success) {
-        setMenuItems(data.menuItems || []);
+        setMenuItems(
+          response.data.menuItems || []
+        );
       }
     } catch (error) {
       console.log(error);
@@ -34,20 +55,26 @@ export default function RestaurantMenuPage() {
     }
   };
 
-  const deleteMenuItem = async (menuItemId) => {
-    const confirmDelete = window.confirm(
-      "Delete this menu item?"
-    );
+  const deleteMenuItem = async (
+    menuItemId
+  ) => {
+    const confirmDelete =
+      window.confirm(
+        "Delete this menu item?"
+      );
 
     if (!confirmDelete) return;
 
     try {
-      const response = await api.delete(`menu/${menuItemId}`);    
-      
-      if(response.data.success) {
+      const response = await api.delete(
+        `menu-item/${menuItemId}`
+      );
+
+      if (response.data.success) {
         setMenuItems((prev) =>
           prev.filter(
-            (item) => item._id !== menuItemId
+            (item) =>
+              item._id !== menuItemId
           )
         );
       }
@@ -60,17 +87,30 @@ export default function RestaurantMenuPage() {
     return menuItems.filter((item) => {
       const matchesSearch =
         item.name
-          .toLowerCase()
-          .includes(search.toLowerCase());
+          ?.toLowerCase()
+          .includes(
+            search.toLowerCase()
+          );
 
       const matchesType =
         foodType === "All"
           ? true
           : item.foodType === foodType;
 
-      return matchesSearch && matchesType;
+      return (
+        matchesSearch && matchesType
+      );
     });
   }, [menuItems, search, foodType]);
+
+  console.log(
+    "menuItems:",
+    menuItems
+  );
+  console.log(
+    "filteredItems:",
+    filteredItems
+  );
 
   return (
     <div className="min-h-screen bg-[#111827] px-4 md:px-5 lg:px-6 py-6">
@@ -81,7 +121,9 @@ export default function RestaurantMenuPage() {
 
         <button
           onClick={() =>
-            navigate("/restaurant/menu/create")
+            navigate(
+              "/restaurant/menu/create"
+            )
           }
           className="
             bg-orange-500
@@ -97,8 +139,6 @@ export default function RestaurantMenuPage() {
         </button>
       </div>
 
-      {/* Search + Filters */}
-
       <div className="bg-[#1F2937] p-5 rounded-2xl mb-8">
         <div className="grid md:grid-cols-2 gap-4">
           <input
@@ -106,7 +146,9 @@ export default function RestaurantMenuPage() {
             placeholder="Search menu item..."
             value={search}
             onChange={(e) =>
-              setSearch(e.target.value)
+              setSearch(
+                e.target.value
+              )
             }
             className="
               px-4
@@ -121,7 +163,9 @@ export default function RestaurantMenuPage() {
           <select
             value={foodType}
             onChange={(e) =>
-              setFoodType(e.target.value)
+              setFoodType(
+                e.target.value
+              )
             }
             className="
               px-4
@@ -132,10 +176,18 @@ export default function RestaurantMenuPage() {
               outline-none
             "
           >
-            <option>All</option>
-            <option>Veg</option>
-            <option>Non-Veg</option>
-            <option>Egg-Only</option>
+            <option value="All">
+              All
+            </option>
+            <option value="Veg">
+              Veg
+            </option>
+            <option value="Non-Veg">
+              Non-Veg
+            </option>
+            <option value="Egg-Only">
+              Egg-Only
+            </option>
           </select>
         </div>
       </div>
@@ -184,112 +236,128 @@ export default function RestaurantMenuPage() {
             </thead>
 
             <tbody>
-              {filteredItems.map((item) => (
-                <tr
-                  key={item._id}
-                  className="
-                    border-b
-                    border-gray-800
-                    hover:bg-[#374151]
-                  "
-                >
-                  <td className="p-4">
-                    <img
-                      src={
-                        item.image?.[0] ||
-                        "/food-placeholder.jpg"
-                      }
-                      alt={item.name}
-                      className="
-                        w-16
-                        h-16
-                        rounded-lg
-                        object-cover
-                      "
-                    />
-                  </td>
-
-                  <td className="p-4 text-white">
-                    {item.name}
-                  </td>
-
-                  <td className="p-4 text-white">
-                    {item.categoryId?.name ||
-                      "Unknown"}
-                  </td>
-
-                  <td className="p-4">
-                    <span
-                      className={`
-                        px-3 py-1 rounded-full text-sm
-                        ${
-                          item.foodType === "Veg"
-                            ? "bg-green-500 text-white"
-                            : item.foodType ===
-                              "Non-Veg"
-                            ? "bg-red-500 text-white"
-                            : "bg-yellow-500 text-black"
+              {filteredItems.map(
+                (item) => (
+                  <tr
+                    key={item._id}
+                    className="
+                      border-b
+                      border-gray-800
+                      hover:bg-[#374151]
+                    "
+                  >
+                    <td className="p-4">
+                      <img
+                        src={
+                          item.image?.[0]
+                            ?.url ||
+                          "/food-placeholder.jpg"
                         }
-                      `}
-                    >
-                      {item.foodType}
-                    </span>
-                  </td>
-
-                  <td className="p-4 text-orange-500 font-bold">
-                    ₹
-                    {item.variants?.[0]
-                      ?.discountPrice ||
-                      item.variants?.[0]?.price ||
-                      0}
-                  </td>
-
-                  <td className="p-4">
-                    {item.isAvailable ? (
-                      <span className="text-green-500">
-                        Available
-                      </span>
-                    ) : (
-                      <span className="text-red-500">
-                        Unavailable
-                      </span>
-                    )}
-                  </td>
-
-                  <td className="p-4">
-                    <div className="flex gap-2">
-                      <button
+                        alt={item.name}
                         className="
-                          bg-blue-500
-                          hover:bg-blue-600
-                          px-3
-                          py-2
+                          w-16
+                          h-16
                           rounded-lg
-                          text-white
+                          object-cover
                         "
-                      >
-                        Edit
-                      </button>
+                      />
+                    </td>
 
-                      <button
-                        onClick={() =>
-                          deleteMenuItem(item._id)
+                    <td className="p-4 text-white">
+                      {item.name}
+                    </td>
+
+                    <td className="p-4 text-white">
+                      {item.categoryId
+                        ?.name ||
+                        "Unknown"}
+                    </td>
+
+                    <td className="p-4">
+                      <span
+                        className={`
+                          px-3 py-1 rounded-full text-sm
+                          ${
+                            item.foodType ===
+                            "Veg"
+                              ? "bg-green-500 text-white"
+                              : item.foodType ===
+                                "Non-Veg"
+                              ? "bg-red-500 text-white"
+                              : "bg-yellow-500 text-black"
+                          }
+                        `}
+                      >
+                        {
+                          item.foodType
                         }
-                        className="
-                          bg-red-500
-                          hover:bg-red-600
-                          px-3
-                          py-2
-                          rounded-lg
-                          text-white
-                        "
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                      </span>
+                    </td>
+
+                    <td className="p-4 text-orange-500 font-bold">
+                      ₹
+                      {item.variants?.[0]
+                        ?.discountPrice ||
+                        item
+                          .variants?.[0]
+                          ?.price ||
+                        0}
+                    </td>
+
+                    <td className="p-4">
+                      {item.isAvailable ? (
+                        <span className="text-green-500">
+                          Available
+                        </span>
+                      ) : (
+                        <span className="text-red-500">
+                          Unavailable
+                        </span>
+                      )}
+                    </td>
+
+                    <td className="p-4">
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() =>
+                            navigate(
+                              `/restaurant/menu/edit/${item._id}`
+                            )
+                          }
+                          className="
+                            bg-blue-500
+                            hover:bg-blue-600
+                            px-3
+                            py-2
+                            rounded-lg
+                            text-white
+                          "
+                        >
+                          Edit
+                        </button>
+
+                        <button
+                          onClick={() =>
+                            deleteMenuItem(
+                              item._id
+                            )
+                          }
+                          className="
+                            bg-red-500
+                            hover:bg-red-600
+                            px-3
+                            py-2
+                            rounded-lg
+                            text-white
+                          "
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                )
+              )}
             </tbody>
           </table>
         </div>

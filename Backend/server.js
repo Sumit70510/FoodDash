@@ -13,6 +13,7 @@ import menuItemRoutes from "./Routes/menu.item.routes.js";
 import orderRoutes from "./Routes/order.routes.js";
 import cartRoutes from "./Routes/cart.routes.js";
 import deliveryRoutes from "./Routes/delivery.routes.js";
+import categoryRoutes from "./Routes/food.category.routes.js";
 
 
 dotenv.config();
@@ -38,6 +39,7 @@ app.use('/api/v1/restaurant',restaurantRoutes);
 app.use('/api/v1/deliveryPartner',deliveryPartnerRoutes);
 app.use("/api/v1/menu", menuRoutes);
 app.use("/api/v1/menu-item", menuItemRoutes);
+app.use("/api/v1/category",categoryRoutes);
 app.use("/api/v1/order", orderRoutes);
 app.use("/api/v1/cart", cartRoutes);
 app.use("/api/v1/delivery", deliveryRoutes);

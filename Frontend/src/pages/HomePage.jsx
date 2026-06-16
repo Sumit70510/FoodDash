@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
 import FoodCard from "../components/FoodCard.jsx";
+import api from "../utils/axios.js";
 
 export default function HomePage() {
   const [menuItems, setMenuItems] = useState([]);
@@ -17,14 +18,19 @@ export default function HomePage() {
     try {
       setLoading(true);
 
-      const response = await fetch(
-        "http://localhost:5000/api/v1/menu"
+      const response = await api.get(
+        `menu-item/restaurants`
       );
 
-      const data = await response.json();
+      console.log(
+        "Menu Response:",
+        response.data
+      );
 
-      if (data.success) {
-        setMenuItems(data.menuItems || []);
+      if (response.data.success) {
+        setMenuItems(
+          response.data.menuItems || []
+        );
       }
     } catch (error) {
       console.log(error);
@@ -163,7 +169,7 @@ export default function HomePage() {
                   _id: item._id,
                   name: item.name,
                   image:
-                    item.image?.[0] ||
+                    item.image?.[0]?.url ||
                     "/food-placeholder.jpg",
                   foodType: item.foodType,
                   price:
