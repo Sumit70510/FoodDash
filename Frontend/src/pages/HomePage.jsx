@@ -177,6 +177,7 @@ export default function HomePage() {
                       ?.discountPrice ||
                     item.variants?.[0]?.price ||
                     0,
+                   isAvailable : item.isAvailable 
                 }}
               />
             ))}

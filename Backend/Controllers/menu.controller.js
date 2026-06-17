@@ -1,26 +1,46 @@
 import Menu from "../Models/menu.model.js";
 
-/**
- * Create Menu
- */
 export const createMenu = async (req, res) => {
   try {
-    const { name, restaurantId } = req.body;
+    const { name, restaurantId, isAvailable } = req.body;
+
+    if (!name || !restaurantId) {
+      return res.status(400).json({
+        success: false,
+        message: "Name and Restaurant ID are required",
+      });
+    }
+
+    const existingMenu = await Menu.findOne({
+      restaurantId,
+      name : { $regex: new RegExp(`^${name.trim()}$`, "i"),},
+    });
+
+    if (existingMenu) {
+      return res.status(409).json({
+        success: false,
+        message: "A menu with this name already exists",
+      });
+    }
 
     const menu = await Menu.create({
-      name,
-      restaurantId: restaurantId,
+      name: name.trim(),
+      restaurantId,
+      isAvailable,
     });
-    
+
     return res.status(201).json({
       success: true,
       message: "Menu created successfully",
       menu,
     });
   } catch (error) {
+    console.error("Create Menu Error:", error);
+
     return res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Failed to create menu",
+      error: error.message,
     });
   }
 };

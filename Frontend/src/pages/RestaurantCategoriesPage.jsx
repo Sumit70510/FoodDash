@@ -1,123 +1,125 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import api from "../utils/axios.js";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 export default function RestaurantCategoriesPage() {
   
   const { user, type } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const restaurant = user||{};
+  const navigate = useNavigate();
   // console.log(restaurant);
 
   const [categories, setCategories] = useState([]);
+  const [menus,setMenus]=useState([]);
+  const [data, setData] = useState({
+                                    name : "",
+                                    description : "",
+                                    // menuName : "",
+                                    menuId : "" });
+                                    
   const [name, setName] = useState("");
-  const [description, setDescription] =
-    useState("");
-
-  const [editingId, setEditingId] =
-    useState(null);
+  const [description, setDescription] = useState("");
+  const [editingId, setEditingId] = useState(null);
 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchCategories();
+    fetchMenus();
   }, []);
-
+  
+  const fetchMenus = async () => {
+      try
+       {
+         const response = await api.get(`menu/${restaurant._id}/menu`);
+         if(response.data.success)
+          {setMenus(response.data.menus);} 
+       }
+      catch(error)
+       {
+         console.log(error);
+         toast.error(error?.response?.data?.message||'Error Fetching Menus!');
+       }         
+    }
+  
   const fetchCategories = async () => {
     try {
       setLoading(true);
-
-      const response = await fetch(
-        `http://localhost:5000/api/v1/category/restaurant/${restaurant._id}`,
-        {
-          credentials: "include",
-        }
-      );
-
-      const data = await response.json();
-
-      if (data.success) {
-        setCategories(data.categories || []);
+      const response = await api.get(`category/restaurant/${restaurant._id}`);
+      if (response?.data?.success) {
+        setCategories(response?.data?.categories || []);
       }
     } catch (error) {
       console.log(error);
+      toast.error(error?.response?.data?.message||"Error In Fetching Categories");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => 
+    {
     e.preventDefault();
 
     try {
       const payload = {
-        name,
-        description,
+        name : data?.name,
+        description : data?.description,
+        restaurantId : restaurant?._id,
+        menuId : data?.menuId             
       };
 
-      const url = editingId
-        ? `http://localhost:5000/api/v1/category/${editingId}`
-        : `http://localhost:5000/api/v1/category/create`;
+      const url = editingId ? `/category/edit/${editingId}` : `/category/create`;
 
-      const method = editingId
-        ? "PUT"
-        : "POST";
+      const method = editingId ? "put" : "post";
 
-      const response = await fetch(url, {
-        method,
-        credentials: "include",
-        headers: {
-          "Content-Type":
-            "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      const response = await api[method](url, payload);
 
-      const data = await response.json();
-
-      if (data.success) {
-        setName("");
-        setDescription("");
+      if(response?.data?.success) 
+       {
+        // console.log("Success in Category");
         setEditingId(null);
-
-        fetchCategories();
-      } else {
-        alert(data.message);
-      }
-    } catch (error) {
+        setData({ name : "",
+                  description : "",
+                  // menuName : "",
+                  menuId : "" });
+        fetchCategories();          
+       } 
+      else 
+       {alert(response?.data?.message);}
+     } 
+    catch (error) {
       console.log(error);
-    }
+      toast.error(error?.response?.data?.message||"Category Creation/Editing Failed!")
+     }
   };
+  
+const handleEdit = (category) => {
 
-  const handleEdit = (category) => {
-    setEditingId(category._id);
-    setName(category.name);
-    setDescription(
-      category.description || ""
-    );
-  };
-
-  const handleDelete = async (
-    categoryId
-  ) => {
-    const confirmDelete =
-      window.confirm(
+  setData({
+    name: category.name,
+    description: category.description || "",
+    menuId: category.menuId || "",
+  });
+  setEditingId(category._id);
+};
+  
+  const handleDelete = async ( categoryId ) => 
+    {
+      const confirmDelete =
+       window.confirm(
         "Delete this category?"
-      );
+       );
 
-    if (!confirmDelete) return;
+    if(!confirmDelete) return;
 
     try {
-      const response = await fetch(
-        `http://localhost:5000/api/v1/category/${categoryId}`,
-        {
-          method: "DELETE",
-          credentials: "include",
-        }
-      );
+      const response = await api.delete(`/category/${categoryId}`);
 
-      const data = await response.json();
-
-      if (data.success) {
+      if(response?.data?.success) {
         setCategories((prev) =>
           prev.filter(
             (item) =>
@@ -127,110 +129,153 @@ export default function RestaurantCategoriesPage() {
       }
     } catch (error) {
       console.log(error);
+      toast.error(error?.response?.data?.message||"Deletion Failed!")
     }
   };
+  
+  const onChangeEventHandler = (e,reset=false)=>
+    {
+       if(reset)
+        {
+          setData({ name : "",
+                    description : "",
+                    menuId : "" });
+          return;          
+        }
+       else
+        {
+          setData({...data,[e.target.name]:e.target.value});
+        } 
+    }
 
   return (
     <div className="min-h-screen bg-[#111827] px-4 md:px-6 lg:px-8 py-6">
       <div className="max-w-7xl mx-auto">
+        
         <h1 className="text-4xl font-bold text-white mb-8">
           Categories
         </h1>
 
         {/* Add Category */}
-
-        <div className="bg-[#1F2937] p-6 rounded-3xl border border-gray-800 mb-8">
-          <h2 className="text-2xl font-bold text-white mb-5">
-            {editingId
-              ? "Edit Category"
-              : "Add Category"}
-          </h2>
-
-          <form
-            onSubmit={handleSubmit}
-            className="space-y-4"
-          >
-            <input
-              type="text"
-              placeholder="Category Name"
-              value={name}
-              onChange={(e) =>
-                setName(e.target.value)
-              }
-              required
+        
+        { menus.length===0 ? 
+           (
+             <button
+              onClick={()=>navigate('../menu/create-menu')}
               className="
-                w-full
-                bg-[#111827]
-                border
-                border-gray-700
-                text-white
-                p-3
-                rounded-xl
-              "
-            />
-
-            <textarea
-              rows="3"
-              placeholder="Description"
-              value={description}
-              onChange={(e) =>
-                setDescription(
-                  e.target.value
-                )
-              }
-              className="
-                w-full
-                bg-[#111827]
-                border
-                border-gray-700
-                text-white
-                p-3
-                rounded-xl
-              "
-            />
-
-            <div className="flex gap-3">
-              <button
-                type="submit"
+               bg-orange-500
+               hover:bg-orange-600
+               px-6
+               py-3
+               mb-8
+               rounded-xl
+               text-white
+               font-semibold">
+              Create A Menu First
+             </button>
+           ) 
+           : 
+          (
+           <div className="bg-[#1F2937] p-6 rounded-3xl border border-gray-800 mb-8">
+             <h2 className="text-2xl font-bold text-white mb-5">
+              {editingId
+                ? "Edit Category"
+                : "Add Category"}
+            </h2>
+  
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <input 
+                type="text"
+                name="name"
+                placeholder="Category Name"
+                value={data.name}
+                onChange={onChangeEventHandler}
+                required
                 className="
-                  bg-orange-500
-                  hover:bg-orange-600
-                  px-6
-                  py-3
-                  rounded-xl
+                  w-full
+                  bg-[#111827]
+                  border
+                  border-gray-700
                   text-white
-                  font-semibold
+                  p-3
+                  rounded-xl"
+              />
+  
+              <textarea
+                rows="2"
+                placeholder="Description"
+                name="description"
+                value={data.description}
+                onChange={onChangeEventHandler}
+                className="
+                  w-full
+                  bg-[#111827]
+                  border
+                  border-gray-700
+                  text-white
+                  p-3
+                  rounded-xl
                 "
-              >
-                {editingId
-                  ? "Update Category"
-                  : "Add Category"}
-              </button>
-
-              {editingId && (
+              />
+              
+               <select
+               name="menuId"
+                value={data.menuId}
+                onChange={onChangeEventHandler}
+                className="w-full p-3 rounded-xl bg-[#111827] text-white">
+                <option value="">Select Menu</option>
+                {menus?.map((menu) => (
+                  <option
+                    key={menu._id}
+                    value={menu._id}
+                    >
+                    {menu.name}
+                  </option>
+                ))}
+              </select>
+                     
+              <div className="flex gap-3">
                 <button
-                  type="button"
-                  onClick={() => {
-                    setEditingId(null);
-                    setName("");
-                    setDescription("");
-                  }}
+                  type="submit"
                   className="
-                    bg-gray-700
-                    hover:bg-gray-600
+                    bg-orange-500
+                    hover:bg-orange-600
                     px-6
                     py-3
                     rounded-xl
                     text-white
+                    font-semibold
                   "
                 >
-                  Cancel
+                  {editingId
+                    ? "Update Category"
+                    : "Add Category"}
                 </button>
-              )}
-            </div>
-          </form>
-        </div>
-
+  
+                {editingId && (
+                  <button
+                    type="button"
+                    onClick={(e) => {setEditingId(null)
+                                     onChangeEventHandler(null,true);}}
+                    className="
+                      bg-gray-700
+                      hover:bg-gray-600
+                      px-6
+                      py-3
+                      rounded-xl
+                      text-white
+                    "
+                  >
+                    Cancel
+                  </button>
+                )}
+              </div>
+            </form>
+           </div> 
+           
+          )}
+         
+         
         {/* Categories List */}
 
         <div className="bg-[#1F2937] rounded-3xl border border-gray-800 overflow-hidden">
@@ -264,7 +309,7 @@ export default function RestaurantCategoriesPage() {
                 {categories.map(
                   (category) => (
                     <tr
-                      key={category._id}
+                      key={category?._id}
                       className="
                         border-b
                         border-gray-800
@@ -272,12 +317,12 @@ export default function RestaurantCategoriesPage() {
                       "
                     >
                       <td className="p-4 text-white font-medium">
-                        {category.name}
+                        {category?.name}
                       </td>
 
                       <td className="p-4 text-gray-300">
-                        {category.description ||
-                          "-"}
+                        {category?.description ||
+                          "----"}
                       </td>
 
                       <td className="p-4">

@@ -13,7 +13,7 @@ const menuSchema = new mongoose.Schema({
                             
     isAvailable : {
              type: Boolean, 
-             default: true }
+             default: false }
    }
    ,{timestamps:true}
 );

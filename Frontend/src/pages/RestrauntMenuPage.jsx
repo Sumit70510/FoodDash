@@ -114,6 +114,7 @@ export default function RestaurantMenuPage() {
 
   return (
     <div className="min-h-screen bg-[#111827] px-4 md:px-5 lg:px-6 py-6">
+      
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold text-white">
           Menu Management
@@ -122,7 +123,7 @@ export default function RestaurantMenuPage() {
         <button
           onClick={() =>
             navigate(
-              "/restaurant/menu/create"
+              "/restaurant/menu/create-menu"
             )
           }
           className="
@@ -135,8 +136,9 @@ export default function RestaurantMenuPage() {
             font-semibold
           "
         >
-          + Add Menu Item
+          + Add New Menu
         </button>
+        
       </div>
 
       <div className="bg-[#1F2937] p-5 rounded-2xl mb-8">

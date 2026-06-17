@@ -73,7 +73,7 @@ export default function CreateMenuItemPage() {
 
   return (
     <div className="min-h-screen bg-[#111827] p-6">
-      <div className="max-w-4xl mx-auto bg-[#1F2937] rounded-2xl p-6">
+      <div className="max-w-full  bg-[#1F2937] rounded-2xl p-6">
 
         <h1 className="text-3xl font-bold text-white mb-6">
           Add Menu Item

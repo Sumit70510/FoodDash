@@ -29,7 +29,7 @@ router.get(
 );
 
 router.put(
-  "/:categoryId",
+  "/edit/:categoryId",
   protectRoute,
   updateCategory
 );

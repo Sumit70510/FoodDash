@@ -1,76 +1,59 @@
-import React, {
-  useEffect,
-  useState,
-} from "react";
-import {
-  useNavigate,
-  useParams,
-} from "react-router-dom";
+import React, {useEffect, useState,} from "react";
+import { useNavigate, useParams, } from "react-router-dom";
 import api from "../utils/axios.js";
+import { toast } from "sonner";
 
 export default function EditMenuItemPage() {
   const { menuItemId } = useParams();
   const navigate = useNavigate();
 
-  const [loading, setLoading] =
-    useState(true);
+  const [loading, setLoading] = useState(true);
 
-  const [formData, setFormData] =
-    useState({
-      name: "",
-      description: "",
-      categoryId: "",
-      foodType: "Veg",
-      isAvailable: true,
-    });
+  const [formData, setFormData] = useState({
+                                             name: "",
+                                             description: "",
+                                             categoryId: "",
+                                             foodType: "Veg",
+                                             isAvailable: true,
+                                           });
 
-  const [variants, setVariants] =
-    useState([]);
+  const [variants, setVariants] =  useState([]);
 
-  const [images, setImages] =
-    useState([]);
+  const [images, setImages] = useState([]);
 
-  const [previewImages, setPreviewImages] =
-    useState([]);
+  const [previewImages, setPreviewImages] = useState([]);
 
-  useEffect(() => {
-    fetchMenuItem();
-  }, []);
+  useEffect(() => { fetchMenuItem(); }, []);
 
   const fetchMenuItem = async () => {
-    try {
+    try 
+     {
       setLoading(true);
 
-      const { data } =
-        await api.get(
-          `/menu-item/${menuItemId}`
-        );
+      const { data } = await api.get(`/menu-item/${menuItemId}`);
 
-      if (data.success) {
+      if(data.success) 
+       {
         const item = data.menuItem;
 
         setFormData({
-          name: item.name,
-          description:
-            item.description,
-          categoryId:
-            item.categoryId?._id || "",
-          foodType: item.foodType,
-          isAvailable:
-            item.isAvailable,
+          name : item.name,
+          description : item.description,
+          categoryId : item.categoryId?._id || "",
+          foodType : item.foodType,
+          isAvailable : item.isAvailable,
         });
 
-        setVariants(
-          item.variants || []
-        );
-
-        setPreviewImages(
-          item.image || []
-        );
-      }
-    } catch (error) {
+        setVariants(item.variants || []);
+        setPreviewImages(item.image || []);
+       }
+     } 
+    catch(error) 
+     {
       console.log(error);
-    } finally {
+      toast.error(error?.response?.data?.message);
+     } 
+    finally {
       setLoading(false);
     }
   };
@@ -94,17 +77,12 @@ export default function EditMenuItemPage() {
     );
   };
 
-  const updateVariant = (
-    index,
-    field,
-    value
-  ) => {
-    const updated = [...variants];
-
-    updated[index][field] = value;
-
-    setVariants(updated);
-  };
+  const updateVariant = (index,field,value) => 
+    {
+     const updated = [...variants];
+     updated[index][field] = value;
+     setVariants(updated);
+   };
 
   const submitHandler = async (e) => {
     e.preventDefault();

@@ -26,6 +26,7 @@ import RestaurantDeliveriesPage from './pages/RestaurantDeliveriesPage.jsx';
 import RestaurantDetailsPage from './pages/RestaurantDetailsPage.jsx';
 import RestaurantLayout from './pages/RestaurantLayout.jsx';
 import CreateMenuItemPage from './pages/CreateMenuItemPage.jsx';
+import CreateMenuPage from './pages/CreateMenuPage.jsx';
 import EditMenuItemPage from './pages/EditMenuItemPage.jsx';
 // import DeliveryDashboard from './pages/DeliveryDashboard.jsx';
 // import DeliveryOrdersPage from './pages/DeliveryOrdersPage.jsx';
@@ -91,7 +92,9 @@ function App() {
                   path="menu"
                   element={<RestaurantMenuPage />} />
               
-                <Route path="menu/create" element={<CreateMenuItemPage />} />
+                <Route path="menu/create-menu" element={<CreateMenuPage />} />
+                <Route path="menu/create-category" element={<CreateMenuPage />} />
+                <Route path="menu/create-menuItem" element={<CreateMenuItemPage />} />
                 {/* <Route path="edit/:id" element={<EditMenuItemPage />} /> */}
               
                 <Route

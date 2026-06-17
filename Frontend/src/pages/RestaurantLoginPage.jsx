@@ -56,7 +56,7 @@ export default function RestrauntLoginPage() {
       catch (error) {
          if(error?.response?.data?.requireConfirmation)
           {
-          toast.error(error.response?.data?.message);
+          toast.error(error.response?.data?.message||"Confirm Force Login!");
           setForceLogin(true);
           return;
           }

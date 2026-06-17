@@ -15,6 +15,11 @@ const categorySchema = new mongoose.Schema({
             type : mongoose.Schema.Types.ObjectId,
             ref :"Menu",
             required : true },
+ 
+    description: {
+            type: String,
+            trim: true,
+            default: "",},        
                               
     isAvailable : {
              type: Boolean,
