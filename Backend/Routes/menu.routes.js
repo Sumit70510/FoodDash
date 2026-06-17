@@ -4,8 +4,8 @@ const router = express.Router();
 
 router.post("/create", createMenu);
 router.get("/:restaurantId/menu", getMenusByRestaurant);
-router.get("/menu/:id", getTargatedMenuByRestaurant);
-router.put("/updateMenu/:id", updateMenu);
+router.get("/:id", getTargatedMenuByRestaurant);
+router.put("/edit/:id", updateMenu);
 router.delete("/deleteMenu/:id", deleteMenu);
 
 export default router; 
