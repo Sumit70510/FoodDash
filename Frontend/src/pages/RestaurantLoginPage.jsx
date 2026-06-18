@@ -195,11 +195,11 @@ export default function RestrauntLoginPage() {
          </p>
         </div>
         
-        {/* <div className="text-center border-t pt-6">
+        <div className="text-center border-t pt-6">
           <Link to="/login" className="text-gray-500 hover:text-gray-700">
             ← Back to Customer Login
           </Link>
-        </div> */}
+        </div>
       </form>
     </div>
   );

@@ -11,10 +11,6 @@ import RestaurantLoginPage from './pages/RestaurantLoginPage.jsx';
 import RestaurantSignupPage from './pages/RestaurantSignupPage.jsx';
 import RestaurantProfilePage from './pages/RestaurantProfilePage.jsx';
 import RestaurantCategoriesPage from './pages/RestaurantCategoriesPage.jsx';
-// import RestaurantOwnerDashboard from './pages/RestaurantOwnerDashboard.jsx';
-// import RestaurantMenuPage from './pages/RestaurantMenuPage.jsx';
-// import RestaurantOrdersPage from './pages/RestaurantOrdersPage.jsx';
-// import RestaurantAnalyticsPage from './pages/RestaurantAnalyticsPage.jsx';
 
 // Delivery Pages
 import DeliveryLoginPage from './pages/DeliveryLoginPage.jsx';
@@ -28,23 +24,15 @@ import RestaurantLayout from './pages/RestaurantLayout.jsx';
 import CreateMenuItemPage from './pages/CreateMenuItemPage.jsx';
 import CreateMenuPage from './pages/CreateMenuPage.jsx';
 import EditMenuItemPage from './pages/EditMenuItemPage.jsx';
-// import DeliveryDashboard from './pages/DeliveryDashboard.jsx';
-// import DeliveryOrdersPage from './pages/DeliveryOrdersPage.jsx';
-// import DeliveryHistoryPage from './pages/DeliveryHistoryPage.jsx';
+import AuthWatcher from './components/AuthWatcher.jsx';
+import ProtectedRoute from './components/ProtectedRoutes.jsx';
 
-// Customer Pages
-// import RestaurantListPage from './pages/RestaurantListPage.jsx';
-// import RestaurantPage from './pages/RestaurantPage.jsx';
-// import CartPage from './pages/CartPage.jsx';
-// import CheckoutPage from './pages/CheckoutPage.jsx';
-// import MyOrdersPage from './pages/MyOrdersPage.jsx';
-// import OrderDetailsPage from './pages/OrderDetailsPage.jsx';
-// import ProfilePage from './pages/ProfilePage.jsx';
 
 function App() {
   return (
     <>
       <BrowserRouter>
+      {/* <AuthWatcher/>  */}
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
@@ -62,15 +50,7 @@ function App() {
           <Route path="/delivery/signup" element={<DeliverySignupPage />} />
 
           {/* Customer Routes */}
-          {/* <Route path="/restaurants" element={<RestaurantListPage />} />
-          <Route path="/restaurant/:id" element={<RestaurantPage />} />
-          <Route path="/cart" element={<CartPage />} />
-          <Route path="/checkout" element={<CheckoutPage />} />
-          <Route path="/orders" element={<MyOrdersPage />} />
-          <Route path="/orders/:id" element={<OrderDetailsPage />} />
-          <Route path="/profile" element={<ProfilePage />} /> 
-          */}
-
+        <Route element={<ProtectedRoute allowedType="restaurant" />}>          
           {/* Restaurant Dashboard */}
           <Route
            path="/restaurant/:id"
@@ -113,7 +93,7 @@ function App() {
                   path="profile"
                   element={<RestaurantProfilePage />}/>
               </Route>
-          
+          </Route>
           {/* Delivery Dashboard */}
           {/* <Route path="/delivery/dashboard" element={<DeliveryDashboard />} />
           <Route path="/delivery/orders" element={<DeliveryOrdersPage />} />

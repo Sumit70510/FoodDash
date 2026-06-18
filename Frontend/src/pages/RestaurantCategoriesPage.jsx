@@ -76,6 +76,7 @@ export default function RestaurantCategoriesPage() {
 
       const method = editingId ? "put" : "post";
 
+      console.log("here");
       const response = await api[method](url, payload);
 
       if(response?.data?.success) 
@@ -89,7 +90,9 @@ export default function RestaurantCategoriesPage() {
         fetchCategories();          
        } 
       else 
-       {alert(response?.data?.message);}
+       {
+        toast.message(response?.data?.message);
+       }
      } 
     catch (error) {
       console.log(error);

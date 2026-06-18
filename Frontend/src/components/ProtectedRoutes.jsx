@@ -1,12 +1,31 @@
-import React from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-export default function ProtectedRoute({ children }) {
-  const user = localStorage.getItem("user");
+export default function ProtectedRoute({
+  allowedType,
+}) {
+  const { user, type } = useSelector(
+    (state) => state.auth
+  );
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    const loginRoutes = {
+      user: "/login",
+      restaurant: "/restaurant/login",
+      delivery: "/delivery/login",
+    };
+
+    return (
+      <Navigate
+        to={loginRoutes[type] || "/login"}
+        replace
+      />
+    );
   }
 
-  return children;
+  if (allowedType && type !== allowedType) {
+    return <Navigate to="/" replace />;
+  }
+
+  return <Outlet />;
 }

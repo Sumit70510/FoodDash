@@ -9,14 +9,21 @@ import { useNavigate } from "react-router-dom";
 import { setAuthUser } from "../redux/auth.Slice.js";
 import { toast } from "sonner";
 import api from "../utils/axios.js";
+import { useEffect } from "react";
 
-export default function RestaurantNavbar({
-  openSidebar,
-}) {
+export default function RestaurantNavbar({openSidebar}) {
   const navigate = useNavigate();  
   const { user, type } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const restaurant = user||{};
+  
+  useEffect(() => {
+   if (!restaurant?._id) {
+     dispatch(setAuthUser({ user: null, type: "" }));
+     toast.error("Session Expired");
+     navigate("/restaurant/login");
+    }
+   }, [restaurant, navigate, dispatch]);
   
   const logoutHandler = async () => {
    try{
@@ -25,9 +32,9 @@ export default function RestaurantNavbar({
       `/${type}/logout`,
     );
     if(data.success){
-       navigate('/restaurant/login');
-       dispatch(setAuthUser({user : null,type :""}));
-       toast.success(data.message);
+      dispatch(setAuthUser({user : null,type :""}));
+      toast.success(data.message);
+      navigate('/restaurant/login');
       }
      } 
     catch(error) {

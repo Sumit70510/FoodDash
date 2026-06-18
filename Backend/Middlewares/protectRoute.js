@@ -20,7 +20,7 @@ export const protectRoute = async (req, res, next) => {
        console.log(401);
       return res.status(401).json({
         success: false,
-        message: "Unauthorized Access",
+        message: "Unauthorized! Access Denied",
       });
     }
 
