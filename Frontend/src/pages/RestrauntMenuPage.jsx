@@ -1,52 +1,36 @@
-import React, {
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
 import api from "../utils/axios.js";
 
 export default function RestaurantMenuPage() {
-  const { user } = useSelector(
+  const { user ,type } = useSelector(
     (state) => state.auth
   );
 
-  const restaurant = user;
   const navigate = useNavigate();
 
-  const [menuItems, setMenuItems] = useState([]);
-  const [search, setSearch] = useState("");
-  const [foodType, setFoodType] =
-    useState("All");
-  const [loading, setLoading] =
-    useState(true);
+  const [menus, setMenus] = useState([]);
+  const [currentMenuIndex, setCurrentMenuIndex] =  useState(0);
+
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (restaurant?._id) {
-      fetchMenuItems();
+    if (user?._id) {
+      fetchMenus();
     }
-  }, [restaurant]);
+  }, [user]);
 
-  const fetchMenuItems = async () => {
+  const fetchMenus = async () => {
     try {
       setLoading(true);
 
-      const response = await api.get(
-        `menu-item/restaurant/${restaurant._id}`
+      const { data } = await api.get(
+        `/menu/${user?._id}/menu`
       );
 
-      console.log(
-        "Menu Response:",
-        response.data
-      );
-
-      if (response.data.success) {
-        setMenuItems(
-          response.data.menuItems || []
-        );
+      if (data.success) {
+        setMenus(data.menus || []);
       }
     } catch (error) {
       console.log(error);
@@ -55,271 +39,308 @@ export default function RestaurantMenuPage() {
     }
   };
 
-  const deleteMenuItem = async (
-    menuItemId
-  ) => {
-    const confirmDelete =
-      window.confirm(
-        "Delete this menu item?"
+  const currentMenu = menus[currentMenuIndex];
+
+  const nextMenu = () => {
+    if (
+      currentMenuIndex <
+      menus.length - 1
+    ) {
+      setCurrentMenuIndex(
+        currentMenuIndex + 1
       );
-
-    if (!confirmDelete) return;
-
-    try {
-      const response = await api.delete(
-        `menu-item/${menuItemId}`
-      );
-
-      if (response.data.success) {
-        setMenuItems((prev) =>
-          prev.filter(
-            (item) =>
-              item._id !== menuItemId
-          )
-        );
-      }
-    } catch (error) {
-      console.log(error);
     }
   };
 
-  const filteredItems = useMemo(() => {
-    return menuItems.filter((item) => {
-      const matchesSearch =
-        item.name
-          ?.toLowerCase()
-          .includes(
-            search.toLowerCase()
-          );
-
-      const matchesType =
-        foodType === "All"
-          ? true
-          : item.foodType === foodType;
-
-      return (
-        matchesSearch && matchesType
+  const previousMenu = () => {
+    if (currentMenuIndex > 0) {
+      setCurrentMenuIndex(
+        currentMenuIndex - 1
       );
-    });
-  }, [menuItems, search, foodType]);
+    }
+  };
 
-  console.log(
-    "menuItems:",
-    menuItems
-  );
-  console.log(
-    "filteredItems:",
-    filteredItems
-  );
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#111827] flex items-center justify-center text-white">
+        Loading...
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-[#111827] px-4 md:px-5 lg:px-6 py-6">
-      
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-bold text-white">
-          Menu Management
-        </h1>
+    <div className="min-h-screen bg-[#111827] p-4 md:p-6">
 
-        <button
-          onClick={() =>
-            navigate(
-              "/restaurant/menu/create-menu"
-            )
-          }
-          className="
-            bg-orange-500
-            hover:bg-orange-600
-            px-5
-            py-3
-            rounded-xl
-            text-white
-            font-semibold
-          "
-        >
-          + Add New Menu
-        </button>
-        
+      {/* Header */}
+
+      <div className="bg-[#1F2937] rounded-2xl p-5 mb-6">
+
+        <div className="flex flex-col lg:flex-row justify-between gap-4">
+
+          <div className="flex items-center justify-center gap-3">
+
+            <button
+              onClick={previousMenu}
+              disabled={
+                currentMenuIndex === 0
+              }
+              className="
+              px-3 py-2
+              rounded-lg
+              bg-gray-700
+              text-white
+              disabled:opacity-40
+              "
+            >
+              ◀
+            </button>
+
+            <h1 className="text-xl md:text-3xl font-bold text-white">
+              {currentMenu?.name ||
+                "No Menu"}
+            </h1>
+
+            <button
+              onClick={nextMenu}
+              disabled={
+                currentMenuIndex ===
+                menus.length - 1
+              }
+              className="
+              px-3 py-2
+              rounded-lg
+              bg-gray-700
+              text-white
+              disabled:opacity-40
+              "
+            >
+              ▶
+            </button>
+
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+
+            <button
+              onClick={() =>
+                navigate(
+                  "/restaurant/menu/create-menu"
+                )
+              }
+              className="
+              bg-orange-500
+              hover:bg-orange-600
+              px-4 py-2
+              rounded-xl
+              text-white
+              "
+            >
+              + New Menu
+            </button>
+
+            <button
+               onClick={() =>
+                navigate(
+                  "/restaurant/categories"
+                )
+              }
+              className="
+              bg-blue-500
+              hover:bg-blue-600
+              px-4 py-2
+              rounded-xl
+              text-white
+              "
+            >
+              + New Category
+            </button>
+
+            <button
+               onClick={() =>
+                navigate(
+                  "/restaurant/menu/create-menuItem"
+                )
+              }
+              className="
+              bg-green-500
+              hover:bg-green-600
+              px-4 py-2
+              rounded-xl
+              text-white
+              "
+            >
+              + New Item
+            </button>
+
+          </div>
+
+        </div>
+
       </div>
 
-      <div className="bg-[#1F2937] p-5 rounded-2xl mb-8">
-        <div className="grid md:grid-cols-2 gap-4">
-          <input
-            type="text"
-            placeholder="Search menu item..."
-            value={search}
-            onChange={(e) =>
-              setSearch(
-                e.target.value
-              )
-            }
-            className="
-              px-4
-              py-3
-              rounded-xl
-              bg-[#111827]
-              text-white
-              outline-none
-            "
-          />
+      {/* Categories */}
 
-          <select
-            value={foodType}
-            onChange={(e) =>
-              setFoodType(
-                e.target.value
-              )
-            }
-            className="
-              px-4
-              py-3
-              rounded-xl
-              bg-[#111827]
-              text-white
-              outline-none
-            "
-          >
-            <option value="All">
-              All
-            </option>
-            <option value="Veg">
-              Veg
-            </option>
-            <option value="Non-Veg">
-              Non-Veg
-            </option>
-            <option value="Egg-Only">
-              Egg-Only
-            </option>
-          </select>
-        </div>
-      </div>
+      <div className="space-y-4">
 
-      {loading ? (
-        <div className="text-center text-white">
-          Loading...
-        </div>
-      ) : filteredItems.length === 0 ? (
-        <div className="text-center text-gray-400">
-          No Menu Items Found
-        </div>
-      ) : (
-        <div className="overflow-x-auto rounded-2xl">
-          <table className="w-full bg-[#1F2937]">
-            <thead>
-              <tr className="border-b border-gray-700 text-left">
-                <th className="p-4 text-gray-300">
-                  Image
-                </th>
+        {currentMenu?.categories?.map(
+          (category) => (
+            <div
+              key={category._id}
+              className="
+              bg-[#1F2937]
+              rounded-2xl
+              overflow-hidden
+              "
+            >
 
-                <th className="p-4 text-gray-300">
-                  Name
-                </th>
+              {/* Category Header */}
 
-                <th className="p-4 text-gray-300">
-                  Category
-                </th>
+              <div
+                className="
+                flex
+                justify-between
+                items-center
+                p-4
+                border-b
+                border-gray-700
+                "
+              >
 
-                <th className="p-4 text-gray-300">
-                  Food Type
-                </th>
+                <div>
 
-                <th className="p-4 text-gray-300">
-                  Price
-                </th>
+                  <h2 className="text-white text-lg font-bold">
+                    {category.name}
+                  </h2>
 
-                <th className="p-4 text-gray-300">
-                  Status
-                </th>
+                  <p className="text-gray-400 text-sm">
+                    {category.items
+                      ?.length || 0}{" "}
+                    Items
+                  </p>
 
-                <th className="p-4 text-gray-300">
-                  Actions
-                </th>
-              </tr>
-            </thead>
+                </div>
 
-            <tbody>
-              {filteredItems.map(
-                (item) => (
-                  <tr
-                    key={item._id}
+                <div className="flex gap-2">
+
+                  <button
                     className="
-                      border-b
-                      border-gray-800
-                      hover:bg-[#374151]
+                    bg-blue-500
+                    hover:bg-blue-600
+                    px-3 py-2
+                    rounded-lg
+                    text-white
                     "
                   >
-                    <td className="p-4">
-                      <img
-                        src={
-                          item.image?.[0]
-                            ?.url ||
-                          "/food-placeholder.jpg"
-                        }
-                        alt={item.name}
-                        className="
-                          w-16
-                          h-16
-                          rounded-lg
-                          object-cover
-                        "
-                      />
-                    </td>
+                    Edit
+                  </button>
 
-                    <td className="p-4 text-white">
-                      {item.name}
-                    </td>
+                  <button
+                    className="
+                    bg-red-500
+                    hover:bg-red-600
+                    px-3 py-2
+                    rounded-lg
+                    text-white
+                    "
+                  >
+                    Delete
+                  </button>
 
-                    <td className="p-4 text-white">
-                      {item.categoryId
-                        ?.name ||
-                        "Unknown"}
-                    </td>
+                </div>
 
-                    <td className="p-4">
-                      <span
-                        className={`
-                          px-3 py-1 rounded-full text-sm
-                          ${
-                            item.foodType ===
-                            "Veg"
-                              ? "bg-green-500 text-white"
-                              : item.foodType ===
-                                "Non-Veg"
-                              ? "bg-red-500 text-white"
-                              : "bg-yellow-500 text-black"
+              </div>
+
+              {/* Items */}
+
+              <div className="divide-y divide-gray-800">
+
+                {category.items?.map(
+                  (item) => (
+                    <div
+                      key={item._id}
+                      className="
+                      flex
+                      flex-col
+                      md:flex-row
+                      md:justify-between
+                      md:items-center
+                      gap-4
+                      p-4
+                      hover:bg-[#374151]
+                      "
+                    >
+
+                      <div className="flex gap-4">
+
+                        <img
+                          src={
+                            item.image?.[0]
+                              ?.url ||
+                            "/food-placeholder.jpg"
                           }
-                        `}
-                      >
-                        {
-                          item.foodType
-                        }
-                      </span>
-                    </td>
+                          alt={
+                            item.name
+                          }
+                          className="
+                          w-20
+                          h-20
+                          rounded-xl
+                          object-cover
+                          "
+                        />
 
-                    <td className="p-4 text-orange-500 font-bold">
-                      ₹
-                      {item.variants?.[0]
-                        ?.discountPrice ||
-                        item
-                          .variants?.[0]
-                          ?.price ||
-                        0}
-                    </td>
+                        <div>
 
-                    <td className="p-4">
-                      {item.isAvailable ? (
-                        <span className="text-green-500">
-                          Available
-                        </span>
-                      ) : (
-                        <span className="text-red-500">
-                          Unavailable
-                        </span>
-                      )}
-                    </td>
+                          <h3 className="text-white font-semibold">
+                            {item.name}
+                          </h3>
 
-                    <td className="p-4">
+                          <p className="text-gray-400 text-sm">
+                            {
+                              item.categoryId
+                                ?.name
+                            }
+                          </p>
+
+                          <div className="flex gap-2 mt-2">
+
+                            <span
+                              className={`
+                              px-2 py-1 rounded text-xs
+                              ${
+                                item.foodType ===
+                                "Veg"
+                                  ? "bg-green-500 text-white"
+                                  : item.foodType ===
+                                    "Non-Veg"
+                                  ? "bg-red-500 text-white"
+                                  : "bg-yellow-500 text-black"
+                              }
+                              `}
+                            >
+                              {
+                                item.foodType
+                              }
+                            </span>
+
+                            <span className="text-orange-400 font-bold">
+                              ₹
+                              {item
+                                .variants?.[0]
+                                ?.discountPrice ||
+                                item
+                                  .variants?.[0]
+                                  ?.price}
+                            </span>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+
                       <div className="flex gap-2">
+
                         <button
                           onClick={() =>
                             navigate(
@@ -327,43 +348,48 @@ export default function RestaurantMenuPage() {
                             )
                           }
                           className="
-                            bg-blue-500
-                            hover:bg-blue-600
-                            px-3
-                            py-2
-                            rounded-lg
-                            text-white
+                          bg-blue-500
+                          hover:bg-blue-600
+                          px-3 py-2
+                          rounded-lg
+                          text-white
                           "
                         >
                           Edit
                         </button>
 
                         <button
-                          onClick={() =>
-                            deleteMenuItem(
-                              item._id
-                            )
-                          }
                           className="
-                            bg-red-500
-                            hover:bg-red-600
-                            px-3
-                            py-2
-                            rounded-lg
-                            text-white
+                          bg-red-500
+                          hover:bg-red-600
+                          px-3 py-2
+                          rounded-lg
+                          text-white
                           "
                         >
                           Delete
                         </button>
+
                       </div>
-                    </td>
-                  </tr>
-                )
-              )}
-            </tbody>
-          </table>
+
+                    </div>
+                  )
+                )}
+
+              </div>
+
+            </div>
+          )
+        )}
+
+      </div>
+
+      {!currentMenu && (
+        <div className="text-center text-gray-400 mt-10">
+          No Menus Found
         </div>
       )}
+
     </div>
   );
 }
