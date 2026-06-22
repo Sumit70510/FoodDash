@@ -6,6 +6,7 @@ import {
   getSingleCategory,
   updateCategory,
   deleteCategory,
+  getCategoriesByMenuId,
 } from "../Controllers/food.category.controller.js";
 
 import { protectRoute } from "../Middlewares/protectRoute.js";
@@ -19,14 +20,17 @@ router.post(
 );
 
 router.get(
-  "/restaurant/:restaurantId",
-  getCategoriesByRestaurant
-);
+  "/restaurant/:restaurantId", 
+  getCategoriesByRestaurant);
+  
+  router.get(
+    "/menu/:menuId", 
+    getCategoriesByMenuId);
 
-router.get(
-  "/:categoryId",
-  getSingleCategory
-);
+    router.get(
+    "/:categoryId",
+    getSingleCategory
+    );
 
 router.put(
   "/edit/:categoryId",

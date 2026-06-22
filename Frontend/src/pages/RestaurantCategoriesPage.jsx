@@ -101,11 +101,11 @@ export default function RestaurantCategoriesPage() {
   };
   
 const handleEdit = (category) => {
-
+  console.log(category)
   setData({
     name: category.name,
     description: category.description || "",
-    menuId: category.menuId || "",
+    menuId: category?.menuId?._id || "",
   });
   setEditingId(category._id);
 };

@@ -80,16 +80,21 @@ export const getMenuItemsByRestaurant = async (req, res) => {
     const { restaurantId } = req.params;
 
     const menuItems = await MenuItem.find({ restaurantId })
-      .populate("categoryId")
-      .sort({ createdAt: -1 });
-
+      // .populate("categoryId")
+      .sort({ categoryId: 1 });
+    if(!menuItems)
+       {
+         return res.status(401).json({
+           success: true,
+           message:"No Items Present" ,
+         });
+       }
     return res.status(200).json({
       success: true,
       menuItems,
     });
   } catch (error) {
     console.log("Get Menu Items Error:", error);
-
     return res.status(500).json({
       success: false,
       message: "Internal Server Error",

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import api from "../utils/axios.js";
+import { toast } from "sonner";
 
 export default function RestaurantMenuPage() {
   const { user ,type } = useSelector(
@@ -11,6 +12,7 @@ export default function RestaurantMenuPage() {
   const navigate = useNavigate();
 
   const [menus, setMenus] = useState([]);
+  const [menuItems, setMenuItems] = useState([]);
   const [currentMenuIndex, setCurrentMenuIndex] =  useState(0);
 
   const [loading, setLoading] = useState(true);
@@ -18,6 +20,18 @@ export default function RestaurantMenuPage() {
   useEffect(() => {
     if (user?._id) {
       fetchMenus();
+    }
+  }, [user]);
+  
+  useEffect(() => {
+    if (user?._id) {
+      fetchMenuItems();
+    }
+  }, [user]);
+  
+  useEffect(() => {
+    if (user?._id) {
+      fetchCategory();
     }
   }, [user]);
 
@@ -30,6 +44,7 @@ export default function RestaurantMenuPage() {
       );
 
       if (data.success) {
+        toast.success("All Menus Fetched")
         setMenus(data.menus || []);
       }
     } catch (error) {
@@ -38,10 +53,50 @@ export default function RestaurantMenuPage() {
       setLoading(false);
     }
   };
-
-  const currentMenu = menus[currentMenuIndex];
-
+ 
+  const fetchMenuItems = async ()=>{
+     try {
+        setLoading(true);
+        const response = await api.get(`/menu-item/restaurant/${user?._id}`);
+  
+        if (response?.data?.success) {
+          setMenuItems(response?.data.menuItems || []);
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error(error?.response?.data?.message||"Error Fetching Menu-Items!")
+      } finally {
+        setLoading(false);
+      }
+  }  
+  const currentMenu = menus[currentMenuIndex]||{};
+  const [categories,setCategories] = useState([]); 
+  
+  const fetchCategory = async ()=>{
+     try {
+        setLoading(true);
+        console.log(menus);
+        console.log(menus[0]);
+        const currMenuId = menus[currentMenuIndex]?._id||null;
+        const response = await api.get(`/category/menu/${currMenuId}`);
+  
+        if (response?.data?.success) {
+          console.log("success");
+          console.log(response);
+          toast.success("Category Fetched");
+          setCategories(response?.data.categories || []);
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error(error?.response?.data?.message||"Error Fetching Menu-Items!")
+      } finally {
+        setLoading(false);
+      }
+   }  
+  
   const nextMenu = () => {
+    fetchCategory();
+    console.log(currentMenu);
     if (
       currentMenuIndex <
       menus.length - 1
@@ -51,8 +106,10 @@ export default function RestaurantMenuPage() {
       );
     }
   };
-
+  
   const previousMenu = () => {
+    fetchCategory();
+    console.log(currentMenu);
     if (currentMenuIndex > 0) {
       setCurrentMenuIndex(
         currentMenuIndex - 1
@@ -182,16 +239,15 @@ export default function RestaurantMenuPage() {
 
       <div className="space-y-4">
 
-        {currentMenu?.categories?.map(
-          (category) => (
-            <div
+        {categories?.map(
+            (category) => (
+             <div
               key={category._id}
               className="
               bg-[#1F2937]
               rounded-2xl
               overflow-hidden
-              "
-            >
+              ">
 
               {/* Category Header */}
 
@@ -213,8 +269,7 @@ export default function RestaurantMenuPage() {
                   </h2>
 
                   <p className="text-gray-400 text-sm">
-                    {category.items
-                      ?.length || 0}{" "}
+                    {category.items?.length || 0}{" "}
                     Items
                   </p>
 
@@ -266,9 +321,7 @@ export default function RestaurantMenuPage() {
                       md:items-center
                       gap-4
                       p-4
-                      hover:bg-[#374151]
-                      "
-                    >
+                      hover:bg-[#374151]">
 
                       <div className="flex gap-4">
 

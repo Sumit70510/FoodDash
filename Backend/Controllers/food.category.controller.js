@@ -62,7 +62,7 @@ export const getCategoriesByRestaurant = async (req, res) => {
         await Category.find({
           restaurantId,
         })
-        //   .populate("menuId")
+          .populate("menuId")
           .sort({
             createdAt: -1,
           });
@@ -83,10 +83,37 @@ export const getCategoriesByRestaurant = async (req, res) => {
           "Internal Server Error",
       });
     }
+  }; 
+  
+export const getCategoriesByMenuId = async (req, res) => {
+    try {
+      const { menuId } =
+        req.params;
+
+      const categories = await Category.find({
+          menuId,}).sort({createdAt: -1});
+    
+      if(!categories)
+       {
+        return res.status(401).json({
+          success: false,
+          message: "No Categories Available for this Menu",
+        });
+       }    
+      return res.status(200).json({
+        success: true,
+        categories,
+      });
+    } catch (error) {
+      console.log("Get Categories Error:",error);
+      return res.status(500).json({
+        success: false,
+        message:"Internal Server Error",
+      });
+    }
   };
 
-export const getSingleCategory =
-  async (req, res) => {
+export const getSingleCategory = async (req, res) => {
     try {
       const { categoryId } =
         req.params;

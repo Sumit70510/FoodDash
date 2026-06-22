@@ -17,7 +17,7 @@ export default function ProtectedRoute({
 
     return (
       <Navigate
-        to={loginRoutes[type] || "/login"}
+        to={loginRoutes[type] || "/"}
         replace
       />
     );
