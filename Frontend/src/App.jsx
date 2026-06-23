@@ -26,6 +26,7 @@ import CreateMenuPage from './pages/CreateMenuPage.jsx';
 import EditMenuItemPage from './pages/EditMenuItemPage.jsx';
 import AuthWatcher from './components/AuthWatcher.jsx';
 import ProtectedRoute from './components/ProtectedRoutes.jsx';
+import CartPage from './pages/CartPage.jsx';
 
 
 function App() {
@@ -50,6 +51,9 @@ function App() {
           <Route path="/delivery/signup" element={<DeliverySignupPage />} />
 
           {/* Customer Routes */}
+         <Route path="/cart" element={<CartPage/>}/> 
+          
+          
         <Route element={<ProtectedRoute allowedType="restaurant" />}>          
           {/* Restaurant Dashboard */}
           <Route

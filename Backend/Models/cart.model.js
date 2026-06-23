@@ -6,9 +6,9 @@ const cartSchema = new mongoose.Schema({
              type : Number,
              min : 0, default :0 },
     
-        restrauntId : {
+        restaurantId : {
             type : mongoose.Schema.Types.ObjectId,
-            ref :"Restraunt",
+            ref :"Restaurant",
             required : true },
             
         userId : {
@@ -16,30 +16,36 @@ const cartSchema = new mongoose.Schema({
             ref :"User",
             required : true },
             
-        items : [{
-            menuItemId : {
-              type: mongoose.Schema.Types.ObjectId,
-              ref: "MenuItem",
-              required: true },
-            
-            quantity : {
-              type: Number,
-              min: 1, default: 1 },
-            
-            sizeType : {
-              type: String,
-              enum: ["Quarter", "Half", "Full", "Small", "Medium", "Large", "Extra Large"],
-              required: true ,
-              trim : true },
+       items: [
+               {
+                 menuItemId: {
+                   type: mongoose.Schema.Types.ObjectId,
+                   ref: "MenuItem",
+                   required: true,
+                 },
              
-            price: {
-              type: Number,
-              required: true,min: 0 },
-
-            discountPrice: {
-            type: Number,
-            min: 0 },    
-           }]  
+                 quantity: {
+                   type: Number,
+                   default: 1,
+                   min: 1,
+                 },
+             
+                 sizeType: {
+                   type: String,
+                   required: true,
+                 },
+             
+                 price: {
+                   type: Number,
+                   required: true,
+                 },
+             
+                 discountPrice: {
+                   type: Number,
+                   default: 0,
+                 },
+               },
+             ]
     },
    {timestamps:true}
   );

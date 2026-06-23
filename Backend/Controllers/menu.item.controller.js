@@ -80,7 +80,7 @@ export const getMenuItemsByRestaurant = async (req, res) => {
     const { restaurantId } = req.params;
 
     const menuItems = await MenuItem.find({ restaurantId })
-      // .populate("categoryId")
+      .populate("categoryId")
       .sort({ categoryId: 1 });
     if(!menuItems)
        {
