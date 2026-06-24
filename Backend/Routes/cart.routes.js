@@ -14,7 +14,7 @@ const router = express.Router();
 
 router.post("/add", isAuthenticated, addToCart );
 
-router.get("/items ",isAuthenticated, getCart );
+router.get("/items",isAuthenticated, getCart );
 
 router.put("/update/:cartItemId",isAuthenticated,updateCartItemQuantity);
 
