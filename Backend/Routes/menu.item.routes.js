@@ -45,7 +45,7 @@ router.put(
 );
 
 router.delete(
-  "/:menuItemId",
+  "/delete/:menuItemId",
   protectRoute,
   deleteMenuItem
 );

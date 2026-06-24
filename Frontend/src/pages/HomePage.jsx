@@ -9,7 +9,8 @@ export default function HomePage() {
   const [search, setSearch] = useState("");
   const [foodType, setFoodType] = useState("All");
   const [loading, setLoading] = useState(true);
-
+  const [quantity,setQuantity] = useState(0);
+  
   useEffect(() => {
     fetchMenuItems();
   }, []);
@@ -55,6 +56,7 @@ export default function HomePage() {
     });
   }, [menuItems, search, foodType]);
 
+  
   return (
     <div className="min-h-screen bg-[#111827]">
       <Navbar />
@@ -165,20 +167,7 @@ export default function HomePage() {
             {filteredItems.map((item) => (
               <FoodCard
                 key={item._id}
-                item={{
-                  _id: item._id,
-                  name: item.name,
-                  image:
-                    item.image?.[0]?.url ||
-                    "/food-placeholder.jpg",
-                  foodType: item.foodType,
-                  price:
-                    item.variants?.[0]
-                      ?.discountPrice ||
-                    item.variants?.[0]?.price ||
-                    0,
-                   isAvailable : item.isAvailable 
-                }}
+                item={item}
               />
             ))}
           </div>

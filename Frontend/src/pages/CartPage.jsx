@@ -2,12 +2,12 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar.jsx";
 import api from "../utils/axios.js";
+import { toast } from "sonner";
 
 export default function CartPage() {
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [updatingItem, setUpdatingItem] =
-    useState(null);
+  const [updatingItem, setUpdatingItem] = useState(null);
 
   useEffect(() => {
     fetchCart();
@@ -17,15 +17,14 @@ export default function CartPage() {
     try {
       setLoading(true);
 
-      const { data } = await api.get(
-        "/cart"
-      );
+      const response = await api.get("/cart/items");
 
-      if (data.success) {
-        setCart(data.cart);
+      if (response?.data?.success) {
+        setCart(response?.data?.cart);
       }
     } catch (error) {
       console.log(error);
+      toast.error(error?.response?.data?.message||"Failed Loading Cart Items")
     } finally {
       setLoading(false);
     }
