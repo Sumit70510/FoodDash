@@ -9,8 +9,7 @@ export default function HomePage() {
   const [search, setSearch] = useState("");
   const [foodType, setFoodType] = useState("All");
   const [loading, setLoading] = useState(true);
-  const [quantity,setQuantity] = useState(0);
-  
+ 
   useEffect(() => {
     fetchMenuItems();
   }, []);
@@ -28,11 +27,10 @@ export default function HomePage() {
         response.data
       );
 
-      if (response.data.success) {
-        setMenuItems(
-          response.data.menuItems || []
-        );
-      }
+      if(response.data.success) 
+       {
+        setMenuItems(response.data.menuItems||[]);
+       }
     } catch (error) {
       console.log(error);
     } finally {

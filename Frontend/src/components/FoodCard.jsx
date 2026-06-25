@@ -6,7 +6,8 @@ import { toast } from "sonner";
 import api from "../utils/axios.js";
 
 export default function FoodCard({ item }) {
-  const [quantity, setQuantity] = useState(1);
+  
+  const [quantity, setQuantity] = useState(0);
 
   const [selectedVariant, setSelectedVariant] =
     useState(
@@ -292,32 +293,33 @@ export default function FoodCard({ item }) {
               bg-[#111827]
             "
           >
-            <button
-              type="button"
-              onClick={() =>
-                updateQuantity("-")
-              }
-              className="
-                px-4
-                py-2
-                text-orange-400
-                hover:bg-gray-800
-              "
-            >
-              −
-            </button>
-
-            <span
-              className="
-                px-4
-                py-2
-                text-white
-                font-semibold
-              "
-            >
-              {quantity}
-            </span>
-
+            {quantity > 0 && (
+                 <div>
+                   <button
+                     type="button"
+                     onClick={() => updateQuantity("-")}
+                     className="
+                       px-4
+                       py-2
+                       text-orange-400
+                       hover:bg-gray-800
+                     "
+                   >
+                     −
+                   </button>
+               
+                   <span
+                     className="
+                       px-4
+                       py-2
+                       text-white
+                       font-semibold
+                     "
+                   >
+                     {quantity}
+                   </span>
+                 </div>
+               )}
             <button
               type="button"
               onClick={() =>
