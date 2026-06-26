@@ -131,7 +131,8 @@ export default function Navbar() {
           <>
             {location.pathname ===
               "/cart" && (
-              <Link
+               <div className="flex gap-3 items-center">
+               <Link
                 to="/"
                 className="
                   px-5 py-2
@@ -145,9 +146,27 @@ export default function Navbar() {
               >
                 🏠 Home
               </Link>
-            )}
-
-            <Link
+              
+              <Link
+                to="/orders"
+                className="
+                  px-5 py-2
+                  rounded-full
+                  text-white
+                  border border-white/20
+                  hover:border-orange-400
+                  hover:bg-white/5
+                  transition-all
+                "
+              >
+                Orders
+              </Link>
+              </div>
+           )}
+           
+           {location.pathname !==
+              "/cart"&&
+            (<Link
               to="/cart"
               className={`
                 relative
@@ -189,9 +208,10 @@ export default function Navbar() {
                   {cartCount}
                 </span>
               )}
-            </Link>
-
-            <div
+             </Link>)
+             }
+            <Link
+               to="/profile"
               className="
                 w-10 h-10
                 rounded-full
@@ -213,7 +233,7 @@ export default function Navbar() {
                 user?.name?.[0] ||
                 "U"
               ).toUpperCase()}
-            </div>
+            </Link>
 
             <button
               onClick={logoutHandler}

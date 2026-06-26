@@ -4,17 +4,14 @@ import { GiChicken } from "react-icons/gi";
 import { IoEgg } from "react-icons/io5";
 import { toast } from "sonner";
 import api from "../utils/axios.js";
+import { useSelector } from "react-redux";
 
 export default function FoodCard({ item }) {
   
   const [quantity, setQuantity] = useState(0);
+  const { user, type } = useSelector((state) => state.auth);
 
-  const [selectedVariant, setSelectedVariant] =
-    useState(
-      item?.variants?.length
-        ? item.variants[0]
-        : null
-    );
+  const [selectedVariant, setSelectedVariant] = useState(item?.variants?.length? item.variants[0] : null);
 
   const getFoodIcon = () => {
     switch (item.foodType) {
@@ -53,26 +50,24 @@ export default function FoodCard({ item }) {
   };
 
   const handleAddToCart = async () => {
-    try {
-      if (!selectedVariant) {
-        return toast.error(
-          "Please select a size"
-        );
-      }
+    try
+     {
+       if(!selectedVariant) {
+        return toast.error("Please select a size");
+       }
+      
+      if(!user)
+       {return toast.error("Unauthorized!");} 
 
       const payload = { menuItemId : item._id,
                         restaurantId : typeof item.restaurantId === "object" ? item.restaurantId?._id :item.restaurantId,
         quantity,
         selectedVariant: {
-          sizeType:
-            selectedVariant.sizeType,
+          sizeType : selectedVariant.sizeType,
 
-          price:
-            selectedVariant.price,
+          price : selectedVariant.price,
 
-          discountPrice:
-            selectedVariant.discountPrice ||
-            0,
+          discountPrice : selectedVariant.discountPrice || 0,
         },
       };
       

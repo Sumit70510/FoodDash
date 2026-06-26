@@ -152,23 +152,6 @@ return ( <footer className="bg-black border-t border-orange-500/20"> <div
         © {new Date().getFullYear()} FoodDash. All rights reserved.
       </p>
 
-      <div className="flex items-center gap-5">
-        <button className="text-gray-400 hover:text-orange-500 transition text-lg">
-          📘
-        </button>
-
-        <button className="text-gray-400 hover:text-orange-500 transition text-lg">
-          📸
-        </button>
-
-        <button className="text-gray-400 hover:text-orange-500 transition text-lg">
-          🐦
-        </button>
-
-        <button className="text-gray-400 hover:text-orange-500 transition text-lg">
-          💼
-        </button>
-      </div>
     </div>
   </div>
 </footer>
