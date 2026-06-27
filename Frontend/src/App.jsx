@@ -29,7 +29,7 @@ import ProtectedRoute from './components/ProtectedRoutes.jsx';
 import CartPage from './pages/CartPage.jsx';
 import UserOrdersPage from './pages/UserOrdersPage.jsx';
 import UserProfilePage from './pages/UserProfilePage.jsx';
-import DeliveryPartnerDashboard from './pages/DeliveryPartnerDashBoard.jsx';
+import DeliveryPartnerDashboard from './pages/DeliveryPartnerDashboard.jsx';
 import DeliveryPartnerOrders from './pages/DeliveryPartnerOrders.jsx';
 
 
@@ -119,7 +119,7 @@ function App() {
          
         <Route
           path="delivery/dashboard"
-          element={<DeliveryPartnerDashboard />}/>
+          element={<DeliveryPartnerDashboard/>}/>
 
         <Route
           path="delivery/orders"
