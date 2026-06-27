@@ -148,7 +148,7 @@ export default function Navbar() {
               </Link>
               
               <Link
-                to="/orders"
+                to="/user/orders"
                 className="
                   px-5 py-2
                   rounded-full
@@ -211,7 +211,7 @@ export default function Navbar() {
              </Link>)
              }
             <Link
-               to="/profile"
+               to="/user/profile"
               className="
                 w-10 h-10
                 rounded-full

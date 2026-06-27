@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import api from "../utils/axios";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
+import Navbar from "../components/Navbar.jsx";
 
 const statusColor = {
   Placed: "bg-blue-500",
@@ -77,8 +78,9 @@ export default function UserOrdersPage() {
   }
 
   return (
+    <>
+     <Navbar/>
     <div className="min-h-screen bg-[#111827] px-4 py-8">
-
       <div className="max-w-6xl mx-auto">
 
         <h1 className="text-4xl font-bold text-white mb-8">
@@ -251,5 +253,6 @@ export default function UserOrdersPage() {
       </div>
 
     </div>
+    </>
   );
 }
