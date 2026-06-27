@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import api from "../utils/axios";
+import api from "../utils/axios.js";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
 
 export default function DeliveryPartnerOrders() {
 
-    const { user } = useSelector(state=>state.auth);
+    const { user ,type } = useSelector(state=>state.auth);
 
     const [orders,setOrders]=useState([]);
 
