@@ -52,7 +52,7 @@ const menuItemSchema = new mongoose.Schema({
           //  trim: true },
          sizeType: {
             type: String,
-            enum: ["Quarter", "Half", "Full", "Small", "Medium", "Large", "Extra Large"],
+            enum: ["Quarter", "Half", "Full", "Small", "Medium", "Large", "ExL"],
             required: true ,
             trim : true
            },

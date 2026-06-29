@@ -136,10 +136,7 @@ export default function CreateMenuItemPage() {
 
     if (!files.length) return;
 
-    const newPreviews = files.map(
-      (file) =>
-        URL.createObjectURL(file)
-    );
+    const newPreviews = files.map((file) => URL.createObjectURL(file));
 
     setImages((prev) => [
       ...prev,
@@ -558,10 +555,7 @@ export default function CreateMenuItemPage() {
             <div className="space-y-4">
 
               {variants.map(
-                (
-                  variant,
-                  index
-                ) => (
+                (variant,index) => (
                   <div
                     key={index}
                     className="grid lg:grid-cols-4 gap-3 items-center"
@@ -604,7 +598,7 @@ export default function CreateMenuItemPage() {
                       </option>
 
                       <option>
-                        Extra Large
+                        ExL
                       </option>
                     </select>
 

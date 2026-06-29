@@ -1,3 +1,7 @@
+import {
+  uploadOnCloudinary,
+  deleteFromCloudinary,
+} from "../Utils/cloudinary.js";
 import Restaurant from '../Models/restaurant.model.js';
 import Session from '../Models/session.model.js';
 import bcrypt from "bcrypt";
@@ -312,3 +316,119 @@ export const logoutFromAll = async(req,res)=>{
        return res.status(500).json({message : "Internal Server Error", success : false});
      }
  }
+ 
+ 
+ 
+
+// Get Restaurant Profile
+
+export const getRestaurantProfile = async (req, res) => {
+  try {
+
+    const restaurant = await Restaurant.findById(req.restraunt._id);
+
+    if (!restaurant) {
+      return res.status(404).json({
+        success: false,
+        message: "Restaurant not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      restaurant,
+    });
+
+  } catch (error) {
+
+    console.log("Get Restaurant Profile Error :", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+
+  }
+};
+
+// Update Restaurant Profile
+
+export const updateRestaurantProfile = async (req, res) => {
+
+  try {
+    console.log(req.body);
+    const restaurant = await Restaurant.findById(req.body?._id);
+
+    if (!restaurant) {
+      return res.status(404).json({
+        success: false,
+        message: "Restaurant not found",
+      });
+    }
+
+    const {
+      name,
+      email,
+      ownerContactNo,
+      restaurantContactNo,
+      address,
+      operational,
+      isOpen,
+    } = req.body;
+
+    if (name) restaurant.name = name;
+    if (email) restaurant.email = email;
+    if (ownerContactNo) restaurant.ownerContactNo = ownerContactNo;
+    if (restaurantContactNo) restaurant.restaurantContactNo = restaurantContactNo;
+    if (address) restaurant.address = address;
+    if (operational) restaurant.operational = operational;
+    if (typeof isOpen !== "undefined") restaurant.isOpen = isOpen;
+
+
+    // Upload new profile image
+
+    if (req.file) {
+
+      // Delete old image
+
+      if (restaurant.image?.public_id) {
+
+        await deleteFromCloudinary(
+          restaurant.image.public_id,
+          restaurant.image.resource_type
+        );
+
+      }
+
+      const uploadedImage = await uploadOnCloudinary(req.file.path);
+
+      if (uploadedImage) {
+
+        restaurant.image = {
+          url: uploadedImage.url,
+          public_id: uploadedImage.public_id,
+          resource_type: uploadedImage.resource_type,
+        };
+
+      }
+    }
+
+    await restaurant.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Restaurant profile updated successfully",
+      restaurant,
+    });
+
+  } catch (error) {
+
+    console.log("Update Restaurant Profile Error :", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+
+  }
+};

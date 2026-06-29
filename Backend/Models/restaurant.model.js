@@ -27,7 +27,7 @@ const restaurantSchema= new mongoose.Schema({
     
     ownerContactNo : {type: String , required : false  },
     
-    restaurantContactNo : {type: String , required : true },
+    restaurantContactNo : {type: String , required : false },
     
     password : {type : String,required : true ,select : false},
     

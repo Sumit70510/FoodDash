@@ -1,23 +1,28 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { setAuthUser } from "../redux/auth.Slice.js";
+import api from "../utils/axios.js";
+import { toast } from "sonner";
 
 export default function RestrauntProfilePage() {
   
   const { user, type } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const restaurant = user||{};
-  // console.log(restaurant);
+  console.log(restaurant);
   const [formData, setFormData] = useState({
+    _id: restaurant?._id||"",
     name: restaurant?.name || "",
     email: restaurant?.email || "",
     ownerContactNo: restaurant?.ownerContactNo || "",
-    restrauntContactNo:
-      restaurant?.restrauntContactNo || "",
+    restaurantContactNo:
+      restaurant?.restaurantContactNo || "",
     address: restaurant?.location?.address || "",
     operational: restaurant?.operational || "Open",
     isOpen: restaurant?.isOpen ?? true,
   });
   
+  // const image=null;
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -34,35 +39,25 @@ export default function RestrauntProfilePage() {
     e.preventDefault();
 
     try {
-      // setLoading(true);
-
-      // const response = await fetch(
-      //   `http://localhost:5000/api/v1/restaurant/${restaurant._id}`,
-      //   {
-      //     method: "PUT",
-      //     credentials: "include",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //     body: JSON.stringify(formData),
-      //   }
-      // );
-
-      // const data = await response.json();
-
-      // if (data.success) {
-      //   localStorage.setItem(
-      //     "restaurant",
-      //     JSON.stringify(data.restaurant)
-      //   );
-
-      //   alert("Profile Updated Successfully");
-      // } else {
-      //   alert(data.message);
-      // }
-    } catch (error) {
+     setLoading(true);
+     
+    //  if(image)
+    //   {formData.append("image", image);}
+     
+     const response = await api.put("/restaurant/profile", formData);
+      if(response.data.success) 
+       {
+        toast.success("Profile Updated!");
+        // dispatch(setAuthUser({user : response.data.user,
+        //   type : 'restaurant'
+        //  }));
+        // setFormData({})
+       }
+     }
+    catch (error) {
       console.log(error);
-      alert("Something went wrong");
+      toast.error(error?.response?.data?.message);
+      // alert("Something went wrong");
     } finally {
       setLoading(false);
     }
