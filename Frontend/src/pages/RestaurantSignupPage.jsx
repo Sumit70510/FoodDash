@@ -9,7 +9,7 @@ export default function RestaurantSignupPage() {
     ownerName: "",
     email: "",
     password: "",
-    restaurantContactNo: "",
+    ownerContactNo: "",
     address: "",
     lat: "",
     lng: "",
@@ -30,9 +30,9 @@ export default function RestaurantSignupPage() {
     e.preventDefault();
 
     if (!formData.name || !formData.ownerName || !formData.email || !formData.password
-        || !formData.restaurantContactNo || !formData.address || !formData.PAN || !formData.FSSAI) 
+        || !formData.ownerContactNo || !formData.address || !formData.PAN || !formData.FSSAI) 
     {
-      toast.error("Please fill all required fields");
+      toast.error("Please fill all required fields!");
       return;
     }
 
@@ -49,7 +49,7 @@ export default function RestaurantSignupPage() {
         email: formData.email,
         password: formData.password,
         address: formData.address,
-        restaurantContactNo : formData.restaurantContactNo,
+        ownerContactNo : formData.ownerContactNo,
         lat: parseFloat(formData.lat) || 0,
         lng: parseFloat(formData.lng) || 0,
         PAN: formData.PAN,
@@ -65,7 +65,7 @@ export default function RestaurantSignupPage() {
           ownerName: "",
           email: "",
           password: "",
-          restaurantContactNo: "",
+          ownerContactNo: "",
           address: "",
           lat: "",
           lng: "",
@@ -209,8 +209,8 @@ export default function RestaurantSignupPage() {
           
             <input
               type="tel"
-              name="restaurantContactNo"
-              value={formData.restaurantContactNo}
+              name="ownerContactNo"
+              value={formData.ownerContactNo}
               onChange={changeEventHandler}
               placeholder="10-digit mobile number"
               maxLength={10}
