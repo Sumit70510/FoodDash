@@ -12,13 +12,14 @@ export default function RestaurantSignupPage() {
     ownerContactNo: "",
     address: "",
     lat: "",
-    lng: "",
+    lng: "",  
     PAN: "",
     FSSAI: "",
     GST: "",
   });
 
   const [loading, setLoading] = useState(false);
+ 
   const navigate = useNavigate();
 
   const changeEventHandler = (e) => {
