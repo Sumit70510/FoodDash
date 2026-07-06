@@ -152,16 +152,14 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#111827] text-white py-10 px-5">
-      <div className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-8">
+    <div className="min-h-screen app-bg text-muted py-8 px-4">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 space-y-4">
 
-          <div className="bg-[#1F2937] rounded-xl p-6 mb-6">
+          <div className="surface rounded-xl p-4">
 
-            <h2 className="text-2xl font-bold mb-4">
-              Delivery Address
-            </h2>
+            <h2 className="text-2xl font-bold mb-3 text-white">Delivery Address</h2>
 
             <textarea
               rows={4}
@@ -172,37 +170,26 @@ export default function CheckoutPage() {
                   address: e.target.value,
                 })
               }
-              className="w-full bg-[#111827] border border-gray-700 rounded-lg p-3"
+              className="w-full bg-transparent border border-gray-700 rounded-lg p-3 text-white"
             />
 
           </div>
 
-          <div className="bg-[#1F2937] rounded-xl p-6">
+          <div className="surface rounded-xl p-4">
 
-            <h2 className="text-2xl font-bold mb-5">
-              Cart Items
-            </h2>
+            <h2 className="text-2xl font-bold mb-4 text-white">Cart Items</h2>
 
             {cartItems.map((item) => (
-              <div
-                key={item._id}
-                className="flex justify-between border-b border-gray-700 py-4"
-              >
+              <div key={item._id} className="flex justify-between border-b border-gray-700 py-3">
                 <div>
-                  <h3>{item.name}</h3>
+                  <h3 className="text-white">{item.name}</h3>
 
-                  <p className="text-sm text-gray-400">
-                    {item.sizeType}
-                  </p>
+                  <p className="text-sm text-muted">{item.sizeType}</p>
 
-                  <p className="text-sm text-gray-400">
-                    Qty : {item.quantity}
-                  </p>
+                  <p className="text-sm text-muted">Qty : {item.quantity}</p>
                 </div>
 
-                <div>
-                  ₹{item.quantity * item.unitPrice}
-                </div>
+                <div className="text-white">₹{item.quantity * item.unitPrice}</div>
               </div>
             ))}
 
@@ -212,11 +199,9 @@ export default function CheckoutPage() {
 
         <div>
 
-          <div className="bg-[#1F2937] rounded-xl p-6 sticky top-5">
+          <div className="surface rounded-xl p-4 sticky top-5">
 
-            <h2 className="text-2xl font-bold mb-6">
-              Order Summary
-            </h2>
+            <h2 className="text-2xl font-bold mb-4 text-white">Order Summary</h2>
 
             <div className="flex justify-between mb-3">
               <span>Subtotal</span>
@@ -275,16 +260,8 @@ export default function CheckoutPage() {
 
             </div>
 
-            <button
-              disabled={loading}
-              onClick={handlePlaceOrder}
-              className="mt-8 w-full bg-orange-500 hover:bg-orange-600 rounded-lg py-3 font-semibold"
-            >
-              {loading
-                ? "Processing..."
-                : paymentMethod === "Cod"
-                ? "Place Order"
-                : "Proceed to Payment"}
+            <button disabled={loading} onClick={handlePlaceOrder} className="mt-6 w-full bg-orange-500 hover:bg-orange-600 rounded-lg py-3 font-semibold text-white">
+              {loading ? "Processing..." : paymentMethod === "Cod" ? "Place Order" : "Proceed to Payment"}
             </button>
 
           </div>

@@ -34,6 +34,10 @@ html, body, #root {
   color: var(--accent);
 }
 
+.text-muted {
+  color: var(--muted) !important;
+}
+
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }

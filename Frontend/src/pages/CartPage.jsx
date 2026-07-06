@@ -180,10 +180,10 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#111827]">
+    <div className="min-h-screen app-bg text-muted">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-6 py-10">
+      <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-10">
           <h1 className="text-4xl font-bold text-white">
             Shopping Cart
@@ -208,7 +208,7 @@ export default function CartPage() {
           )}
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 flex flex-col gap-5">
             {cart.items.map((item) => {
               const menuItem =
@@ -226,31 +226,14 @@ export default function CartPage() {
                   : item.price;
 
               return (
-                <div
-                  key={item._id}
-                  className="
-                    bg-[#1F2937]
-                    border
-                    border-gray-800
-                    rounded-3xl
-                    p-5
-                    hover:border-orange-500
-                    transition-all
-                  "
-                >
+                <div key={item._id} className="surface border border-gray-700 rounded-2xl p-4 hover:border-orange-500 transition-all">
                   <div className="flex flex-col md:flex-row gap-5">
                     <img
                       src={image}
                       alt={
                         menuItem?.name
                       }
-                      className="
-                        w-full
-                        md:w-36
-                        h-36
-                        object-cover
-                        rounded-2xl
-                      "
+                      className="w-full md:w-36 h-36 object-cover rounded-2xl"
                     />
 
                     <div className="flex-1">
@@ -281,7 +264,7 @@ export default function CartPage() {
                         </span>
                       </div>
 
-                      <p className="text-gray-400 mb-4 line-clamp-2">
+                      <p className="text-muted mb-4 line-clamp-2">
                         {
                           menuItem?.description
                         }
