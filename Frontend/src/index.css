@@ -1,22 +1,38 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-body {
-  margin: 0;
-  padding: 0;
+:root{
+  --bg:  #0f172a; /* slate-900 */
+  --surface: #0b1220;
+  --muted: #94a3b8;
+  --accent: #fb923c; /* orange-400 */
 }
 
-*{
-  box-sizing: border-box;
+.light {
+  --bg: #f8fafc; /* slate-50 */
+  --surface: #ffffff;
+  --muted: #64748b;
+  --accent: #fb923c;
 }
 
-
-html,
-body,
-#root {
+html, body, #root {
   width: 100%;
   min-height: 100%;
 }
 
+.app-bg {
+  background-color: var(--bg);
+  color: var(--muted);
+}
+
+.surface {
+  background-color: var(--surface);
+}
+
+.accent {
+  color: var(--accent);
+}
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
