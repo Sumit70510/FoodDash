@@ -4,6 +4,7 @@ import {
   createDelivery,
   assignDeliveryPartner,
   getPartnerDeliveries,
+  getRestaurantDeliveries,
   getSingleDelivery,
   updateDeliveryStatus,
   updatePayoutStatus,
@@ -14,29 +15,15 @@ import { protectRoute } from "../Middlewares/protectRoute.js";
 
 const router = express.Router();
 
-router.post(
-  "/create",
-  protectRoute,
-  createDelivery
-);
-
-router.put(
-  "/assign/:deliveryId",
-  protectRoute,
-  assignDeliveryPartner
-);
-
+router.post("/create", protectRoute, createDelivery);
+router.put("/assign/:deliveryId", protectRoute, assignDeliveryPartner);
+router.get("/partner/:partnerId", protectRoute, getPartnerDeliveries);
 router.get(
-  "/partner/:partnerId",
+  "/restaurant/:restaurantId",
   protectRoute,
-  getPartnerDeliveries
+  getRestaurantDeliveries
 );
-
-router.get(
-  "/:deliveryId",
-  protectRoute,
-  getSingleDelivery
-);
+router.get("/:deliveryId", protectRoute, getSingleDelivery);
 
 router.put(
   "/status/:deliveryId",

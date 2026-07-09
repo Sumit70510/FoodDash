@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import api from "../utils/axios.js";
 
 export default function RestaurantDeliveriesPage() {
   
   const { user, type } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const restaurant = user||{};
-  // console.log(restaurant);
-    
+  
   const [deliveries, setDeliveries] =
     useState([]);
 
@@ -16,23 +16,21 @@ export default function RestaurantDeliveriesPage() {
 
   useEffect(() => {
     fetchDeliveries();
-  }, []);
+  }, [restaurant._id]);
 
   const fetchDeliveries = async () => {
+    if (!restaurant._id) {
+      setLoading(false);
+      return;
+    }
+
     try {
-      const response = await fetch(
-        `http://localhost:5000/api/v1/delivery/restaurant/${restaurant._id}`,
-        {
-          credentials: "include",
-        }
+      const { data } = await api.get(
+        `/delivery/restaurant/${restaurant._id}`
       );
 
-      const data = await response.json();
-
       if (data.success) {
-        setDeliveries(
-          data.deliveries || []
-        );
+        setDeliveries(data.deliveries || []);
       }
     } catch (error) {
       console.log(error);

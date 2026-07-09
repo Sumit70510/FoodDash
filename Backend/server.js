@@ -14,6 +14,7 @@ import orderRoutes from "./Routes/order.routes.js";
 import cartRoutes from "./Routes/cart.routes.js";
 import deliveryRoutes from "./Routes/delivery.routes.js";
 import categoryRoutes from "./Routes/food.category.routes.js";
+import bankAccountRoutes from "./Routes/bank.account.routes.js";
 
 
 dotenv.config();
@@ -26,23 +27,32 @@ app.use(cookieParser());
 
 const __dirname=path.resolve(); 
 
-const corsOption={
-    origin : process.env.URL,
-    credentials : true,  
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"]
-}; 
+const allowedFrontends = [process.env.URL, 'http://localhost:5173', 'http://localhost:5175'].filter(Boolean);
+
+const corsOption = {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedFrontends.includes(origin)) return callback(null, true);
+    return callback(new Error('CORS policy: This origin is not allowed'));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
 app.use(cors(corsOption));
+app.options('*', cors(corsOption));
 
 app.use('/api/v1/user',userRoutes);
 app.use('/api/v1/restaurant',restaurantRoutes);
 app.use('/api/v1/deliveryPartner',deliveryPartnerRoutes);
 app.use("/api/v1/menu", menuRoutes);
 app.use("/api/v1/menu-item", menuItemRoutes);
-app.use("/api/v1/category",categoryRoutes); 
+app.use("/api/v1/category", categoryRoutes);
 app.use("/api/v1/order", orderRoutes);
 app.use("/api/v1/cart", cartRoutes);
 app.use("/api/v1/delivery", deliveryRoutes);
+app.use("/api/v1/bank-account", bankAccountRoutes);
 
 // app.get("/",(req,res)=>{
 //     res.send('Server Running'); 

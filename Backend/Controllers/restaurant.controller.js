@@ -338,23 +338,45 @@ export const getRestaurantProfile = async (req, res) => {
       success: true,
       restaurant,
     });
-
   } catch (error) {
-
     console.log("Get Restaurant Profile Error :", error);
 
     return res.status(500).json({
       success: false,
       message: "Internal Server Error",
     });
+  }
+};
 
+export const getRestaurantById = async (req, res) => {
+  try {
+    const { restaurantId } = req.params;
+    const restaurant = await Restaurant.findById(restaurantId);
+
+    if (!restaurant) {
+      return res.status(404).json({
+        success: false,
+        message: "Restaurant not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      restaurant,
+    });
+  } catch (error) {
+    console.log("Get Restaurant By Id Error :", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
 };
 
 // Update Restaurant Profile
 
 export const updateRestaurantProfile = async (req, res) => {
-
   try {
     console.log(req.body);
     const restaurant = await Restaurant.findById(req.body?._id);
@@ -372,6 +394,8 @@ export const updateRestaurantProfile = async (req, res) => {
       ownerContactNo,
       restaurantContactNo,
       address,
+      lat,
+      lng,
       operational,
       isOpen,
     } = req.body;
@@ -380,36 +404,44 @@ export const updateRestaurantProfile = async (req, res) => {
     if (email) restaurant.email = email;
     if (ownerContactNo) restaurant.ownerContactNo = ownerContactNo;
     if (restaurantContactNo) restaurant.restaurantContactNo = restaurantContactNo;
-    if (address) restaurant.address = address;
-    if (operational) restaurant.operational = operational;
+    if (address) {
+      restaurant.location = {
+        ...restaurant.location,
+        address,
+      };
+    }
+    if (typeof lat !== "undefined") {
+      restaurant.location = {
+        ...restaurant.location,
+        lat,
+      };
+    }
+    if (typeof lng !== "undefined") {
+      restaurant.location = {
+        ...restaurant.location,
+        lng,
+      };
+    }
+    if (typeof operational !== "undefined") restaurant.operational = operational;
     if (typeof isOpen !== "undefined") restaurant.isOpen = isOpen;
 
-
-    // Upload new profile image
-
     if (req.file) {
-
       // Delete old image
-
       if (restaurant.image?.public_id) {
-
         await deleteFromCloudinary(
           restaurant.image.public_id,
           restaurant.image.resource_type
         );
-
       }
 
       const uploadedImage = await uploadOnCloudinary(req.file.path);
 
       if (uploadedImage) {
-
         restaurant.image = {
           url: uploadedImage.url,
           public_id: uploadedImage.public_id,
           resource_type: uploadedImage.resource_type,
         };
-
       }
     }
 

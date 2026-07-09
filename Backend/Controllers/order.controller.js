@@ -5,16 +5,21 @@ export const placeOrder = async (req, res) => {
     const {
       items,
       restaurantId,
-      deliveryAddress,
       paymentMethod,
       totalAmount,
+      subTotal,
+      deliveryFee,
+      tax,
+      discount,
+      pickUpLocation,
+      dropLocation,
     } = req.body;
 
     if (
       !items ||
       items.length === 0 ||
       !restaurantId ||
-      !deliveryAddress ||
+      !dropLocation ||
       !paymentMethod ||
       !totalAmount
     ) {
@@ -28,17 +33,16 @@ export const placeOrder = async (req, res) => {
       userId: req.user?._id || req.restraunt?._id,
 
       restaurantId,
-
       items,
-
-      deliveryAddress,
-
-      paymentMethod,
-
+      subTotal: subTotal || 0,
+      deliveryFee: deliveryFee || 0,
+      tax: tax || 0,
+      discount: discount || 0,
       totalAmount,
-
+      paymentMethod,
+      pickUpLocation: pickUpLocation || {},
+      dropLocation,
       orderStatus: "Placed",
-
       paymentStatus: "Pending",
     });
 

@@ -10,18 +10,19 @@ import {
 } from "../Controllers/order.controller.js";
 
 import { protectRoute } from "../Middlewares/protectRoute.js";
+import isAuthenticated from "../Middlewares/isAuthenticated.js";
 
 const router = express.Router();
 
 router.post(
   "/place",
-  protectRoute,
+  isAuthenticated,
   placeOrder
 );
 
 router.get(
   "/user",
-  protectRoute,
+  isAuthenticated,
   getUserOrders
 );
 

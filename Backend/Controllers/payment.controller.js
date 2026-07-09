@@ -102,7 +102,6 @@ export const verifyPayment = async (req, res) => {
       userId: req.user._id,
 
       paymentStatus: "Paid",
-
       orderStatus: "Placed",
     });
 
@@ -197,11 +196,10 @@ export const getPayment = async (
   res
 ) => {
   try {
-    const payment =
-      await Payment.findById(
-        req.params.paymentId
-      )
-        .populate("restaurantId")
+    const payment = await Payment.findById(
+      req.params.paymentId
+    )
+      .populate("restaurantId")
         .populate("orderId");
 
     if (!payment) {

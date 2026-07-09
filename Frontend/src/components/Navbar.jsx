@@ -4,8 +4,6 @@ import { Link, useLocation } from "react-router-dom";
 import { setAuthUser } from "../redux/auth.Slice.js";
 import { toast } from "sonner";
 import api from "../utils/axios.js";
-import ThemeToggle from "./ThemeToggle.jsx";
-import { useState } from "react";
 
 export default function Navbar() {
   const { user, type } = useSelector(
@@ -17,7 +15,6 @@ export default function Navbar() {
 
   const [cartCount, setCartCount] =
     useState(0);
-  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -130,15 +127,6 @@ export default function Navbar() {
       </Link>
 
       <div className="flex items-center gap-3">
-        <div className="md:hidden">
-          <button
-            onClick={() => setOpen(!open)}
-            className="p-2 rounded-md text-white/90 bg-white/5"
-            aria-label="Toggle menu"
-          >
-            {open ? '✕' : '☰'}
-          </button>
-        </div>
         {user ? (
           <>
             {location.pathname ===
@@ -298,32 +286,7 @@ export default function Navbar() {
             </Link>
           </>
         )}
-        <div className="hidden md:flex items-center gap-3">
-          <ThemeToggle />
-        </div>
       </div>
-
-      {/* Mobile menu */}
-      {open && (
-        <div className="absolute top-full left-0 right-0 bg-surface p-4 md:hidden z-40">
-          <div className="flex flex-col gap-3">
-            <Link to="/" onClick={()=>setOpen(false)} className="text-white">Home</Link>
-            <Link to="/cart" onClick={()=>setOpen(false)} className="text-white">Cart</Link>
-            {user ? (
-              <>
-                <Link to="/user/profile" onClick={()=>setOpen(false)} className="text-white">Profile</Link>
-                <button onClick={()=>{logoutHandler(); setOpen(false);}} className="text-white text-left">Logout</button>
-              </>
-            ) : (
-              <>
-                <Link to="/login" onClick={()=>setOpen(false)} className="text-white">Login</Link>
-                <Link to="/signup" onClick={()=>setOpen(false)} className="text-white">Sign Up</Link>
-              </>
-            )}
-            <div className="pt-2"><ThemeToggle /></div>
-          </div>
-        </div>
-      )}
     </nav>
   );
 }

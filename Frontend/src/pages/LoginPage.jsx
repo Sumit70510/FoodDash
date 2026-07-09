@@ -75,10 +75,31 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen app-bg flex items-center justify-center px-5 py-8">
+    <div
+      className="min-h-screen flex items-center justify-center px-5 py-8"
+      style={{
+        background: `
+          radial-gradient(circle at top left,
+          rgba(249,115,22,0.15), transparent 25%),
+
+          radial-gradient(circle at bottom right,
+          rgba(251,146,60,0.12), transparent 25%),
+
+          linear-gradient(135deg, #1F2937, #111827)
+        `,
+      }}
+    >
       <form
         onSubmit={loginHandler}
-        className="w-full max-w-md surface rounded-2xl p-6 flex flex-col gap-5 shadow-lg"
+        className="
+          w-full
+          max-w-105
+          bg-white
+          rounded-[28px]
+          shadow-[0_25px_70px_rgba(0,0,0,0.25)]
+          p-8 px-6
+          flex flex-col gap-5
+        "
       >
         <div className="flex flex-col items-center">
           <div className="flex items-center justify-center gap-3">
@@ -102,7 +123,7 @@ export default function LoginPage() {
             </h1>
           </div>
 
-          <p className="text-sm text-muted mt-3 text-center">
+          <p className="text-sm text-gray-500 mt-3 text-center">
             Login to continue ordering delicious food
           </p>
         </div>
@@ -110,7 +131,7 @@ export default function LoginPage() {
         {/* Email Input */}
         
         <div>
-          <label className="block text-sm font-medium text-muted mb-2">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             Email Address
           </label>
 
@@ -120,7 +141,18 @@ export default function LoginPage() {
             value={credentials.email}
             onChange={changeEventHandler}
             placeholder="Enter your email"
-            className="w-full px-4 py-3 border border-gray-600 rounded-lg outline-none transition-all hover:border-orange-300 focus:border-orange-500 focus:ring-4 focus:ring-orange-100 bg-transparent text-white"
+            className="
+              w-full
+              px-4 py-3
+              border border-gray-300
+              rounded-xl
+              outline-none
+              transition-all
+              hover:border-orange-300
+              focus:border-orange-500
+              focus:ring-4
+              focus:ring-orange-100
+             "
           />
         </div>
 
@@ -166,7 +198,7 @@ export default function LoginPage() {
           />
         </div>
 
-        <div className="flex items-center gap-2 text-sm text-muted">
+        <div className="flex items-center gap-2 text-sm text-gray-600">
           <input
             type="checkbox"
             id="remember"
@@ -215,7 +247,7 @@ export default function LoginPage() {
         </button>  
 
 
-        <p className="text-center text-sm text-muted">
+        <p className="text-center text-sm text-gray-600">
           Don't have an account?{" "}
           <Link
             to="/signup"

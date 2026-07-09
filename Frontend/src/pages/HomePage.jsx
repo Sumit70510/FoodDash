@@ -56,7 +56,7 @@ export default function HomePage() {
 
   
   return (
-    <div className="min-h-screen app-bg text-muted">
+    <div className="min-h-screen bg-[#111827]">
       <Navbar />
 
       <section
@@ -133,9 +133,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="px-4 py-10 max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-3xl md:text-4xl font-bold text-white">
+      <section className="px-8 py-14">
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-4xl font-bold text-white">
             Popular Dishes
           </h2>
 
@@ -145,13 +145,28 @@ export default function HomePage() {
         </div>
 
         {loading ? (
-          <div className="text-center text-white text-lg">Loading Menu...</div>
+          <div className="text-center text-white text-xl">
+            Loading Menu...
+          </div>
         ) : filteredItems.length === 0 ? (
-          <div className="text-center text-muted text-lg">No Food Found</div>
+          <div className="text-center text-gray-400 text-xl">
+            No Food Found
+          </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div
+            className="
+              grid
+              sm:grid-cols-2
+              lg:grid-cols-3
+              xl:grid-cols-4
+              gap-8
+            "
+          >
             {filteredItems.map((item) => (
-              <FoodCard key={item._id} item={item} />
+              <FoodCard
+                key={item._id}
+                item={item}
+              />
             ))}
           </div>
         )}

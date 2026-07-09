@@ -90,14 +90,16 @@ export default function CheckoutPage() {
         amount: total,
       });
 
+      const razorpayOrder = order.data.order;
+
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY,
+        key: order.data.key || import.meta.env.VITE_RAZORPAY_KEY,
 
-        amount: order.data.amount,
+        amount: razorpayOrder.amount,
 
-        currency: order.data.currency,
+        currency: razorpayOrder.currency,
 
-        order_id: order.data.orderId,
+        order_id: razorpayOrder.id,
 
         name: "FoodDash",
 

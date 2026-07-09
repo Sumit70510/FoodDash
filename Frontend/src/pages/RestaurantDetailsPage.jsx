@@ -33,15 +33,21 @@ export default function RestaurantDetailsPage() {
     try {
       setLoading(true);
 
-      const res = await api.get(`/menu/restraunt/${id}`);
+      const [restaurantRes, menuRes] = await Promise.all([
+        api.get(`/restaurant/${id}`),
+        api.get(`/menu-item/restaurant/${id}`),
+      ]);
 
-      if (res.data.success) {
-        setRestaurant(res.data.restaurant);
-        setMenuItems(res.data.menuItems || []);
+      if (restaurantRes.data.success) {
+        setRestaurant(restaurantRes.data.restaurant);
+      }
+
+      if (menuRes.data.success) {
+        setMenuItems(menuRes.data.menuItems || []);
 
         const variantsObj = {};
 
-        res.data.menuItems?.forEach((item) => {
+        menuRes.data.menuItems?.forEach((item) => {
           if (item.variants?.length) {
             variantsObj[item._id] = item.variants[0];
           }
@@ -90,7 +96,9 @@ export default function RestaurantDetailsPage() {
         restaurantId: id,
         menuItemId: item._id,
         quantity: 1,
-        variant: selectedVariant?.sizeType,
+        selectedVariant: {
+          sizeType: selectedVariant?.sizeType,
+        },
       });
 
       toast.success("Added to cart");
@@ -104,13 +112,11 @@ export default function RestaurantDetailsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#111827]">
+      <div className="min-h-screen app-bg text-muted">
         <Navbar />
 
-        <div className="flex justify-center items-center h-[70vh]">
-          <h2 className="text-white text-xl">
-            Loading Restaurant...
-          </h2>
+        <div className="flex justify-center items-center h-[60vh]">
+          <h2 className="text-muted text-lg">Loading Restaurant...</h2>
         </div>
       </div>
     );
@@ -118,26 +124,25 @@ export default function RestaurantDetailsPage() {
 
   if (!restaurant) {
     return (
-      <div className="min-h-screen bg-[#111827]">
+      <div className="min-h-screen app-bg text-muted">
         <Navbar />
 
-        <div className="flex justify-center items-center h-[70vh]">
-          <h2 className="text-white text-xl">
-            Restaurant Not Found
-          </h2>
+        <div className="flex justify-center items-center h-[60vh]">
+          <h2 className="text-muted text-lg">Restaurant Not Found</h2>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#111827]">
+    <div className="min-h-screen app-bg text-muted">
       <Navbar />
 
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-6">
         <div className="relative rounded-3xl overflow-hidden">
           <img
             src={
+              restaurant.restaurantPicture ||
               restaurant.restrauntPicture ||
               "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4"
             }
@@ -145,27 +150,15 @@ export default function RestaurantDetailsPage() {
             className="w-full h-62.5 md:h-100 object-cover"
           />
 
-          <div className="absolute inset-0 bg-black/50 flex items-end">
-            <div className="p-6 md:p-8 text-white">
-              <h1 className="text-3xl md:text-5xl font-bold">
-                {restaurant.name}
-              </h1>
+          <div className="absolute inset-0 bg-black/40 flex items-end">
+            <div className="p-4 md:p-8 text-white">
+              <h1 className="text-2xl md:text-4xl font-bold">{restaurant.name}</h1>
 
-              <p className="mt-2 text-gray-200">
-                {restaurant.location?.address}
-              </p>
+              <p className="mt-2 text-muted">{restaurant.location?.address}</p>
 
               <div className="mt-4">
-                <span
-                  className={`px-4 py-2 rounded-full text-sm font-semibold ${
-                    restaurant.isOpen
-                      ? "bg-green-500"
-                      : "bg-red-500"
-                  }`}
-                >
-                  {restaurant.isOpen
-                    ? "Open"
-                    : "Closed"}
+                <span className={`px-4 py-2 rounded-full text-sm font-semibold ${restaurant.isOpen ? "bg-green-500" : "bg-red-500"}`}>
+                  {restaurant.isOpen ? "Open" : "Closed"}
                 </span>
               </div>
             </div>
@@ -185,14 +178,15 @@ export default function RestaurantDetailsPage() {
               px-5
               py-3
               rounded-xl
-              bg-[#1F2937]
+              bg-transparent
+              surface
               text-white
               outline-none
             "
           />
 
           <div className="flex gap-2 overflow-auto">
-            {[
+            {[ 
               "All",
               "Veg",
               "Non-Veg",
@@ -206,7 +200,7 @@ export default function RestaurantDetailsPage() {
                 className={`px-5 py-3 rounded-xl whitespace-nowrap ${
                   foodFilter === type
                     ? "bg-orange-500 text-white"
-                    : "bg-[#1F2937] text-gray-300"
+                    : "bg-transparent text-muted surface"
                 }`}
               >
                 {type}
@@ -225,23 +219,14 @@ export default function RestaurantDetailsPage() {
               selectedVariant?.price;
 
             return (
-              <div
-                key={item._id}
-                className="
-                  bg-[#1F2937]
-                  rounded-3xl
-                  overflow-hidden
-                  border
-                  border-gray-800
-                "
-              >
+              <div key={item._id} className="surface rounded-2xl overflow-hidden border border-gray-700">
                 <img
                   src={
                     item.image?.[0] ||
                     "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38"
                   }
                   alt={item.name}
-                  className="w-full h-52 object-cover"
+                  className="w-full h-44 md:h-52 object-cover"
                 />
 
                 <div className="p-5">

@@ -48,10 +48,10 @@ export default function RestaurantPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen app-bg text-muted">
         <Navbar />
         <div className="flex items-center justify-center h-screen">
-          <p className="text-gray-600">Loading...</p>
+          <p className="text-muted">Loading...</p>
         </div>
       </div>
     );
@@ -59,21 +59,21 @@ export default function RestaurantPage() {
 
   if (!restaurant) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen app-bg text-muted">
         <Navbar />
         <div className="flex items-center justify-center h-screen">
-          <p className="text-gray-600">Restaurant not found</p>
+          <p className="text-muted">Restaurant not found</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen app-bg text-muted">
       <Navbar />
 
-      <div className="bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="surface shadow-md">
+        <div className="max-w-7xl mx-auto px-4 py-6">
           <button
             onClick={() => navigate(-1)}
             className="text-orange-500 hover:text-orange-600 mb-4"
@@ -81,7 +81,7 @@ export default function RestaurantPage() {
             ← Back
           </button>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="md:col-span-2">
               <img
                 src={
@@ -89,15 +89,15 @@ export default function RestaurantPage() {
                   "https://images.unsplash.com/photo-1504674900152-b8b29ef1143f"
                 }
                 alt={restaurant.name}
-                className="w-full h-80 object-cover rounded-lg"
+                className="w-full h-64 md:h-80 object-cover rounded-lg"
               />
             </div>
 
             <div>
-              <h1 className="text-3xl font-bold mb-2">{restaurant.name}</h1>
-              <p className="text-gray-600 mb-4">{restaurant.address}</p>
+              <h1 className="text-2xl md:text-3xl font-bold mb-2 text-white">{restaurant.name}</h1>
+                <p className="text-muted mb-4">{restaurant.address}</p>
 
-              <div className="bg-gray-100 p-4 rounded-lg space-y-2">
+                <div className="p-4 rounded-lg surface space-y-2">
                 <div className="flex justify-between">
                   <span>Rating:</span>
                   <span className="font-semibold">
@@ -120,17 +120,17 @@ export default function RestaurantPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-12">
-        <h2 className="text-2xl font-bold mb-8">Menu</h2>
+      <div className="max-w-7xl mx-auto px-4 py-10">
+        <h2 className="text-2xl font-bold mb-6 text-white">Menu</h2>
 
         {menuItems.length === 0 ? (
-          <p className="text-gray-600">No menu items available</p>
+          <p className="text-muted">No menu items available</p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {menuItems.map((item) => (
               <div
                 key={item._id}
-                className="bg-white rounded-lg shadow-md overflow-hidden"
+                className="surface rounded-lg shadow-md overflow-hidden"
               >
                 <img
                   src={

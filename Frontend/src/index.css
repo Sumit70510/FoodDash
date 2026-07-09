@@ -1,6 +1,5 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+
+@import "tailwindcss";
 
 :root{
   --bg:  #0f172a; /* slate-900 */
@@ -19,6 +18,20 @@
 html, body, #root {
   width: 100%;
   min-height: 100%;
+  margin: 0;
+  background-color: var(--bg);
+  color: var(--muted);
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--bg);
+  color: var(--muted);
+}
+
+#root {
+  min-height: 100vh;
+  background-color: var(--bg);
 }
 
 .app-bg {
@@ -36,6 +49,10 @@ html, body, #root {
 
 .text-muted {
   color: var(--muted) !important;
+}
+
+.light .text-white {
+  color: #0f172a !important;
 }
 
 .scrollbar-hide::-webkit-scrollbar {

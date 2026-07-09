@@ -11,13 +11,6 @@ export default function RestaurantOrdersPage() {
   const [filter, setFilter] = useState("all");
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    // if (!token) {
-    //   navigate("/restaurant/login");
-    //   return;
-    // }
-
     fetchOrders();
   }, [filter]);
 
@@ -25,14 +18,20 @@ export default function RestaurantOrdersPage() {
     try {
       setLoading(true);
 
-      const response = await api.get("/order", {
-        params: {
-          status: filter !== "all" ? filter : undefined,
-        },
-      });
+      const response = await api.get(
+        `/order/restaurant/${user?._id}`
+      );
 
       if (response.data.success) {
-        setOrders(response.data.orders || []);
+        let orders = response.data.orders || [];
+
+        if (filter !== "all") {
+          orders = orders.filter(
+            (order) => order.orderStatus === filter
+          );
+        }
+
+        setOrders(orders);
       }
     } catch (error) {
       console.log(error);
@@ -48,8 +47,8 @@ export default function RestaurantOrdersPage() {
   ) => {
     try {
       const response = await api.put(
-        `/order/${orderId}`,
-        { status }
+        `/order/status/${orderId}`,
+        { orderStatus: status }
       );
 
       if (response.data.success) {

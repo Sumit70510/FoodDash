@@ -96,7 +96,22 @@ export default function FoodCard({ item }) {
   const originalPrice =  selectedVariant?.price || 0;
 
   return (
-    <div className="group surface rounded-2xl overflow-hidden border border-gray-700 hover:border-orange-500/40 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+    <div
+      className="
+        group
+        bg-[#1F2937]
+        rounded-3xl
+        overflow-hidden
+        border
+        border-gray-800
+        hover:border-orange-500/40
+        transition-all
+        duration-300
+        hover:-translate-y-2
+        hover:shadow-2xl
+        hover:shadow-orange-500/10
+      "
+    >
       <div className="relative overflow-hidden">
         <img
           src={
@@ -105,7 +120,14 @@ export default function FoodCard({ item }) {
             "/food-placeholder.jpg"
           }
           alt={item.name}
-          className="w-full h-40 md:h-56 object-cover transition-transform duration-500 group-hover:scale-110"
+          className="
+            w-full
+            h-56
+            object-cover
+            transition-transform
+            duration-500
+            group-hover:scale-110
+          "
         />
 
         <div className="absolute top-3 left-3">
@@ -156,20 +178,42 @@ export default function FoodCard({ item }) {
         )}
       </div>
 
-      <div className="p-4">
+      <div className="p-5">
         <div className="flex justify-between gap-3">
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-white line-clamp-1">
+            <h2
+              className="
+                text-xl
+                font-bold
+                text-white
+                line-clamp-1
+              "
+            >
               {item.name}
             </h2>
 
-            <p className="text-muted text-sm mt-2 line-clamp-2">
+            <p
+              className="
+                text-gray-400
+                text-sm
+                mt-2
+                line-clamp-2
+              "
+            >
               {item.description}
             </p>
           </div>
 
-            <div className="text-right">
-            <div className="text-orange-400 text-lg font-bold">₹{displayPrice}</div>
+          <div className="text-right">
+            <div
+              className="
+                text-orange-500
+                text-lg
+                font-bold
+              "
+            >
+              ₹{displayPrice}
+            </div>
 
             {selectedVariant?.discountPrice >
               0 && (
@@ -187,30 +231,63 @@ export default function FoodCard({ item }) {
         </div>
 
         {item?.variants?.length > 0 && (
-          <div className="mt-4">
-            <p className="text-sm text-muted mb-2">Select Size</p>
+          <div className="mt-5">
+            <p
+              className="
+                text-gray-400
+                text-sm
+                mb-2
+              "
+            >
+              Select Size
+            </p>
 
             <div className="flex flex-wrap gap-2">
-              {item.variants.map((variant, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  onClick={() => setSelectedVariant(variant)}
-                  className={`px-3 py-2 rounded-lg border text-sm transition-all ${
-                    selectedVariant?.sizeType === variant.sizeType
-                      ? "bg-orange-500 text-white border-orange-500"
-                      : "bg-transparent text-muted border-gray-700 hover:border-orange-400"
-                  }`}
-                >
-                  {variant.sizeType}
-                </button>
-              ))}
+              {item.variants.map(
+                (variant, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    onClick={() =>
+                      setSelectedVariant(
+                        variant
+                      )
+                    }
+                    className={`
+                      px-3
+                      py-2
+                      rounded-xl
+                      border
+                      text-sm
+                      transition-all
+                      ${
+                        selectedVariant?.sizeType ===
+                        variant.sizeType
+                          ? "bg-orange-500 text-white border-orange-500"
+                          : "bg-[#111827] text-gray-300 border-gray-700 hover:border-orange-400"
+                      }
+                    `}
+                  >
+                    {variant.sizeType}
+                  </button>
+                )
+              )}
             </div>
           </div>
         )}
 
-        <div className="mt-4 flex items-center gap-3">
-          <div className="flex items-center overflow-hidden rounded-lg border border-gray-700 bg-transparent">
+        <div className="mt-5 flex items-center gap-4">
+          <div
+            className="
+              flex
+              items-center
+              overflow-hidden
+              rounded-xl
+              border
+              border-gray-700
+              bg-[#111827]
+            "
+          >
             {quantity > 0 && (
                  <div>
                    <button
@@ -254,7 +331,24 @@ export default function FoodCard({ item }) {
             </button>
           </div>
 
-          <button disabled={!item.isAvailable} onClick={handleAddToCart} className="flex-1 py-2.5 rounded-lg bg-orange-500 hover:bg-orange-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold transition-all">Add To Cart</button>
+          <button
+            disabled={!item.isAvailable}
+            onClick={handleAddToCart}
+            className="
+              flex-1
+              py-2.5
+              rounded-xl
+              bg-orange-500
+              hover:bg-orange-600
+              disabled:bg-gray-600
+              disabled:cursor-not-allowed
+              text-white
+              font-semibold
+              transition-all
+            "
+          >
+            Add To Cart
+          </button>
         </div>
       </div>
     </div>

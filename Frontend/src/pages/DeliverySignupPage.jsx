@@ -75,35 +75,11 @@ export default function DeliverySignupPage() {
   };
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center px-5 py-8"
-      style={{
-        background: `
-          radial-gradient(circle at top left,
-          rgba(249,115,22,0.15), transparent 25%),
-          radial-gradient(circle at bottom right,
-          rgba(251,146,60,0.12), transparent 25%),
-          linear-gradient(135deg, #1F2937, #111827)
-        `,
-      }}
-    >
-      <form
-        onSubmit={handleSubmit}
-        className="
-          w-full
-          max-w-2xl
-          bg-white
-          rounded-2xl
-          shadow-2xl
-          p-8
-          space-y-6
-        "
-      >
+    <div className="min-h-screen app-bg flex items-center justify-center px-4 py-8">
+      <form onSubmit={handleSubmit} className="w-full max-w-2xl surface rounded-2xl p-8 space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">
-            Join as Delivery Partner
-          </h1>
-          <p className="text-gray-600">Start delivering and earn money</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">Join as Delivery Partner</h1>
+          <p className="text-muted">Start delivering and earn money</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -117,14 +93,7 @@ export default function DeliverySignupPage() {
               value={formData.name}
               onChange={changeEventHandler}
               placeholder="Your Name"
-              className="
-                w-full
-                px-4 py-2
-                border border-gray-300
-                rounded-lg
-                focus:outline-none
-                focus:border-orange-500
-              "
+              className="w-full px-4 py-2 border border-gray-700 rounded-lg focus:outline-none focus:border-orange-500 bg-transparent text-white"
             />
           </div>
 
@@ -138,14 +107,7 @@ export default function DeliverySignupPage() {
               value={formData.email}
               onChange={changeEventHandler}
               placeholder="your@email.com"
-              className="
-                w-full
-                px-4 py-2
-                border border-gray-300
-                rounded-lg
-                focus:outline-none
-                focus:border-orange-500
-              "
+                className="w-full px-4 py-2 border border-gray-700 rounded-lg focus:outline-none focus:border-orange-500 bg-transparent text-white"
             />
           </div>
 
@@ -280,23 +242,7 @@ export default function DeliverySignupPage() {
           </div>
         </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="
-            w-full
-            py-3
-            bg-orange-500
-            text-white
-            rounded-lg
-            font-semibold
-            hover:bg-orange-600
-            transition
-            disabled:opacity-50
-          "
-        >
-          {loading ? "Registering..." : "Register as Delivery Partner"}
-        </button>
+        <button type="submit" disabled={loading} className="w-full py-3 bg-orange-500 text-white rounded-lg font-semibold hover:bg-orange-600 transition disabled:opacity-50">{loading ? "Registering..." : "Register as Delivery Partner"}</button>
 
         <div className="text-center">
           <p className="text-gray-600">

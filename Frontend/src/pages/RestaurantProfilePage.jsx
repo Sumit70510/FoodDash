@@ -133,8 +133,8 @@ export default function RestrauntProfilePage() {
 
                     <input
                       type="text"
-                      name="restrauntContactNo"
-                      value={formData.restrauntContactNo}
+                      name="restaurantContactNo"
+                      value={formData.restaurantContactNo}
                       onChange={handleChange}
                       className="w-full bg-[#111827] text-white p-3 rounded-xl border border-gray-700"
                     />

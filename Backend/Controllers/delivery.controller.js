@@ -129,6 +129,47 @@ export const getPartnerDeliveries = async (
   }
 };
 
+export const getRestaurantDeliveries = async (
+  req,
+  res
+) => {
+  try {
+    const { restaurantId } = req.params;
+
+    const deliveries = await Delivery.find()
+      .populate({
+        path: "orderId",
+        populate: {
+          path: "restaurantId",
+        },
+      })
+      .sort({ createdAt: -1 });
+
+    const restaurantDeliveries = deliveries.filter(
+      (delivery) =>
+        delivery.orderId &&
+        delivery.orderId.restaurantId &&
+        delivery.orderId.restaurantId._id.toString() ===
+          restaurantId
+    );
+
+    return res.status(200).json({
+      success: true,
+      deliveries: restaurantDeliveries,
+    });
+  } catch (error) {
+    console.log(
+      "Get Restaurant Deliveries Error:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
 export const getSingleDelivery = async (
   req,
   res
