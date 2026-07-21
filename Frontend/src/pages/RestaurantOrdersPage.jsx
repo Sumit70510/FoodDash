@@ -19,9 +19,9 @@ export default function RestaurantOrdersPage() {
     // }
 
     fetchOrders();
-  }, [filter]);
+  }, [filter]);   
 
-  const fetchOrders = async () => {
+  const fetchOrder  s = async () => {
     try {
       setLoading(true);
 
