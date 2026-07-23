@@ -32,7 +32,7 @@ export default function DeliveryLoginPage() {
     try
      {
       setLoading(true);
-      const response = await api.post("/delivery/login",
+      const response = await api.post("/deliveryPartner/login",
                   {
                    email: credentials.email,
                    password: credentials.password,
@@ -54,7 +54,7 @@ export default function DeliveryLoginPage() {
          setCredentials({ email: "", password: "" ,force :false,rememberMe:false});
          setForceLogin(false);
         }else{
-          toast.error(response.message || "Login failed");
+          toast.error(response.data.message || "Login failed");
          }           
        } 
       catch (error) 
