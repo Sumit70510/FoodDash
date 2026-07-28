@@ -60,7 +60,7 @@ export default function DeliveryPartnerEarnings() {
 
         {/* Balance */}
 
-        <section className="relative mb-8 overflow-hidden rounded-3xl border border-orange-500/30 bg-gradient-to-br from-orange-500 to-orange-700 p-6 md:p-8">
+        <section className="relative mb-8 overflow-hidden rounded-3xl border border-orange-500/30 bg-linear-to-br from-orange-500 to-orange-700 p-6 md:p-8">
           <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/10" />
 
           <div className="relative">
