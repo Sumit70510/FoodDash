@@ -1,23 +1,31 @@
-import { createSlice , nanoid } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    user : null,
-    type : "user"
- }
- 
-export const authSlice = createSlice({
-    name : "auth",
-    initialState : initialState,
-    reducers : {
-        setAuthUser : (state,action) =>{
-            state.user = action.payload.user||null;
-            state.type = action.payload.type||"";
-        },
-         logout: (state) => {
-         state.user = null;
-       }
-    }    
-}) 
+  user: null,
+  type: "",
+};
 
-export const {setAuthUser,logout} = authSlice.actions;
+export const authSlice = createSlice({
+  name: "auth",
+
+  initialState,
+
+  reducers: {
+    setAuthUser: (state, action) => {
+      state.user = action.payload?.user || null;
+      state.type = action.payload?.type || "";
+    },
+
+    logout: (state) => {
+      state.user = null;
+      state.type = "";
+    },
+  },
+});
+
+export const {
+  setAuthUser,
+  logout,
+} = authSlice.actions;
+
 export default authSlice.reducer;
