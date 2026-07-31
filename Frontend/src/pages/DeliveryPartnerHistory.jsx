@@ -4,14 +4,15 @@ import React, {
   useState,
 } from "react";
 import {
-  FaCalendarAlt,
-  FaCheckCircle,
-  FaHistory,
-  FaMapMarkerAlt,
-  FaSearch,
-  FaStore,
-} from "react-icons/fa";
+  CalendarDays,
+  History,
+  LoaderCircle,
+  MapPin,
+  Search,
+  Store,
+} from "lucide-react";
 import { toast } from "sonner";
+
 import api from "../utils/axios.js";
 
 export default function DeliveryPartnerHistory() {
@@ -28,10 +29,10 @@ export default function DeliveryPartnerHistory() {
     useState("all");
 
   useEffect(() => {
-    fetchDeliveryHistory();
+    fetchHistory();
   }, []);
 
-  const fetchDeliveryHistory = async () => {
+  const fetchHistory = async () => {
     try {
       setLoading(true);
 
@@ -39,11 +40,9 @@ export default function DeliveryPartnerHistory() {
         "/delivery/history"
       );
 
-      if (response.data?.success) {
-        setDeliveries(
-          response.data.deliveries || []
-        );
-      }
+      setDeliveries(
+        response.data?.deliveries || []
+      );
     } catch (error) {
       console.error(
         "Delivery history error:",
@@ -59,45 +58,53 @@ export default function DeliveryPartnerHistory() {
     }
   };
 
-  const filteredDeliveries = useMemo(() => {
-    return deliveries.filter((delivery) => {
-      const orderNumber =
-        delivery.orderId?._id ||
-        delivery._id ||
-        "";
+  const filteredDeliveries = useMemo(
+    () =>
+      deliveries.filter((delivery) => {
+        const id = String(
+          delivery.orderId?._id ||
+            delivery.orderId ||
+            delivery._id ||
+            ""
+        ).toLowerCase();
 
-      const restaurantName =
-        delivery.restaurantId?.name ||
-        delivery.restaurant?.name ||
-        "";
+        const restaurantName = String(
+          delivery.restaurantId?.name ||
+            delivery.restaurant?.name ||
+            ""
+        ).toLowerCase();
 
-      const matchesSearch =
-        orderNumber
-          .toLowerCase()
-          .includes(search.toLowerCase()) ||
-        restaurantName
-          .toLowerCase()
-          .includes(search.toLowerCase());
+        const searchValue =
+          search.toLowerCase();
 
-      const matchesStatus =
-        statusFilter === "all" ||
-        delivery.status === statusFilter;
+        const matchesSearch =
+          id.includes(searchValue) ||
+          restaurantName.includes(
+            searchValue
+          );
 
-      return matchesSearch && matchesStatus;
-    });
-  }, [
-    deliveries,
-    search,
-    statusFilter,
-  ]);
+        const matchesStatus =
+          statusFilter === "all" ||
+          delivery.status === statusFilter;
 
-  const completedCount =
+        return (
+          matchesSearch && matchesStatus
+        );
+      }),
+    [
+      deliveries,
+      search,
+      statusFilter,
+    ]
+  );
+
+  const completedDeliveries =
     deliveries.filter(
       (delivery) =>
         delivery.status === "Delivered"
     ).length;
 
-  const cancelledCount =
+  const cancelledDeliveries =
     deliveries.filter(
       (delivery) =>
         delivery.status === "Cancelled"
@@ -108,47 +115,45 @@ export default function DeliveryPartnerHistory() {
       <div className="mx-auto max-w-7xl">
         <div className="mb-8">
           <p className="text-sm font-semibold uppercase tracking-wider text-orange-500">
-            Previous Deliveries
+            Previous Assignments
           </p>
 
-          <h1 className="mt-2 text-3xl font-bold text-white md:text-4xl">
+          <h1 className="mt-2 text-3xl font-bold md:text-4xl">
             Delivery History
           </h1>
 
-          <p className="mt-2 text-gray-400">
-            Review your completed and cancelled
-            delivery assignments.
+          <p className="mt-2 text-slate-400">
+            Review completed and cancelled
+            deliveries.
           </p>
         </div>
 
-        {/* Stats */}
-
-        <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-3">
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
           <HistoryStat
-            title="Total Assignments"
+            label="Total"
             value={deliveries.length}
-            valueClass="text-white"
           />
 
           <HistoryStat
-            title="Completed"
-            value={completedCount}
+            label="Completed"
+            value={completedDeliveries}
             valueClass="text-green-400"
           />
 
           <HistoryStat
-            title="Cancelled"
-            value={cancelledCount}
+            label="Cancelled"
+            value={cancelledDeliveries}
             valueClass="text-red-400"
-            extraClass="col-span-2 lg:col-span-1"
+            className="col-span-2 lg:col-span-1"
           />
         </div>
 
-        {/* Filters */}
-
-        <div className="mb-6 flex flex-col gap-4 rounded-2xl border border-gray-800 bg-[#1F2937] p-4 md:flex-row">
+        <div className="mt-8 flex flex-col gap-4 rounded-2xl border border-slate-800 bg-slate-900 p-4 md:flex-row">
           <div className="relative flex-1">
-            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+            <Search
+              size={18}
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"
+            />
 
             <input
               type="text"
@@ -157,7 +162,7 @@ export default function DeliveryPartnerHistory() {
                 setSearch(event.target.value)
               }
               placeholder="Search order or restaurant"
-              className="w-full rounded-xl border border-gray-700 bg-[#111827] py-3 pl-11 pr-4 text-white outline-none transition placeholder:text-gray-500 focus:border-orange-500"
+              className="w-full rounded-xl border border-slate-700 bg-slate-950 py-3 pl-11 pr-4 outline-none placeholder:text-slate-500 focus:border-orange-500"
             />
           </div>
 
@@ -168,10 +173,10 @@ export default function DeliveryPartnerHistory() {
                 event.target.value
               )
             }
-            className="rounded-xl border border-gray-700 bg-[#111827] px-4 py-3 text-white outline-none focus:border-orange-500"
+            className="rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 outline-none focus:border-orange-500"
           >
             <option value="all">
-              All Statuses
+              All statuses
             </option>
 
             <option value="Delivered">
@@ -185,14 +190,32 @@ export default function DeliveryPartnerHistory() {
         </div>
 
         {loading ? (
-          <div className="py-20 text-center text-gray-400">
-            Loading delivery history...
+          <div className="flex min-h-80 flex-col items-center justify-center">
+            <LoaderCircle className="animate-spin text-orange-500" />
+
+            <p className="mt-4 text-slate-400">
+              Loading history...
+            </p>
           </div>
         ) : filteredDeliveries.length ===
           0 ? (
-          <EmptyHistory />
+          <div className="mt-6 flex min-h-80 flex-col items-center justify-center rounded-3xl border border-dashed border-slate-700 bg-slate-900 p-8 text-center">
+            <History
+              size={46}
+              className="text-slate-600"
+            />
+
+            <h2 className="mt-5 text-xl font-bold">
+              No Deliveries Found
+            </h2>
+
+            <p className="mt-2 text-slate-400">
+              Your delivery records will
+              appear here.
+            </p>
+          </div>
         ) : (
-          <div className="space-y-4">
+          <div className="mt-6 space-y-4">
             {filteredDeliveries.map(
               (delivery) => (
                 <HistoryCard
@@ -211,58 +234,69 @@ export default function DeliveryPartnerHistory() {
 function HistoryCard({ delivery }) {
   const orderId =
     delivery.orderId?._id ||
+    delivery.orderId ||
     delivery._id;
 
-  const restaurantName =
-    delivery.restaurantId?.name ||
-    delivery.restaurant?.name ||
-    "Restaurant";
+  const restaurant =
+    delivery.restaurantId ||
+    delivery.restaurant ||
+    {};
 
-  const pickupAddress =
-    delivery.restaurantId?.location
-      ?.address ||
-    delivery.pickupAddress ||
-    "Pickup address unavailable";
-
-  const status =
-    delivery.status || "Unknown";
+  const completed =
+    delivery.status === "Delivered";
 
   return (
-    <article className="rounded-3xl border border-gray-800 bg-[#1F2937] p-5 md:p-6">
+    <article className="rounded-3xl border border-slate-800 bg-slate-900 p-5 md:p-6">
       <div className="flex flex-col justify-between gap-5 md:flex-row md:items-start">
         <div>
           <div className="flex flex-wrap items-center gap-3">
-            <h2 className="text-xl font-bold text-white">
+            <h2 className="text-xl font-bold">
               Order #
-              {orderId
-                ?.slice(-6)
+              {String(orderId)
+                .slice(-6)
                 .toUpperCase()}
             </h2>
 
             <span
               className={`rounded-full px-3 py-1.5 text-xs font-semibold ${
-                status === "Delivered"
-                  ? "bg-green-500/20 text-green-400"
-                  : "bg-red-500/20 text-red-400"
+                completed
+                  ? "bg-green-500/15 text-green-400"
+                  : "bg-red-500/15 text-red-400"
               }`}
             >
-              {status}
+              {delivery.status ||
+                "Unknown"}
             </span>
           </div>
 
-          <div className="mt-4 space-y-3 text-sm text-gray-400">
+          <div className="mt-5 space-y-3 text-sm text-slate-400">
             <div className="flex items-center gap-3">
-              <FaStore className="text-orange-500" />
-              {restaurantName}
+              <Store
+                size={18}
+                className="text-orange-400"
+              />
+
+              {restaurant.name ||
+                "Restaurant"}
             </div>
 
             <div className="flex items-start gap-3">
-              <FaMapMarkerAlt className="mt-1 shrink-0 text-red-400" />
-              {pickupAddress}
+              <MapPin
+                size={18}
+                className="mt-0.5 shrink-0 text-red-400"
+              />
+
+              {restaurant.location
+                ?.address ||
+                delivery.pickupAddress ||
+                "Address unavailable"}
             </div>
 
             <div className="flex items-center gap-3">
-              <FaCalendarAlt className="text-blue-400" />
+              <CalendarDays
+                size={18}
+                className="text-blue-400"
+              />
 
               {formatDate(
                 delivery.deliveredAt ||
@@ -274,7 +308,7 @@ function HistoryCard({ delivery }) {
         </div>
 
         <div className="md:text-right">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-slate-500">
             Delivery Earning
           </p>
 
@@ -291,40 +325,23 @@ function HistoryCard({ delivery }) {
 }
 
 function HistoryStat({
-  title,
+  label,
   value,
-  valueClass,
-  extraClass = "",
+  valueClass = "text-white",
+  className = "",
 }) {
   return (
     <div
-      className={`rounded-2xl border border-gray-800 bg-[#1F2937] p-5 ${extraClass}`}
+      className={`rounded-2xl border border-slate-800 bg-slate-900 p-5 ${className}`}
     >
-      <p className="text-sm text-gray-400">
-        {title}
+      <p className="text-sm text-slate-400">
+        {label}
       </p>
 
       <p
         className={`mt-2 text-3xl font-bold ${valueClass}`}
       >
         {value}
-      </p>
-    </div>
-  );
-}
-
-function EmptyHistory() {
-  return (
-    <div className="rounded-3xl border border-dashed border-gray-700 bg-[#1F2937] py-20 text-center">
-      <FaHistory className="mx-auto text-4xl text-gray-600" />
-
-      <h2 className="mt-5 text-xl font-bold text-white">
-        No Delivery History
-      </h2>
-
-      <p className="mt-2 text-gray-400">
-        Your completed deliveries will appear
-        here.
       </p>
     </div>
   );

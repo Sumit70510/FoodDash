@@ -1,57 +1,64 @@
 import React, { useState } from "react";
 import {
-  FaEnvelope,
-  FaIdCard,
-  FaMotorcycle,
-  FaPhoneAlt,
-  FaSave,
-  FaShieldAlt,
-  FaTruck,
-  FaUser,
-} from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
+  Bike,
+  Contact,
+  IdCard,
+  LoaderCircle,
+  Mail,
+  Save,
+  ShieldCheck,
+  Truck,
+  UserRound,
+} from "lucide-react";
+import {
+  useDispatch,
+  useSelector,
+} from "react-redux";
 import { toast } from "sonner";
-import api from "../utils/axios.js";
 
-// Import your actual Redux update action.
-// import { setAuthUser } from "../redux/auth.Slice.js";
+import api from "../utils/axios.js";
+import {
+  setAuthUser,
+} from "../redux/auth.Slice.js";
 
 export default function DeliveryPartnerProfile() {
   const dispatch = useDispatch();
 
-  const { user, type } = useSelector(
+  const { user } = useSelector(
     (state) => state.auth
   );
 
-  const deliveryPartner = user || {};
-
   const [formData, setFormData] =
     useState({
-      name: deliveryPartner.name || "",
-      email: deliveryPartner.email || "",
-      contactNo:
-        deliveryPartner.contactNo || "",
+      name: user?.name || "",
+      email: user?.email || "",
+      contactNo: user?.contactNo || "",
+      licenseNo: user?.licenseNo || "",
       vehicleType:
-        deliveryPartner.vehicleType || "",
-      vehicleNo:
-        deliveryPartner.vehicleNo || "",
-      licenseNo:
-        deliveryPartner.licenseNo || "",
+        user?.vehicleType || "",
+      vehicleNo: user?.vehicleNo || "",
+      AADHAR:
+        user?.AADHAR ||
+        user?.aadharNo ||
+        "",
     });
 
   const [saving, setSaving] =
     useState(false);
 
   const handleChange = (event) => {
-    const { name, value } = event.target;
+    const { name, value } =
+      event.target;
 
-    setFormData((currentData) => ({
-      ...currentData,
+    setFormData((current) => ({
+      ...current,
       [name]: value,
     }));
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (
+    event
+  ) => {
     event.preventDefault();
 
     if (
@@ -80,34 +87,34 @@ export default function DeliveryPartnerProfile() {
         }
       );
 
-      if (response.data?.success) {
-        const updatedPartner =
-          response.data.deliveryPartner ||
-          response.data.user;
+      const updatedPartner =
+        response.data?.deliveryPartner ||
+        response.data?.user ||
+        {
+          ...user,
+          name: formData.name.trim(),
+          contactNo:
+            formData.contactNo.trim(),
+          vehicleType:
+            formData.vehicleType,
+          vehicleNo:
+            formData.vehicleNo.trim(),
+        };
 
-        /*
-         * Update Redux using your actual auth action.
-         *
-         * dispatch(
-         *   setAuthUser({
-         *     user: updatedPartner,
-         *     type,
-         *   })
-         * );
-         */
+      dispatch(
+        setAuthUser({
+          user: updatedPartner,
+          type: "delivery",
+        })
+      );
 
-        toast.success(
+      toast.success(
+        response.data?.message ||
           "Profile updated successfully"
-        );
-      } else {
-        toast.error(
-          response.data?.message ||
-            "Unable to update profile"
-        );
-      }
+      );
     } catch (error) {
       console.error(
-        "Delivery profile update error:",
+        "Profile update error:",
         error
       );
 
@@ -128,32 +135,30 @@ export default function DeliveryPartnerProfile() {
             Account Settings
           </p>
 
-          <h1 className="mt-2 text-3xl font-bold text-white md:text-4xl">
+          <h1 className="mt-2 text-3xl font-bold md:text-4xl">
             Delivery Partner Profile
           </h1>
 
-          <p className="mt-2 text-gray-400">
-            Review and update your delivery
-            partner information.
+          <p className="mt-2 text-slate-400">
+            Review and update your account
+            information.
           </p>
         </div>
 
-        {/* Verification */}
-
-        <section className="mb-6 rounded-3xl border border-gray-800 bg-[#1F2937] p-6">
+        <section className="mb-6 rounded-3xl border border-slate-800 bg-slate-900 p-6">
           <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
             <div className="flex items-center gap-4">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-500/20 text-orange-400">
-                <FaShieldAlt />
+                <ShieldCheck size={23} />
               </div>
 
               <div>
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-slate-400">
                   Verification Status
                 </p>
 
-                <p className="mt-1 font-bold text-white">
-                  {deliveryPartner.verificationStatus ||
+                <p className="mt-1 font-bold">
+                  {user?.verificationStatus ||
                     "Pending"}
                 </p>
               </div>
@@ -161,20 +166,18 @@ export default function DeliveryPartnerProfile() {
 
             <VerificationBadge
               status={
-                deliveryPartner.verificationStatus ||
+                user?.verificationStatus ||
                 "Pending"
               }
             />
           </div>
         </section>
 
-        {/* Profile Form */}
-
         <form
           onSubmit={handleSubmit}
-          className="rounded-3xl border border-gray-800 bg-[#1F2937] p-5 md:p-7"
+          className="rounded-3xl border border-slate-800 bg-slate-900 p-5 md:p-7"
         >
-          <h2 className="text-2xl font-bold text-white">
+          <h2 className="text-xl font-bold">
             Personal Information
           </h2>
 
@@ -184,7 +187,7 @@ export default function DeliveryPartnerProfile() {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              icon={<FaUser />}
+              icon={UserRound}
               required
             />
 
@@ -193,7 +196,7 @@ export default function DeliveryPartnerProfile() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              icon={<FaEnvelope />}
+              icon={Mail}
               disabled
             />
 
@@ -202,7 +205,7 @@ export default function DeliveryPartnerProfile() {
               name="contactNo"
               value={formData.contactNo}
               onChange={handleChange}
-              icon={<FaPhoneAlt />}
+              icon={Contact}
               required
             />
 
@@ -211,12 +214,21 @@ export default function DeliveryPartnerProfile() {
               name="licenseNo"
               value={formData.licenseNo}
               onChange={handleChange}
-              icon={<FaIdCard />}
+              icon={IdCard}
+              disabled
+            />
+
+            <ProfileInput
+              label="Aadhaar Number"
+              name="AADHAR"
+              value={formData.AADHAR}
+              onChange={handleChange}
+              icon={IdCard}
               disabled
             />
           </div>
 
-          <h2 className="mt-10 text-2xl font-bold text-white">
+          <h2 className="mt-10 text-xl font-bold">
             Vehicle Information
           </h2>
 
@@ -224,20 +236,25 @@ export default function DeliveryPartnerProfile() {
             <div>
               <label
                 htmlFor="vehicleType"
-                className="mb-2 block text-sm font-medium text-gray-300"
+                className="mb-2 block text-sm font-medium text-slate-300"
               >
                 Vehicle Type
               </label>
 
               <div className="relative">
-                <FaMotorcycle className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+                <Bike
+                  size={18}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"
+                />
 
                 <select
                   id="vehicleType"
                   name="vehicleType"
-                  value={formData.vehicleType}
+                  value={
+                    formData.vehicleType
+                  }
                   onChange={handleChange}
-                  className="w-full appearance-none rounded-xl border border-gray-700 bg-[#111827] py-3 pl-11 pr-4 text-white outline-none transition focus:border-orange-500"
+                  className="w-full appearance-none rounded-xl border border-slate-700 bg-slate-950 py-3 pl-11 pr-4 outline-none focus:border-orange-500"
                 >
                   <option value="">
                     Select vehicle
@@ -267,22 +284,20 @@ export default function DeliveryPartnerProfile() {
               name="vehicleNo"
               value={formData.vehicleNo}
               onChange={handleChange}
-              icon={<FaTruck />}
+              icon={Truck}
             />
           </div>
 
-          {/* Read-only Account Details */}
-
-          <div className="mt-8 rounded-2xl bg-[#111827] p-5">
-            <h3 className="font-bold text-white">
-              Protected Information
+          <div className="mt-8 rounded-2xl bg-slate-950 p-5">
+            <h3 className="font-semibold">
+              Protected information
             </h3>
 
-            <p className="mt-2 text-sm leading-6 text-gray-400">
-              Email, license number and identity
-              information cannot be changed
-              directly because they are used for
-              account verification.
+            <p className="mt-2 text-sm leading-6 text-slate-400">
+              Email, licence number and
+              identity details cannot be edited
+              directly because they are used
+              during account verification.
             </p>
           </div>
 
@@ -290,9 +305,16 @@ export default function DeliveryPartnerProfile() {
             <button
               type="submit"
               disabled={saving}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-orange-500 px-6 py-3 font-semibold hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
             >
-              <FaSave />
+              {saving ? (
+                <LoaderCircle
+                  size={19}
+                  className="animate-spin"
+                />
+              ) : (
+                <Save size={19} />
+              )}
 
               {saving
                 ? "Saving..."
@@ -307,7 +329,7 @@ export default function DeliveryPartnerProfile() {
 
 function ProfileInput({
   label,
-  icon,
+  icon: Icon,
   disabled = false,
   ...props
 }) {
@@ -315,40 +337,26 @@ function ProfileInput({
     <div>
       <label
         htmlFor={props.name}
-        className="mb-2 block text-sm font-medium text-gray-300"
+        className="mb-2 block text-sm font-medium text-slate-300"
       >
         {label}
       </label>
 
       <div className="relative">
-        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
-          {icon}
-        </span>
+        <Icon
+          size={18}
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"
+        />
 
         <input
           id={props.name}
           disabled={disabled}
           {...props}
-          className={`
-            w-full
-            rounded-xl
-            border
-            border-gray-700
-            bg-[#111827]
-            py-3
-            pl-11
-            pr-4
-            text-white
-            outline-none
-            transition
-            placeholder:text-gray-500
-            focus:border-orange-500
-            ${
-              disabled
-                ? "cursor-not-allowed opacity-60"
-                : ""
-            }
-          `}
+          className={`w-full rounded-xl border border-slate-700 bg-slate-950 py-3 pl-11 pr-4 outline-none placeholder:text-slate-500 focus:border-orange-500 ${
+            disabled
+              ? "cursor-not-allowed opacity-60"
+              : ""
+          }`}
         />
       </div>
     </div>
@@ -356,28 +364,21 @@ function ProfileInput({
 }
 
 function VerificationBadge({ status }) {
-  const statusClasses = {
+  const styles = {
     Verified:
-      "bg-green-500/20 text-green-400",
+      "bg-green-500/15 text-green-400",
     Pending:
-      "bg-yellow-500/20 text-yellow-400",
+      "bg-yellow-500/15 text-yellow-400",
     Rejected:
-      "bg-red-500/20 text-red-400",
+      "bg-red-500/15 text-red-400",
   };
 
   return (
     <span
-      className={`
-        rounded-full
-        px-4
-        py-2
-        text-sm
-        font-semibold
-        ${
-          statusClasses[status] ||
-          "bg-gray-500/20 text-gray-400"
-        }
-      `}
+      className={`rounded-full px-4 py-2 text-sm font-semibold ${
+        styles[status] ||
+        "bg-slate-800 text-slate-400"
+      }`}
     >
       {status}
     </span>

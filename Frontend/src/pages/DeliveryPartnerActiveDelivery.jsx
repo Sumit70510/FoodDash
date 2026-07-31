@@ -1,16 +1,30 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  useEffect,
+  useState,
+} from "react";
 import {
-  FaCheck,
-  FaClock,
-  FaMapMarkerAlt,
-  FaMotorcycle,
-  FaPhoneAlt,
-  FaRedoAlt,
-  FaStore,
-  FaUser,
-} from "react-icons/fa";
+  Check,
+  Clock3,
+  LoaderCircle,
+  MapPin,
+  Navigation,
+  PackageCheck,
+  Phone,
+  RefreshCw,
+  Store,
+  UserRound,
+} from "lucide-react";
 import { toast } from "sonner";
+
 import api from "../utils/axios.js";
+
+const deliverySteps = [
+  "Assigned",
+  "Arrived At Restaurant",
+  "Picked Up",
+  "Out For Delivery",
+  "Delivered",
+];
 
 export default function DeliveryPartnerActiveDelivery() {
   const [delivery, setDelivery] =
@@ -30,10 +44,10 @@ export default function DeliveryPartnerActiveDelivery() {
   }, []);
 
   const fetchActiveDelivery = async (
-    refresh = false
+    isRefresh = false
   ) => {
     try {
-      if (refresh) {
+      if (isRefresh) {
         setRefreshing(true);
       } else {
         setLoading(true);
@@ -43,16 +57,12 @@ export default function DeliveryPartnerActiveDelivery() {
         "/delivery/active"
       );
 
-      if (response.data?.success) {
-        setDelivery(
-          response.data.delivery || null
-        );
-      } else {
-        setDelivery(null);
-      }
+      setDelivery(
+        response.data?.delivery || null
+      );
     } catch (error) {
       console.error(
-        "Fetch active delivery error:",
+        "Active delivery error:",
         error
       );
 
@@ -70,7 +80,7 @@ export default function DeliveryPartnerActiveDelivery() {
     }
   };
 
-  const updateDeliveryStatus = async (
+  const handleStatusUpdate = async (
     status
   ) => {
     if (!delivery?._id || updating) {
@@ -85,37 +95,30 @@ export default function DeliveryPartnerActiveDelivery() {
         { status }
       );
 
-      if (response.data?.success) {
-        const updatedDelivery =
-          response.data.delivery || {
+      if (status === "Delivered") {
+        setDelivery(null);
+      } else {
+        setDelivery(
+          response.data?.delivery || {
             ...delivery,
             status,
-          };
-
-        if (status === "Delivered") {
-          setDelivery(null);
-        } else {
-          setDelivery(updatedDelivery);
-        }
-
-        toast.success(
-          getSuccessMessage(status)
-        );
-      } else {
-        toast.error(
-          response.data?.message ||
-            "Unable to update delivery"
+          }
         );
       }
+
+      toast.success(
+        response.data?.message ||
+          "Delivery status updated"
+      );
     } catch (error) {
       console.error(
-        "Update delivery status error:",
+        "Delivery status error:",
         error
       );
 
       toast.error(
         error.response?.data?.message ||
-          "Failed to update delivery"
+          "Failed to update delivery status"
       );
     } finally {
       setUpdating(false);
@@ -123,27 +126,33 @@ export default function DeliveryPartnerActiveDelivery() {
   };
 
   if (loading) {
-    return <PageLoading />;
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center">
+        <LoaderCircle className="animate-spin text-orange-500" />
+
+        <p className="mt-4 text-slate-400">
+          Loading active delivery...
+        </p>
+      </div>
+    );
   }
 
   return (
     <div className="min-h-screen px-4 py-6 md:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
-        {/* Header */}
-
-        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
           <div>
             <p className="text-sm font-semibold uppercase tracking-wider text-orange-500">
               Current Assignment
             </p>
 
-            <h1 className="mt-2 text-3xl font-bold text-white md:text-4xl">
+            <h1 className="mt-2 text-3xl font-bold md:text-4xl">
               Active Delivery
             </h1>
 
-            <p className="mt-2 text-gray-400">
-              Track the pickup and delivery
-              progress of your current order.
+            <p className="mt-2 text-slate-400">
+              Update the delivery as you
+              complete each stage.
             </p>
           </div>
 
@@ -153,90 +162,81 @@ export default function DeliveryPartnerActiveDelivery() {
               fetchActiveDelivery(true)
             }
             disabled={refreshing}
-            className="flex items-center justify-center gap-2 rounded-xl border border-gray-700 bg-[#1F2937] px-5 py-3 font-semibold text-white transition hover:border-orange-500"
+            className="flex items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-900 px-5 py-3 font-semibold hover:border-orange-500 disabled:opacity-60"
           >
-            <FaRedoAlt
+            <RefreshCw
+              size={18}
               className={
-                refreshing ? "animate-spin" : ""
+                refreshing
+                  ? "animate-spin"
+                  : ""
               }
             />
 
-            {refreshing
-              ? "Refreshing..."
-              : "Refresh"}
+            Refresh
           </button>
         </div>
 
         {!delivery ? (
-          <EmptyDelivery />
+          <EmptyActiveDelivery />
         ) : (
           <div className="space-y-6">
-            {/* Delivery Status */}
-
-            <section className="rounded-3xl border border-orange-500/30 bg-[#1F2937] p-6">
+            <section className="rounded-3xl border border-orange-500/30 bg-slate-900 p-6">
               <div className="flex flex-col justify-between gap-5 md:flex-row md:items-center">
                 <div>
-                  <p className="text-sm text-gray-400">
+                  <p className="text-sm text-slate-400">
                     Delivery ID
                   </p>
 
-                  <h2 className="mt-1 text-2xl font-bold text-white">
+                  <h2 className="mt-1 text-2xl font-bold">
                     #
-                    {delivery._id
-                      ?.slice(-6)
+                    {String(delivery._id)
+                      .slice(-6)
                       .toUpperCase()}
                   </h2>
                 </div>
 
-                <div className="flex items-center gap-3 rounded-xl bg-orange-500/15 px-4 py-3 text-orange-400">
-                  <FaMotorcycle />
-
-                  <span className="font-semibold">
-                    {formatStatus(
-                      delivery.status
-                    )}
-                  </span>
-                </div>
+                <span className="rounded-xl bg-orange-500/15 px-4 py-3 font-semibold text-orange-400">
+                  {delivery.status ||
+                    "Assigned"}
+                </span>
               </div>
             </section>
-
-            {/* Delivery Progress */}
 
             <DeliveryProgress
               status={delivery.status}
             />
 
-            {/* Locations */}
-
             <section className="grid gap-6 lg:grid-cols-2">
               <LocationCard
+                icon={Store}
                 title="Restaurant Pickup"
                 name={
-                  delivery.restaurantId?.name ||
+                  delivery.restaurantId
+                    ?.name ||
                   delivery.restaurant?.name ||
                   "Restaurant"
                 }
                 address={
-                  delivery.restaurantId?.location
-                    ?.address ||
+                  delivery.restaurantId
+                    ?.location?.address ||
                   delivery.pickupAddress ||
                   "Pickup address unavailable"
                 }
                 phone={
                   delivery.restaurantId
                     ?.restaurantContactNo ||
-                  delivery.restaurant?.contactNo
+                  delivery.restaurantId
+                    ?.contactNo
                 }
-                icon={<FaStore />}
-                iconClass="bg-orange-500/20 text-orange-400"
               />
 
               <LocationCard
+                icon={UserRound}
                 title="Customer Delivery"
                 name={
                   delivery.userId?.name ||
                   delivery.customerId?.name ||
-                  delivery.customer?.name ||
                   "Customer"
                 }
                 address={formatAddress(
@@ -245,23 +245,18 @@ export default function DeliveryPartnerActiveDelivery() {
                 )}
                 phone={
                   delivery.userId?.contactNo ||
-                  delivery.userId?.phone ||
-                  delivery.customer?.phone
+                  delivery.userId?.phone
                 }
-                icon={<FaUser />}
-                iconClass="bg-green-500/20 text-green-400"
               />
             </section>
 
-            {/* Order Information */}
-
-            <section className="rounded-3xl border border-gray-800 bg-[#1F2937] p-6">
-              <h2 className="text-xl font-bold text-white">
-                Delivery Information
+            <section className="rounded-3xl border border-slate-800 bg-slate-900 p-6">
+              <h2 className="text-xl font-bold">
+                Order Information
               </h2>
 
-              <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <InfoBox
+              <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <InformationBox
                   label="Order Amount"
                   value={formatCurrency(
                     delivery.orderId
@@ -270,17 +265,17 @@ export default function DeliveryPartnerActiveDelivery() {
                   )}
                 />
 
-                <InfoBox
+                <InformationBox
                   label="Payment"
                   value={
                     delivery.orderId
                       ?.paymentMethod ||
                     delivery.paymentMethod ||
-                    "COD"
+                    "Not available"
                   }
                 />
 
-                <InfoBox
+                <InformationBox
                   label="Distance"
                   value={
                     delivery.distance
@@ -289,7 +284,7 @@ export default function DeliveryPartnerActiveDelivery() {
                   }
                 />
 
-                <InfoBox
+                <InformationBox
                   label="Delivery Fee"
                   value={formatCurrency(
                     delivery.deliveryFee
@@ -298,12 +293,10 @@ export default function DeliveryPartnerActiveDelivery() {
               </div>
             </section>
 
-            {/* Actions */}
-
-            <DeliveryActions
+            <StatusAction
               status={delivery.status}
               updating={updating}
-              onUpdate={updateDeliveryStatus}
+              onUpdate={handleStatusUpdate}
             />
           </div>
         )}
@@ -312,294 +305,223 @@ export default function DeliveryPartnerActiveDelivery() {
   );
 }
 
-function DeliveryActions({
-  status,
-  updating,
-  onUpdate,
-}) {
-  if (
-    status === "Assigned" ||
-    status === "Accepted"
-  ) {
-    return (
-      <ActionButton
-        text="Arrived At Restaurant"
-        loading={updating}
-        onClick={() =>
-          onUpdate("Arrived At Restaurant")
-        }
-      />
-    );
-  }
-
-  if (status === "Arrived At Restaurant") {
-    return (
-      <ActionButton
-        text="Order Picked Up"
-        loading={updating}
-        onClick={() => onUpdate("Picked Up")}
-      />
-    );
-  }
-
-  if (status === "Picked Up") {
-    return (
-      <ActionButton
-        text="Start Delivery"
-        loading={updating}
-        onClick={() =>
-          onUpdate("Out For Delivery")
-        }
-      />
-    );
-  }
-
-  if (status === "Out For Delivery") {
-    return (
-      <ActionButton
-        text="Mark As Delivered"
-        loading={updating}
-        onClick={() => onUpdate("Delivered")}
-      />
-    );
-  }
-
-  return (
-    <div className="rounded-2xl border border-gray-800 bg-[#1F2937] p-5 text-center text-gray-400">
-      No action is available for this
-      delivery status.
-    </div>
-  );
-}
-
-function ActionButton({
-  text,
-  loading,
-  onClick,
-}) {
-  return (
-    <div className="flex justify-end">
-      <button
-        type="button"
-        onClick={onClick}
-        disabled={loading}
-        className="flex w-full items-center justify-center gap-2 rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
-      >
-        <FaCheck />
-
-        {loading ? "Updating..." : text}
-      </button>
-    </div>
-  );
-}
-
 function DeliveryProgress({ status }) {
-  const steps = [
-    "Assigned",
-    "Arrived At Restaurant",
-    "Picked Up",
-    "Out For Delivery",
-    "Delivered",
-  ];
-
   const normalizedStatus =
     status === "Accepted"
       ? "Assigned"
       : status;
 
-  const activeIndex = steps.indexOf(
-    normalizedStatus
-  );
+  const activeIndex =
+    deliverySteps.indexOf(
+      normalizedStatus
+    );
 
   return (
-    <section className="rounded-3xl border border-gray-800 bg-[#1F2937] p-6">
-      <h2 className="text-xl font-bold text-white">
+    <section className="rounded-3xl border border-slate-800 bg-slate-900 p-6">
+      <h2 className="text-xl font-bold">
         Delivery Progress
       </h2>
 
       <div className="mt-6 space-y-5">
-        {steps.map((step, index) => {
-          const completed =
-            index <= activeIndex;
+        {deliverySteps.map(
+          (step, index) => {
+            const completed =
+              index <= activeIndex;
 
-          return (
-            <div
-              key={step}
-              className="flex items-center gap-4"
-            >
+            return (
               <div
-                className={`
-                  flex
-                  h-10
-                  w-10
-                  shrink-0
-                  items-center
-                  justify-center
-                  rounded-full
-                  font-bold
-                  ${
-                    completed
-                      ? "bg-orange-500 text-white"
-                      : "bg-[#111827] text-gray-500"
-                  }
-                `}
+                key={step}
+                className="flex items-center gap-4"
               >
-                {completed ? (
-                  <FaCheck />
-                ) : (
-                  index + 1
-                )}
-              </div>
-
-              <div>
-                <p
-                  className={
+                <div
+                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-bold ${
                     completed
-                      ? "font-semibold text-white"
-                      : "font-semibold text-gray-500"
-                  }
+                      ? "bg-orange-500"
+                      : "bg-slate-950 text-slate-500"
+                  }`}
                 >
-                  {formatStatus(step)}
-                </p>
+                  {completed ? (
+                    <Check size={18} />
+                  ) : (
+                    index + 1
+                  )}
+                </div>
 
-                {index === activeIndex && (
-                  <p className="mt-1 text-xs text-orange-400">
-                    Current status
+                <div>
+                  <p
+                    className={
+                      completed
+                        ? "font-semibold"
+                        : "font-semibold text-slate-500"
+                    }
+                  >
+                    {step}
                   </p>
-                )}
+
+                  {index === activeIndex && (
+                    <p className="mt-1 text-xs text-orange-400">
+                      Current stage
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          }
+        )}
       </div>
     </section>
   );
 }
 
+function StatusAction({
+  status,
+  updating,
+  onUpdate,
+}) {
+  const actionMap = {
+    Assigned: {
+      next: "Arrived At Restaurant",
+      label: "Arrived At Restaurant",
+    },
+    Accepted: {
+      next: "Arrived At Restaurant",
+      label: "Arrived At Restaurant",
+    },
+    "Arrived At Restaurant": {
+      next: "Picked Up",
+      label: "Confirm Order Pickup",
+    },
+    "Picked Up": {
+      next: "Out For Delivery",
+      label: "Start Delivery",
+    },
+    "Out For Delivery": {
+      next: "Delivered",
+      label: "Mark As Delivered",
+    },
+  };
+
+  const action = actionMap[status];
+
+  if (!action) {
+    return null;
+  }
+
+  return (
+    <div className="flex justify-end">
+      <button
+        type="button"
+        onClick={() =>
+          onUpdate(action.next)
+        }
+        disabled={updating}
+        className="flex w-full items-center justify-center gap-2 rounded-xl bg-orange-500 px-6 py-3 font-semibold hover:bg-orange-600 disabled:opacity-60 sm:w-auto"
+      >
+        {updating ? (
+          <LoaderCircle
+            size={19}
+            className="animate-spin"
+          />
+        ) : (
+          <PackageCheck size={19} />
+        )}
+
+        {updating
+          ? "Updating..."
+          : action.label}
+      </button>
+    </div>
+  );
+}
+
 function LocationCard({
+  icon: Icon,
   title,
   name,
   address,
   phone,
-  icon,
-  iconClass,
 }) {
   return (
-    <div className="rounded-3xl border border-gray-800 bg-[#1F2937] p-6">
+    <div className="rounded-3xl border border-slate-800 bg-slate-900 p-6">
       <div className="flex items-start gap-4">
-        <div
-          className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-xl ${iconClass}`}
-        >
-          {icon}
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-500/20 text-orange-400">
+          <Icon size={22} />
         </div>
 
         <div>
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-slate-400">
             {title}
           </p>
 
-          <h3 className="mt-1 text-lg font-bold text-white">
+          <h3 className="mt-1 text-lg font-bold">
             {name}
           </h3>
         </div>
       </div>
 
-      <div className="mt-5 space-y-4">
-        <div className="flex items-start gap-3 text-gray-300">
-          <FaMapMarkerAlt className="mt-1 shrink-0 text-orange-500" />
+      <div className="mt-5 space-y-4 text-sm text-slate-300">
+        <div className="flex items-start gap-3">
+          <MapPin
+            size={18}
+            className="mt-0.5 shrink-0 text-orange-400"
+          />
 
-          <p className="text-sm leading-6">
-            {address}
-          </p>
+          <span>{address}</span>
         </div>
 
         {phone && (
-          <div className="flex items-center gap-3 text-gray-300">
-            <FaPhoneAlt className="text-green-500" />
+          <a
+            href={`tel:${phone}`}
+            className="flex items-center gap-3 hover:text-green-400"
+          >
+            <Phone
+              size={18}
+              className="text-green-400"
+            />
 
-            <a
-              href={`tel:${phone}`}
-              className="text-sm hover:text-green-400"
-            >
-              {phone}
-            </a>
-          </div>
+            {phone}
+          </a>
         )}
       </div>
     </div>
   );
 }
 
-function InfoBox({ label, value }) {
+function InformationBox({
+  label,
+  value,
+}) {
   return (
-    <div className="rounded-2xl bg-[#111827] p-4">
-      <p className="text-sm text-gray-500">
+    <div className="rounded-2xl bg-slate-950 p-4">
+      <p className="text-xs text-slate-500">
         {label}
       </p>
 
-      <p className="mt-2 font-bold text-white">
+      <p className="mt-2 font-bold">
         {value}
       </p>
     </div>
   );
 }
 
-function EmptyDelivery() {
+function EmptyActiveDelivery() {
   return (
-    <div className="flex min-h-96 flex-col items-center justify-center rounded-3xl border border-dashed border-gray-700 bg-[#1F2937] p-8 text-center">
-      <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-[#111827] text-3xl text-gray-500">
-        <FaMotorcycle />
-      </div>
+    <div className="flex min-h-96 flex-col items-center justify-center rounded-3xl border border-dashed border-slate-700 bg-slate-900 p-8 text-center">
+      <Navigation
+        size={48}
+        className="text-slate-600"
+      />
 
-      <h2 className="mt-6 text-2xl font-bold text-white">
+      <h2 className="mt-5 text-2xl font-bold">
         No Active Delivery
       </h2>
 
-      <p className="mt-3 max-w-md leading-6 text-gray-400">
-        Accept an available delivery request to
-        start a new delivery.
+      <p className="mt-3 max-w-md text-slate-400">
+        Accept an available order to begin a
+        new delivery.
       </p>
     </div>
   );
-}
-
-function PageLoading() {
-  return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="text-center">
-        <FaMotorcycle className="mx-auto animate-pulse text-4xl text-orange-500" />
-
-        <p className="mt-4 text-gray-400">
-          Loading active delivery...
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function getSuccessMessage(status) {
-  const messages = {
-    "Arrived At Restaurant":
-      "Arrival confirmed",
-    "Picked Up":
-      "Order pickup confirmed",
-    "Out For Delivery":
-      "Delivery started",
-    Delivered:
-      "Order delivered successfully",
-  };
-
-  return (
-    messages[status] ||
-    "Delivery status updated"
-  );
-}
-
-function formatStatus(status) {
-  return String(status || "Unknown")
-    .replace(/([A-Z])/g, " $1")
-    .replace(/\s+/g, " ")
-    .trim();
 }
 
 function formatCurrency(value) {
@@ -622,9 +544,9 @@ function formatAddress(address) {
   return [
     address.houseNo,
     address.houseNumber,
-    address.street,
     address.addressLine1,
     address.addressLine2,
+    address.street,
     address.landmark,
     address.city,
     address.state,
